@@ -1,0 +1,25 @@
+package com.tuyenngoc.army2forum.service;
+
+import com.tuyenngoc.army2forum.domain.dto.request.*;
+import com.tuyenngoc.army2forum.domain.dto.response.CommonResponseDto;
+import com.tuyenngoc.army2forum.domain.dto.response.auth.LoginResponseDto;
+import com.tuyenngoc.army2forum.domain.dto.response.auth.TokenRefreshResponseDto;
+import com.tuyenngoc.army2forum.domain.entity.User;
+import jakarta.servlet.http.HttpServletRequest;
+import jakarta.servlet.http.HttpServletResponse;
+import org.springframework.security.core.Authentication;
+
+public interface AuthService {
+
+    LoginResponseDto login(LoginRequestDto request);
+
+    CommonResponseDto logout(HttpServletRequest request, HttpServletResponse response, Authentication authentication);
+
+    TokenRefreshResponseDto refresh(TokenRefreshRequestDto request);
+
+    User register(RegisterRequestDto requestDto);
+
+    CommonResponseDto forgetPassword(ForgetPasswordRequestDto requestDto);
+
+    CommonResponseDto changePassword(ChangePasswordRequestDto requestDto, String username);
+}

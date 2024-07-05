@@ -1,6 +1,7 @@
 package com.tuyenngoc.army2forum.service.impl;
 
 import com.tuyenngoc.army2forum.constant.ErrorMessage;
+import com.tuyenngoc.army2forum.constant.RoleConstant;
 import com.tuyenngoc.army2forum.constant.SuccessMessage;
 import com.tuyenngoc.army2forum.domain.dto.common.DataMailDto;
 import com.tuyenngoc.army2forum.domain.dto.request.*;
@@ -138,7 +139,7 @@ public class AuthServiceImpl implements AuthService {
         //Create new User
         User user = userMapper.toUser(requestDto);
         user.setPassword(passwordEncoder.encode(requestDto.getPassword()));
-        user.setRole(roleService.getRole(2));
+        user.setRole(roleService.getRole(RoleConstant.ROLE_USER.name()));
 
         return userRepository.save(user);
     }

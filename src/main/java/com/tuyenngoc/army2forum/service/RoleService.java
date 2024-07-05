@@ -6,4 +6,7 @@ public interface RoleService {
 
     Role getRole(int roleId);
 
+    Role getRole(String name);
+
+    void initRoles();
 }

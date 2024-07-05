@@ -3,10 +3,8 @@ package com.tuyenngoc.army2forum;
 import com.tuyenngoc.army2forum.config.CloudinaryConfig;
 import com.tuyenngoc.army2forum.config.MailConfig;
 import com.tuyenngoc.army2forum.config.properties.AdminInfo;
-import com.tuyenngoc.army2forum.domain.entity.Role;
-import com.tuyenngoc.army2forum.domain.entity.User;
-import com.tuyenngoc.army2forum.repository.RoleRepository;
-import com.tuyenngoc.army2forum.repository.UserRepository;
+import com.tuyenngoc.army2forum.service.RoleService;
+import com.tuyenngoc.army2forum.service.UserService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.boot.CommandLineRunner;
@@ -16,9 +14,6 @@ import org.springframework.boot.context.properties.EnableConfigurationProperties
 import org.springframework.context.annotation.Bean;
 import org.springframework.core.env.Environment;
 import org.springframework.scheduling.annotation.EnableScheduling;
-import org.springframework.security.crypto.password.PasswordEncoder;
-
-import java.util.Collections;
 
 @Slf4j
 @RequiredArgsConstructor
@@ -31,11 +26,9 @@ import java.util.Collections;
 @EnableScheduling
 public class MobiArmy2ForumApplication {
 
-    private final RoleRepository roleRepository;
+    private final RoleService roleService;
 
-    private final UserRepository userRepository;
-
-    private final PasswordEncoder passwordEncoder;
+    private final UserService userService;
 
     public static void main(String[] args) {
         Environment env = SpringApplication.run(MobiArmy2ForumApplication.class, args).getEnvironment();
@@ -55,25 +48,8 @@ public class MobiArmy2ForumApplication {
     @Bean
     CommandLineRunner init(AdminInfo adminInfo) {
         return args -> {
-            if (roleRepository.count() == 0) {
-                roleRepository.save(new Role(1, "ROLE_ADMIN", Collections.emptyList()));
-                roleRepository.save(new Role(2, "ROLE_USER", Collections.emptyList()));
-            }
-            //init admin
-            if (userRepository.count() == 0) {
-                try {
-                    User user = new User();
-                    user.setUsername(adminInfo.getUsername());
-                    user.setEmail(adminInfo.getEmail());
-                    user.setPassword(passwordEncoder.encode(adminInfo.getPassword()));
-                    Role roleAdmin = new Role();
-                    roleAdmin.setId(1);
-                    user.setRole(roleAdmin);
-                    userRepository.save(user);
-                } catch (Exception e) {
-                    e.printStackTrace();
-                }
-            }
+            roleService.initRoles();
+            userService.initAdmin(adminInfo);
         };
     }
 

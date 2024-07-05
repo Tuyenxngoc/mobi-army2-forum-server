@@ -1,6 +1,7 @@
 package com.tuyenngoc.army2forum.security.jwt;
 
 import com.tuyenngoc.army2forum.service.impl.CustomUserDetailsServiceImpl;
+import com.tuyenngoc.army2forum.service.impl.JwtTokenServiceImpl;
 import com.tuyenngoc.army2forum.util.JwtUtil;
 import jakarta.servlet.FilterChain;
 import jakarta.servlet.ServletException;
@@ -26,6 +27,8 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
 
     private final JwtTokenProvider tokenProvider;
 
+    private final JwtTokenServiceImpl tokenService;
+
     @Override
     protected void doFilterInternal(HttpServletRequest request, HttpServletResponse response, FilterChain filterChain) throws ServletException, IOException {
         try {
@@ -34,12 +37,14 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
             if (accessToken != null && tokenProvider.validateToken(accessToken)) {
                 String username = tokenProvider.extractClaimUsername(accessToken);
 
-                UserDetails userDetails = customUserDetailsService.loadUserByUsername(username);
-                UsernamePasswordAuthenticationToken authenticationToken =
-                        new UsernamePasswordAuthenticationToken(userDetails, null, userDetails.getAuthorities());
+                if (tokenService.isAccessTokenExists(accessToken, username)) {
+                    UserDetails userDetails = customUserDetailsService.loadUserByUsername(username);
+                    UsernamePasswordAuthenticationToken authenticationToken =
+                            new UsernamePasswordAuthenticationToken(userDetails, null, userDetails.getAuthorities());
 
-                authenticationToken.setDetails(new WebAuthenticationDetailsSource().buildDetails(request));
-                SecurityContextHolder.getContext().setAuthentication(authenticationToken);
+                    authenticationToken.setDetails(new WebAuthenticationDetailsSource().buildDetails(request));
+                    SecurityContextHolder.getContext().setAuthentication(authenticationToken);
+                }
             }
         } catch (Exception ex) {
             log.error("Could not set user authentication in security context", ex);

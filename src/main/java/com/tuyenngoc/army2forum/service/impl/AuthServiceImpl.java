@@ -51,6 +51,8 @@ public class AuthServiceImpl implements AuthService {
 
     private final JwtTokenProvider jwtTokenProvider;
 
+    private final JwtTokenServiceImpl jwtTokenService;
+
     private final MessageSource messageSource;
 
     private final UserRepository userRepository;
@@ -75,6 +77,9 @@ public class AuthServiceImpl implements AuthService {
             String accessToken = jwtTokenProvider.generateToken(customUserDetails, Boolean.FALSE);
             String refreshToken = jwtTokenProvider.generateToken(customUserDetails, Boolean.TRUE);
 
+            jwtTokenService.saveAccessToken(accessToken, customUserDetails.getUsername());
+            jwtTokenService.saveRefreshToken(refreshToken, customUserDetails.getUsername());
+
             return new LoginResponseDto(
                     accessToken,
                     refreshToken,
@@ -93,6 +98,10 @@ public class AuthServiceImpl implements AuthService {
             HttpServletResponse response,
             Authentication authentication
     ) {
+        if (authentication != null && authentication.getName() != null) {
+            jwtTokenService.deleteTokens(authentication.getName());
+        }
+
         SecurityContextLogoutHandler logout = new SecurityContextLogoutHandler();
         logout.logout(request, response, authentication);
 
@@ -102,7 +111,29 @@ public class AuthServiceImpl implements AuthService {
 
     @Override
     public TokenRefreshResponseDto refresh(TokenRefreshRequestDto request) {
-        return null;
+        String refreshToken = request.getRefreshToken();
+
+        if (jwtTokenProvider.validateToken(refreshToken)) {
+            String username = jwtTokenProvider.extractClaimUsername(refreshToken);
+
+            if (jwtTokenService.isRefreshTokenExists(refreshToken, username)) {
+                User user = userRepository.findByUsername(username)
+                        .orElseThrow(() -> new InvalidException(ErrorMessage.Auth.ERR_INVALID_REFRESH_TOKEN));
+                CustomUserDetails userDetails = CustomUserDetails.create(user);
+
+                String newAccessToken = jwtTokenProvider.generateToken(userDetails, Boolean.FALSE);
+                String newRefreshToken = jwtTokenProvider.generateToken(userDetails, Boolean.TRUE);
+
+                jwtTokenService.saveAccessToken(newAccessToken, user.getUsername());
+                jwtTokenService.saveRefreshToken(newRefreshToken, user.getUsername());
+
+                return new TokenRefreshResponseDto(newAccessToken, newRefreshToken);
+            } else {
+                throw new InvalidException(ErrorMessage.Auth.ERR_INVALID_REFRESH_TOKEN);
+            }
+        } else {
+            throw new InvalidException(ErrorMessage.Auth.ERR_INVALID_REFRESH_TOKEN);
+        }
     }
 
     @Override

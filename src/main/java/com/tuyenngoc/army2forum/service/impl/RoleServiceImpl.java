@@ -7,8 +7,10 @@ import com.tuyenngoc.army2forum.exception.NotFoundException;
 import com.tuyenngoc.army2forum.repository.RoleRepository;
 import com.tuyenngoc.army2forum.service.RoleService;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 
+@Slf4j
 @Service
 @RequiredArgsConstructor
 public class RoleServiceImpl implements RoleService {
@@ -32,6 +34,7 @@ public class RoleServiceImpl implements RoleService {
         if (roleRepository.count() == 0) {
             roleRepository.save(new Role(RoleConstant.ROLE_ADMIN.name()));
             roleRepository.save(new Role(RoleConstant.ROLE_USER.name()));
+            log.info("Initializing roles: ADMIN, USER");
         }
     }
 

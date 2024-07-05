@@ -17,9 +17,9 @@ public class OpenApiConfig {
     public OpenAPI customOpenAPI() {
         OpenAPI openAPI = new OpenAPI().info(
                 new Info()
-                        .title("Project Book Store Spring API")
+                        .title("Project Army2 Forum Spring API")
                         .version("1.0")
-                        .description("Documentation Project Book Store Spring API v1.0")
+                        .description("Documentation Project Army2 Forum Spring API v1.0")
         );
         openAPI.components(
                 new Components()

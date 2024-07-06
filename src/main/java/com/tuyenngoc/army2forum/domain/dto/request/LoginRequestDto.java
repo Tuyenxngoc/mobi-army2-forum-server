@@ -14,7 +14,7 @@ import lombok.Setter;
 public class LoginRequestDto {
 
     @NotBlank(message = ErrorMessage.INVALID_NOT_BLANK_FIELD)
-    private String usernameOrEmail;
+    private String username;
 
     @NotBlank(message = ErrorMessage.INVALID_NOT_BLANK_FIELD)
     private String password;

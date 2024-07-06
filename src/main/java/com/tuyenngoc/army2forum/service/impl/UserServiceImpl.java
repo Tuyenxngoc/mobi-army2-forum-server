@@ -1,8 +1,12 @@
 package com.tuyenngoc.army2forum.service.impl;
 
 import com.tuyenngoc.army2forum.config.properties.AdminInfo;
+import com.tuyenngoc.army2forum.constant.ErrorMessage;
 import com.tuyenngoc.army2forum.constant.RoleConstant;
+import com.tuyenngoc.army2forum.domain.dto.UserDto;
 import com.tuyenngoc.army2forum.domain.entity.User;
+import com.tuyenngoc.army2forum.domain.mapper.UserMapper;
+import com.tuyenngoc.army2forum.exception.NotFoundException;
 import com.tuyenngoc.army2forum.repository.UserRepository;
 import com.tuyenngoc.army2forum.service.RoleService;
 import com.tuyenngoc.army2forum.service.UserService;
@@ -17,6 +21,8 @@ import org.springframework.stereotype.Service;
 public class UserServiceImpl implements UserService {
 
     private final UserRepository userRepository;
+
+    private final UserMapper userMapper;
 
     private final RoleService roleService;
 
@@ -38,6 +44,13 @@ public class UserServiceImpl implements UserService {
                 e.printStackTrace();
             }
         }
+    }
+
+    @Override
+    public UserDto getCurrentUser(String username) {
+        User user = userRepository.findByUsername(username)
+                .orElseThrow(() -> new NotFoundException(ErrorMessage.User.ERR_NOT_FOUND_USERNAME, username));
+        return userMapper.toUserDto(user);
     }
 
 }

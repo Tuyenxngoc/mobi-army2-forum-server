@@ -6,19 +6,19 @@ import jakarta.persistence.*;
 import lombok.*;
 import org.hibernate.annotations.UuidGenerator;
 
-@Entity
 @Getter
 @Setter
 @Builder
 @NoArgsConstructor
 @AllArgsConstructor
-@Table(name = "user")
+@Entity
+@Table(name = "users")
 public class User extends DateAuditing {
 
     @Id
     @UuidGenerator
     @Column(name = "user_id", columnDefinition = "CHAR(36)")
-    private String id;
+    private String userId;
 
     @Column(nullable = false, unique = true)
     private String username;
@@ -30,8 +30,12 @@ public class User extends DateAuditing {
     @JsonIgnore
     private String password;
 
-    @ManyToOne
-    @JoinColumn(name = "role_id", foreignKey = @ForeignKey(name = "FK_USER_ROLE_ID"), referencedColumnName = "role_id")
+    @OneToOne(mappedBy = "user", fetch = FetchType.LAZY)
+    private Player player;
+
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "role_id", foreignKey = @ForeignKey(name = "FK_USER_ROLE_ID"), referencedColumnName = "role_id", nullable = false)
     @JsonIgnore
     private Role role;
+
 }

@@ -38,7 +38,7 @@ public class CustomUserDetails implements UserDetails {
     public static CustomUserDetails create(User user) {
         List<GrantedAuthority> authorities = new ArrayList<>();
         authorities.add(new SimpleGrantedAuthority(user.getRole().getName()));
-        return new CustomUserDetails(user.getId(), user.getEmail(), user.getUsername(), user.getPassword(), authorities);
+        return new CustomUserDetails(user.getUserId(), user.getEmail(), user.getUsername(), user.getPassword(), authorities);
     }
 
     @Override

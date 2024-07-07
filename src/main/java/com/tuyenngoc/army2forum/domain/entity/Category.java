@@ -1,7 +1,6 @@
 package com.tuyenngoc.army2forum.domain.entity;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
-import com.tuyenngoc.army2forum.domain.entity.common.DateAuditing;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
@@ -16,22 +15,21 @@ import java.util.List;
 @NoArgsConstructor
 @AllArgsConstructor
 @Entity
-@Table(name = "roles")
-public class Role extends DateAuditing {
+@Table(name = "categories")
+public class Category {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @Column(name = "role_id")
-    private Long roleId;
+    @Column(name = "category_id")
+    private Long categoryId;
 
-    @Column(nullable = false, unique = true)
+    @Column(nullable = false)
     private String name;
 
-    @OneToMany(mappedBy = "role", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
-    @JsonIgnore
-    private List<User> users = new ArrayList<>();
+    private String description;
 
-    public Role(String name) {
-        this.name = name;
-    }
+    @OneToMany(mappedBy = "category", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
+    @JsonIgnore
+    private List<Thread> threads = new ArrayList<>();
+
 }

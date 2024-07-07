@@ -18,6 +18,7 @@ import com.tuyenngoc.army2forum.repository.UserRepository;
 import com.tuyenngoc.army2forum.security.CustomUserDetails;
 import com.tuyenngoc.army2forum.security.jwt.JwtTokenProvider;
 import com.tuyenngoc.army2forum.service.AuthService;
+import com.tuyenngoc.army2forum.service.JwtTokenService;
 import com.tuyenngoc.army2forum.service.RoleService;
 import com.tuyenngoc.army2forum.util.RandomPasswordUtil;
 import com.tuyenngoc.army2forum.util.SendMailUtil;
@@ -51,7 +52,7 @@ public class AuthServiceImpl implements AuthService {
 
     private final JwtTokenProvider jwtTokenProvider;
 
-    private final JwtTokenServiceImpl jwtTokenService;
+    private final JwtTokenService jwtTokenService;
 
     private final MessageSource messageSource;
 

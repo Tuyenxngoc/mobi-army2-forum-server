@@ -32,4 +32,7 @@ public class Category {
     @JsonIgnore
     private List<Thread> threads = new ArrayList<>();
 
+    public Category(String name) {
+        this.name = name;
+    }
 }

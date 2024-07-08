@@ -3,6 +3,7 @@ package com.tuyenngoc.army2forum;
 import com.tuyenngoc.army2forum.config.CloudinaryConfig;
 import com.tuyenngoc.army2forum.config.MailConfig;
 import com.tuyenngoc.army2forum.config.properties.AdminInfo;
+import com.tuyenngoc.army2forum.service.CategoryService;
 import com.tuyenngoc.army2forum.service.RoleService;
 import com.tuyenngoc.army2forum.service.UserService;
 import lombok.RequiredArgsConstructor;
@@ -30,6 +31,8 @@ public class MobiArmy2ForumApplication {
 
     private final UserService userService;
 
+    private final CategoryService categoryService;
+
     public static void main(String[] args) {
         Environment env = SpringApplication.run(MobiArmy2ForumApplication.class, args).getEnvironment();
         String appName = env.getProperty("spring.application.name");
@@ -50,6 +53,7 @@ public class MobiArmy2ForumApplication {
         return args -> {
             roleService.initRoles();
             userService.initAdmin(adminInfo);
+            categoryService.initCategories();
         };
     }
 

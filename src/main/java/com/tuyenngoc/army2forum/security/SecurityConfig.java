@@ -5,6 +5,7 @@ import com.tuyenngoc.army2forum.security.jwt.JwtAuthenticationFilter;
 import lombok.RequiredArgsConstructor;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.http.HttpMethod;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.AuthenticationProvider;
 import org.springframework.security.authentication.dao.DaoAuthenticationProvider;
@@ -44,7 +45,6 @@ public class SecurityConfig {
             "/api/v1/auth/refresh-token",
             "/api/v1/auth/login",
             "/api/v1/auth/forget-password",
-            "http://localhost:8080/api/v1/create-gif"
     };
 
     private final UserDetailsService userDetailsService;
@@ -76,6 +76,7 @@ public class SecurityConfig {
                 .cors(Customizer.withDefaults())
                 .authorizeHttpRequests(registry -> registry
                         .requestMatchers(WHITE_LIST_URL).permitAll()
+                        .requestMatchers(HttpMethod.GET, "/api/v1/categories", "/api/v1/notifications").permitAll()
                         .anyRequest().authenticated()
                 )
                 .sessionManagement(session -> session.sessionCreationPolicy(SessionCreationPolicy.STATELESS))

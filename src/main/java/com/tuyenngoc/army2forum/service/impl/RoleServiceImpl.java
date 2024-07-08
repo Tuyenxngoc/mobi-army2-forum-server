@@ -20,13 +20,13 @@ public class RoleServiceImpl implements RoleService {
     @Override
     public Role getRole(long roleId) {
         return roleRepository.findById(roleId)
-                .orElseThrow(() -> new NotFoundException(ErrorMessage.Role.ERR_NOT_FOUND_ID, String.valueOf(roleId)));
+                .orElseThrow(() -> new NotFoundException(ErrorMessage.Role.ERR_NOT_FOUND_ID, roleId));
     }
 
     @Override
     public Role getRole(String name) {
         return roleRepository.findByName(name)
-                .orElseThrow(() -> new NotFoundException(ErrorMessage.Role.ERR_NOT_FOUND_NAME, String.valueOf(name)));
+                .orElseThrow(() -> new NotFoundException(ErrorMessage.Role.ERR_NOT_FOUND_NAME, name));
     }
 
     @Override

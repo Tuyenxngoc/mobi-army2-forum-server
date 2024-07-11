@@ -4,6 +4,9 @@ import com.tuyenngoc.army2forum.constant.SortByDataConstant;
 import com.tuyenngoc.army2forum.domain.dto.pagination.PaginationFullRequestDto;
 import com.tuyenngoc.army2forum.domain.dto.pagination.PaginationResponseDto;
 import com.tuyenngoc.army2forum.domain.dto.pagination.PagingMeta;
+import com.tuyenngoc.army2forum.domain.dto.request.CreatePostRequestDto;
+import com.tuyenngoc.army2forum.domain.dto.request.UpdatePostRequestDto;
+import com.tuyenngoc.army2forum.domain.dto.response.CommonResponseDto;
 import com.tuyenngoc.army2forum.domain.entity.Post;
 import com.tuyenngoc.army2forum.repository.PostRepository;
 import com.tuyenngoc.army2forum.service.PostService;
@@ -22,32 +25,23 @@ public class PostServiceImpl implements PostService {
     private final PostRepository postRepository;
 
     @Override
-    public Post createPost(Post post) {
-        return postRepository.save(post);
-    }
-
-    @Override
-    public Post updatePost(Long id, Post post) {
-        Optional<Post> existingPost = postRepository.findById(id);
-        if (existingPost.isPresent()) {
-            Post updatedPost = existingPost.get();
-            updatedPost.setTitle(post.getTitle());
-            updatedPost.setContent(post.getContent());
-            updatedPost.setPlayer(post.getPlayer());
-            updatedPost.setThread(post.getThread());
-            return postRepository.save(updatedPost);
-        }
+    public Post createPost(CreatePostRequestDto requestDto) {
         return null;
     }
 
     @Override
-    public void deletePost(Long id) {
-        postRepository.deleteById(id);
+    public Post updatePost(Long id, UpdatePostRequestDto requestDto) {
+        return null;
+    }
+
+    @Override
+    public CommonResponseDto deletePost(Long id) {
+        return null;
     }
 
     @Override
     public Post getPostById(Long id) {
-        return postRepository.findById(id).orElse(null);
+        return null;
     }
 
     @Override

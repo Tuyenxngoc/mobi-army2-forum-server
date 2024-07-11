@@ -1,5 +1,6 @@
 package com.tuyenngoc.army2forum.service.impl;
 
+import com.tuyenngoc.army2forum.config.properties.AdminInfo;
 import com.tuyenngoc.army2forum.constant.ErrorMessage;
 import com.tuyenngoc.army2forum.domain.entity.Category;
 import com.tuyenngoc.army2forum.exception.NotFoundException;
@@ -53,11 +54,15 @@ public class CategoryServiceImpl implements CategoryService {
     }
 
     @Override
-    public void initCategories() {
+    public void initCategories(AdminInfo adminInfo) {
         if (categoryRepository.count() == 0) {
-            categoryRepository.save(new Category("Báo lỗi"));
-            categoryRepository.save(new Category("Tố cáo"));
-            categoryRepository.save(new Category("Góp ý"));
+            String[] titles = new String[]{"Báo lỗi", "Tố cáo", "Góp ý"};
+            for (String title : titles) {
+                Category category = new Category(title);
+                category.setCreatedBy(adminInfo.getUsername());
+                category.setLastModifiedBy(adminInfo.getUsername());
+                categoryRepository.save(category);
+            }
 
             log.info("Added category " + categoryRepository.count() + " categories");
         }

@@ -34,14 +34,18 @@ public class Post extends DateAuditing {
     @JsonIgnore
     private List<Comment> comments = new ArrayList<>();
 
+    @OneToMany(mappedBy = "post", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
+    @JsonIgnore
+    private List<Like> likes = new ArrayList<>();
+
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "player_id", foreignKey = @ForeignKey(name = "FK_POST_PLAYER_ID"), referencedColumnName = "player_id", nullable = false)
     @JsonIgnore
     private Player player;
 
     @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "thread_id", foreignKey = @ForeignKey(name = "FK_POST_THREAD_ID"), referencedColumnName = "thread_id", nullable = false)
+    @JoinColumn(name = "category_id", foreignKey = @ForeignKey(name = "FK_POST_CATEGORY_ID"), referencedColumnName = "category_id", nullable = false)
     @JsonIgnore
-    private Thread thread;
+    private Category category;
 
 }

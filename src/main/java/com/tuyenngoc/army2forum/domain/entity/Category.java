@@ -31,7 +31,7 @@ public class Category extends UserDateAuditing {
 
     @OneToMany(mappedBy = "category", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
     @JsonIgnore
-    private List<Thread> threads = new ArrayList<>();
+    private List<Post> posts = new ArrayList<>();
 
     public Category(String name) {
         this.name = name;

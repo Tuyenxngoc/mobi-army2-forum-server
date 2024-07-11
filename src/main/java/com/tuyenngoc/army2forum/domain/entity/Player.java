@@ -24,14 +24,14 @@ public class Player extends UserDateAuditing {
     @Column(name = "player_id")
     private Long playerId;
 
+    private int xu;
+
+    private int luong;
+
     @OneToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "user_id", foreignKey = @ForeignKey(name = "FK_PLAYER_USER_ID"), referencedColumnName = "user_id", unique = true, nullable = false)
     @JsonIgnore
     private User user;
-
-    @OneToMany(mappedBy = "player", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
-    @JsonIgnore
-    private List<Thread> threads = new ArrayList<>();
 
     @OneToMany(mappedBy = "player", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
     @JsonIgnore
@@ -44,13 +44,5 @@ public class Player extends UserDateAuditing {
     @OneToMany(mappedBy = "player", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
     @JsonIgnore
     private List<Like> likes = new ArrayList<>();
-
-    @OneToMany(mappedBy = "follower", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
-    @JsonIgnore
-    private List<Follow> following = new ArrayList<>();
-
-    @OneToMany(mappedBy = "followed", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
-    @JsonIgnore
-    private List<Follow> followers = new ArrayList<>();
 
 }

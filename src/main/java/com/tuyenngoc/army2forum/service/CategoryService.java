@@ -1,5 +1,6 @@
 package com.tuyenngoc.army2forum.service;
 
+import com.tuyenngoc.army2forum.config.properties.AdminInfo;
 import com.tuyenngoc.army2forum.domain.entity.Category;
 
 import java.util.List;
@@ -16,5 +17,5 @@ public interface CategoryService {
 
     List<Category> getAllCategories();
 
-    void initCategories();
+    void initCategories(AdminInfo adminInfo);
 }

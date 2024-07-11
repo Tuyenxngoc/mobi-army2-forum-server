@@ -53,7 +53,7 @@ public class MobiArmy2ForumApplication {
         return args -> {
             roleService.initRoles();
             userService.initAdmin(adminInfo);
-            categoryService.initCategories();
+            categoryService.initCategories(adminInfo);
         };
     }
 

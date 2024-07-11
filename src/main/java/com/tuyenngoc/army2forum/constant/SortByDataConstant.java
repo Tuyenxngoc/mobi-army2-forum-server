@@ -2,7 +2,7 @@ package com.tuyenngoc.army2forum.constant;
 
 public enum SortByDataConstant implements SortByInterface {
 
-    USER {
+    POST {
         @Override
         public String getSortBy(String sortBy) {
             return switch (sortBy) {

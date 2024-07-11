@@ -1,12 +1,18 @@
 package com.tuyenngoc.army2forum.service.impl;
 
+import com.tuyenngoc.army2forum.constant.SortByDataConstant;
+import com.tuyenngoc.army2forum.domain.dto.pagination.PaginationFullRequestDto;
+import com.tuyenngoc.army2forum.domain.dto.pagination.PaginationResponseDto;
+import com.tuyenngoc.army2forum.domain.dto.pagination.PagingMeta;
 import com.tuyenngoc.army2forum.domain.entity.Post;
 import com.tuyenngoc.army2forum.repository.PostRepository;
 import com.tuyenngoc.army2forum.service.PostService;
+import com.tuyenngoc.army2forum.util.PaginationUtil;
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
-import java.util.List;
 import java.util.Optional;
 
 @Service
@@ -45,7 +51,17 @@ public class PostServiceImpl implements PostService {
     }
 
     @Override
-    public List<Post> getAllPosts() {
-        return postRepository.findAll();
+    public PaginationResponseDto<Post> getPosts(PaginationFullRequestDto requestDto) {
+        Pageable pageable = PaginationUtil.buildPageable(requestDto, SortByDataConstant.POST);
+
+        Page<Post> page = postRepository.findAll(pageable);
+        PagingMeta pagingMeta = PaginationUtil.buildPagingMeta(requestDto, SortByDataConstant.POST, page);
+
+        PaginationResponseDto<Post> responseDto = new PaginationResponseDto<>();
+        responseDto.setItems(page.getContent());
+        responseDto.setMeta(pagingMeta);
+
+        return responseDto;
     }
+
 }

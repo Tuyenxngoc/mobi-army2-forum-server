@@ -4,7 +4,6 @@ import com.tuyenngoc.army2forum.annotation.RestApiV1;
 import com.tuyenngoc.army2forum.base.VsResponseUtil;
 import com.tuyenngoc.army2forum.constant.UrlConstant;
 import com.tuyenngoc.army2forum.domain.dto.request.CreateNotificationRequestDto;
-import com.tuyenngoc.army2forum.domain.entity.Notification;
 import com.tuyenngoc.army2forum.service.NotificationService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
@@ -24,7 +23,7 @@ public class NotificationController {
     @PreAuthorize("hasRole('ADMIN')")
     @Operation(summary = "API Create Notification")
     @PostMapping(UrlConstant.Notification.CREATE)
-    public ResponseEntity<?> createNotification( @Valid @RequestBody CreateNotificationRequestDto requestDto) {
+    public ResponseEntity<?> createNotification(@Valid @RequestBody CreateNotificationRequestDto requestDto) {
         return VsResponseUtil.success(notificationService.createNotification(requestDto));
     }
 

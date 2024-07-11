@@ -1,8 +1,8 @@
 package com.tuyenngoc.army2forum.service;
 
+import com.tuyenngoc.army2forum.domain.dto.pagination.PaginationFullRequestDto;
+import com.tuyenngoc.army2forum.domain.dto.pagination.PaginationResponseDto;
 import com.tuyenngoc.army2forum.domain.entity.Post;
-
-import java.util.List;
 
 public interface PostService {
 
@@ -14,6 +14,6 @@ public interface PostService {
 
     Post getPostById(Long id);
 
-    List<Post> getAllPosts();
+    PaginationResponseDto<Post> getPosts(PaginationFullRequestDto requestDto);
 
 }

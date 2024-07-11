@@ -1,6 +1,7 @@
 package com.tuyenngoc.army2forum.domain.entity;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.tuyenngoc.army2forum.domain.entity.common.UserDateAuditing;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
@@ -16,7 +17,7 @@ import java.util.List;
 @AllArgsConstructor
 @Entity
 @Table(name = "players")
-public class Player {
+public class Player extends UserDateAuditing {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)

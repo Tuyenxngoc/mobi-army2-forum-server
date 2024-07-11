@@ -30,6 +30,9 @@ public class Post extends DateAuditing {
     @Column(nullable = false)
     private String content;
 
+    @Column(name = "view_count")
+    private int viewCount = 0;
+
     @OneToMany(mappedBy = "post", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
     @JsonIgnore
     private List<Comment> comments = new ArrayList<>();

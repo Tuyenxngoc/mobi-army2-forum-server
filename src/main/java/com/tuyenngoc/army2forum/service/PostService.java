@@ -5,6 +5,7 @@ import com.tuyenngoc.army2forum.domain.dto.pagination.PaginationResponseDto;
 import com.tuyenngoc.army2forum.domain.dto.request.CreatePostRequestDto;
 import com.tuyenngoc.army2forum.domain.dto.request.UpdatePostRequestDto;
 import com.tuyenngoc.army2forum.domain.dto.response.CommonResponseDto;
+import com.tuyenngoc.army2forum.domain.dto.response.GetPostResponseDto;
 import com.tuyenngoc.army2forum.domain.entity.Post;
 
 public interface PostService {
@@ -17,6 +18,6 @@ public interface PostService {
 
     Post getPostById(Long id);
 
-    PaginationResponseDto<Post> getPosts(PaginationFullRequestDto requestDto);
+    PaginationResponseDto<GetPostResponseDto> getPosts(PaginationFullRequestDto requestDto);
 
 }

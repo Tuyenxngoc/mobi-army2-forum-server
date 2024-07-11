@@ -9,6 +9,7 @@ import com.tuyenngoc.army2forum.domain.dto.pagination.PagingMeta;
 import com.tuyenngoc.army2forum.domain.dto.request.CreatePostRequestDto;
 import com.tuyenngoc.army2forum.domain.dto.request.UpdatePostRequestDto;
 import com.tuyenngoc.army2forum.domain.dto.response.CommonResponseDto;
+import com.tuyenngoc.army2forum.domain.dto.response.GetPostResponseDto;
 import com.tuyenngoc.army2forum.domain.entity.Category;
 import com.tuyenngoc.army2forum.domain.entity.Player;
 import com.tuyenngoc.army2forum.domain.entity.Post;
@@ -90,18 +91,19 @@ public class PostServiceImpl implements PostService {
 
     @Override
     public Post getPostById(Long id) {
+        postRepository.incrementViewCount(id);
         return postRepository.findById(id)
                 .orElseThrow(() -> new NotFoundException(ErrorMessage.Post.ERR_NOT_FOUND_ID, id));
     }
 
     @Override
-    public PaginationResponseDto<Post> getPosts(PaginationFullRequestDto requestDto) {
+    public PaginationResponseDto<GetPostResponseDto> getPosts(PaginationFullRequestDto requestDto) {
         Pageable pageable = PaginationUtil.buildPageable(requestDto, SortByDataConstant.POST);
 
-        Page<Post> page = postRepository.findAll(pageable);
+        Page<GetPostResponseDto> page = postRepository.getPosts(pageable);
         PagingMeta pagingMeta = PaginationUtil.buildPagingMeta(requestDto, SortByDataConstant.POST, page);
 
-        PaginationResponseDto<Post> responseDto = new PaginationResponseDto<>();
+        PaginationResponseDto<GetPostResponseDto> responseDto = new PaginationResponseDto<>();
         responseDto.setItems(page.getContent());
         responseDto.setMeta(pagingMeta);
 

@@ -1,8 +1,11 @@
 package com.tuyenngoc.army2forum.repository;
 
+import com.tuyenngoc.army2forum.domain.dto.response.GetPostResponseDto;
 import com.tuyenngoc.army2forum.domain.entity.Post;
 import io.lettuce.core.dynamic.annotation.Param;
 import jakarta.transaction.Transactional;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Modifying;
 import org.springframework.data.jpa.repository.Query;
@@ -22,4 +25,14 @@ public interface PostRepository extends JpaRepository<Post, Long> {
             "p.postId = :id AND " +
             "p.player.playerId = :playerId")
     int deleteByIdAndPlayerId(@Param("id") Long id, @Param("playerId") Long playerId);
+
+    @Modifying
+    @Transactional
+    @Query("UPDATE Post p SET p.viewCount = p.viewCount + 1 WHERE p.postId = :postId")
+    void incrementViewCount(@Param("postId") Long postId);
+
+    @Query("SELECT new com.tuyenngoc.army2forum.domain.dto.response.GetPostResponseDto(p) " +
+            "FROM Post p " +
+            "ORDER BY p.createdDate DESC")
+    Page<GetPostResponseDto> getPosts(Pageable pageable);
 }

@@ -9,11 +9,11 @@ import com.tuyenngoc.army2forum.domain.entity.Post;
 
 public interface PostService {
 
-    Post createPost(CreatePostRequestDto requestDto);
+    Post createPost(CreatePostRequestDto requestDto, Long playerId);
 
-    Post updatePost(Long id, UpdatePostRequestDto requestDto);
+    Post updatePost(Long id, Long playerId, UpdatePostRequestDto requestDto);
 
-    CommonResponseDto deletePost(Long id);
+    CommonResponseDto deletePost(Long id, Long playerId);
 
     Post getPostById(Long id);
 

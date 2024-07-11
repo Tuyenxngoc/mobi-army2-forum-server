@@ -31,6 +31,7 @@ public class User extends DateAuditing {
     private String password;
 
     @OneToOne(mappedBy = "user", fetch = FetchType.LAZY)
+    @JsonIgnore
     private Player player;
 
     @ManyToOne(fetch = FetchType.LAZY)

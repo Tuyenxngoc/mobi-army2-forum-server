@@ -14,7 +14,10 @@ import java.util.List;
 public class CustomUserDetails implements UserDetails {
 
     @Getter
-    private final String id;
+    private final String userId;
+
+    @Getter
+    private final Long playerId;
 
     @Getter
     private final String email;
@@ -27,8 +30,9 @@ public class CustomUserDetails implements UserDetails {
 
     private final Collection<? extends GrantedAuthority> authorities;
 
-    public CustomUserDetails(String id, String email, String username, String password, Collection<? extends GrantedAuthority> authorities) {
-        this.id = id;
+    public CustomUserDetails(String userId, Long playerId, String email, String username, String password, Collection<? extends GrantedAuthority> authorities) {
+        this.userId = userId;
+        this.playerId = playerId;
         this.email = email;
         this.username = username;
         this.password = password;
@@ -38,7 +42,7 @@ public class CustomUserDetails implements UserDetails {
     public static CustomUserDetails create(User user) {
         List<GrantedAuthority> authorities = new ArrayList<>();
         authorities.add(new SimpleGrantedAuthority(user.getRole().getName()));
-        return new CustomUserDetails(user.getUserId(), user.getEmail(), user.getUsername(), user.getPassword(), authorities);
+        return new CustomUserDetails(user.getUserId(), user.getPlayer().getPlayerId(), user.getEmail(), user.getUsername(), user.getPassword(), authorities);
     }
 
     @Override

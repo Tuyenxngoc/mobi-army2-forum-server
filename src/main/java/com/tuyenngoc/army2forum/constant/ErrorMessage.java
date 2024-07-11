@@ -79,4 +79,12 @@ public class ErrorMessage {
     public static class Category {
         public static final String ERR_NOT_FOUND_ID = "exception.category.not.found.id";
     }
+
+    public static class Player {
+        public static final String ERR_NOT_FOUND_ID = "exception.player.not.found.id";
+    }
+
+    public static class Post {
+        public static final String ERR_NOT_FOUND_ID = "exception.post.not.found.id";
+    }
 }

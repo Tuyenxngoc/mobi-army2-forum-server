@@ -20,4 +20,9 @@ public interface PostService {
 
     PaginationResponseDto<GetPostResponseDto> getPosts(PaginationFullRequestDto requestDto);
 
+    CommonResponseDto approvePost(Long id, Long playerId);
+
+    CommonResponseDto lockPost(Long id);
+
+    CommonResponseDto unlockPost(Long id);
 }

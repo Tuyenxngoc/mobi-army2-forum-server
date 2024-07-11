@@ -15,6 +15,7 @@ import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springdoc.core.annotations.ParameterObject;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 
 @RestApiV1
@@ -62,6 +63,30 @@ public class PostController {
             @CurrentUser CustomUserDetails userDetails
     ) {
         return VsResponseUtil.success(postService.deletePost(id, userDetails.getPlayerId()));
+    }
+
+    @PreAuthorize("hasRole('ROLE_SUPPORT') or hasRole('ROLE_ADMIN')")
+    @Operation(summary = "API approve a post")
+    @PostMapping(UrlConstant.Post.APPROVE)
+    public ResponseEntity<?> approvePost(
+            @PathVariable Long id,
+            @CurrentUser CustomUserDetails userDetails
+    ) {
+        return VsResponseUtil.success(postService.approvePost(id, userDetails.getPlayerId()));
+    }
+
+    @PreAuthorize("hasRole('ROLE_SUPPORT') or hasRole('ROLE_ADMIN')")
+    @Operation(summary = "API lock a post")
+    @PostMapping(UrlConstant.Post.LOCK)
+    public ResponseEntity<?> lockPost(@PathVariable Long id) {
+        return VsResponseUtil.success(postService.lockPost(id));
+    }
+
+    @PreAuthorize("hasRole('ROLE_SUPPORT') or hasRole('ROLE_ADMIN')")
+    @Operation(summary = "API unlock a post")
+    @PostMapping(UrlConstant.Post.UNLOCK)
+    public ResponseEntity<?> unlockPost(@PathVariable Long id) {
+        return VsResponseUtil.success(postService.unlockPost(id));
     }
 
 }

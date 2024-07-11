@@ -33,6 +33,12 @@ public class Post extends DateAuditing {
     @Column(name = "view_count")
     private int viewCount = 0;
 
+    @Column(name = "is_approved")
+    private boolean isApproved = false;
+
+    @Column(name = "is_locked")
+    private boolean isLocked = false;
+
     @OneToMany(mappedBy = "post", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
     @JsonIgnore
     private List<Comment> comments = new ArrayList<>();
@@ -45,6 +51,11 @@ public class Post extends DateAuditing {
     @JoinColumn(name = "player_id", foreignKey = @ForeignKey(name = "FK_POST_PLAYER_ID"), referencedColumnName = "player_id", nullable = false)
     @JsonIgnore
     private Player player;
+
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "approved_by_id", foreignKey = @ForeignKey(name = "FK_POST_APPROVED_BY_ID"), referencedColumnName = "player_id")
+    @JsonIgnore
+    private Player approvedBy;
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "category_id", foreignKey = @ForeignKey(name = "FK_POST_CATEGORY_ID"), referencedColumnName = "category_id", nullable = false)

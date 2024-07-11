@@ -33,6 +33,7 @@ public interface PostRepository extends JpaRepository<Post, Long> {
 
     @Query("SELECT new com.tuyenngoc.army2forum.domain.dto.response.GetPostResponseDto(p) " +
             "FROM Post p " +
+            "WHERE p.isApproved = TRUE " +
             "ORDER BY p.createdDate DESC")
     Page<GetPostResponseDto> getPosts(Pageable pageable);
 }

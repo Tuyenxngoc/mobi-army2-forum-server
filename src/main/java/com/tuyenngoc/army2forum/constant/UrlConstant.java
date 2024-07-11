@@ -79,6 +79,9 @@ public class UrlConstant {
         public static final String GET_BY_ID = PRE_FIX + "/{id}";
         public static final String UPDATE = PRE_FIX + "/{id}";
         public static final String DELETE = PRE_FIX + "/{id}";
+
+        public static final String UPDATE_ROLE = PRE_FIX + "/{id}/role/{roleId}";
+        public static final String UPDATE_SCHEDULE = PRE_FIX + "/{id}/schedule";
     }
 
     public static class Post {
@@ -89,6 +92,10 @@ public class UrlConstant {
         public static final String GET_BY_ID = PRE_FIX + "/{id}";
         public static final String UPDATE = PRE_FIX + "/{id}";
         public static final String DELETE = PRE_FIX + "/{id}";
+
+        public static final String APPROVE = PRE_FIX + "/approve/{id}";
+        public static final String LOCK = PRE_FIX + "/lock/{id}";
+        public static final String UNLOCK = PRE_FIX + "/unlock/{id}";
     }
 
     public static class Role {

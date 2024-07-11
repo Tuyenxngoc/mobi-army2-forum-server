@@ -1,7 +1,7 @@
 package com.tuyenngoc.army2forum.domain.entity;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
-import com.tuyenngoc.army2forum.domain.entity.common.UserDateAuditing;
+import com.tuyenngoc.army2forum.domain.entity.common.DateAuditing;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
@@ -17,7 +17,7 @@ import java.util.List;
 @AllArgsConstructor
 @Entity
 @Table(name = "players")
-public class Player extends UserDateAuditing {
+public class Player extends DateAuditing {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -36,6 +36,10 @@ public class Player extends UserDateAuditing {
     @OneToMany(mappedBy = "player", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
     @JsonIgnore
     private List<Post> posts = new ArrayList<>();
+
+    @OneToMany(mappedBy = "approvedBy", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
+    @JsonIgnore
+    private List<Post> approvedPosts = new ArrayList<>();
 
     @OneToMany(mappedBy = "player", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
     @JsonIgnore

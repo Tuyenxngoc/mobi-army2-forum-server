@@ -4,9 +4,11 @@ import com.tuyenngoc.army2forum.config.properties.AdminInfo;
 import com.tuyenngoc.army2forum.constant.ErrorMessage;
 import com.tuyenngoc.army2forum.constant.RoleConstant;
 import com.tuyenngoc.army2forum.domain.dto.UserDto;
+import com.tuyenngoc.army2forum.domain.entity.Player;
 import com.tuyenngoc.army2forum.domain.entity.User;
 import com.tuyenngoc.army2forum.domain.mapper.UserMapper;
 import com.tuyenngoc.army2forum.exception.NotFoundException;
+import com.tuyenngoc.army2forum.repository.PlayerRepository;
 import com.tuyenngoc.army2forum.repository.UserRepository;
 import com.tuyenngoc.army2forum.service.RoleService;
 import com.tuyenngoc.army2forum.service.UserService;
@@ -21,6 +23,8 @@ import org.springframework.stereotype.Service;
 public class UserServiceImpl implements UserService {
 
     private final UserRepository userRepository;
+
+    private final PlayerRepository playerRepository;
 
     private final UserMapper userMapper;
 
@@ -38,6 +42,10 @@ public class UserServiceImpl implements UserService {
                 user.setPassword(passwordEncoder.encode(adminInfo.getPassword()));
                 user.setRole(roleService.getRole(RoleConstant.ROLE_ADMIN.name()));
                 userRepository.save(user);
+
+                Player player = new Player();
+                player.setUser(user);
+                playerRepository.save(player);
 
                 log.info("Create admin user successfully.");
             } catch (Exception e) {

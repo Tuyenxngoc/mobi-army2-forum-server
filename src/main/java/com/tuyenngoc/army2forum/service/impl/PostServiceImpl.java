@@ -26,6 +26,7 @@ import org.springframework.context.i18n.LocaleContextHolder;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 @Service
 @RequiredArgsConstructor
@@ -108,6 +109,41 @@ public class PostServiceImpl implements PostService {
         responseDto.setMeta(pagingMeta);
 
         return responseDto;
+    }
+
+    @Override
+    @Transactional
+    public CommonResponseDto approvePost(Long id, Long playerId) {
+        Post post = postRepository.findById(id).orElseThrow(() -> new RuntimeException("Post not found"));
+        Player approver = playerRepository.findById(playerId).orElseThrow(() -> new RuntimeException("Player not found"));
+
+        post.setApproved(true);
+        post.setApprovedBy(approver);
+        postRepository.save(post);
+
+        return new CommonResponseDto("Post approved successfully");
+    }
+
+    @Override
+    @Transactional
+    public CommonResponseDto lockPost(Long id) {
+        Post post = postRepository.findById(id).orElseThrow(() -> new RuntimeException("Post not found"));
+
+        post.setLocked(true);
+        postRepository.save(post);
+
+        return new CommonResponseDto("Post locked successfully");
+    }
+
+    @Override
+    @Transactional
+    public CommonResponseDto unlockPost(Long id) {
+        Post post = postRepository.findById(id).orElseThrow(() -> new RuntimeException("Post not found"));
+
+        post.setLocked(false);
+        postRepository.save(post);
+
+        return new CommonResponseDto("Post unlocked successfully");
     }
 
 }

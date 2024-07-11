@@ -12,6 +12,8 @@ import lombok.Setter;
 @AllArgsConstructor
 public class GetPostResponseDto {
 
+    private Long id;
+
     private String title;
 
     private int comments;
@@ -23,6 +25,7 @@ public class GetPostResponseDto {
     private String author;
 
     public GetPostResponseDto(Post post) {
+        this.id = post.getPostId();
         this.title = post.getTitle();
         this.comments = post.getComments().size();
         this.favorites = post.getLikes().size();

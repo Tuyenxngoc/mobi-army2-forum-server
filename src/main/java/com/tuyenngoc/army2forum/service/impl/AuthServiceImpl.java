@@ -8,12 +8,14 @@ import com.tuyenngoc.army2forum.domain.dto.request.*;
 import com.tuyenngoc.army2forum.domain.dto.response.CommonResponseDto;
 import com.tuyenngoc.army2forum.domain.dto.response.auth.LoginResponseDto;
 import com.tuyenngoc.army2forum.domain.dto.response.auth.TokenRefreshResponseDto;
+import com.tuyenngoc.army2forum.domain.entity.Player;
 import com.tuyenngoc.army2forum.domain.entity.User;
 import com.tuyenngoc.army2forum.domain.mapper.UserMapper;
 import com.tuyenngoc.army2forum.exception.DataIntegrityViolationException;
 import com.tuyenngoc.army2forum.exception.InvalidException;
 import com.tuyenngoc.army2forum.exception.NotFoundException;
 import com.tuyenngoc.army2forum.exception.UnauthorizedException;
+import com.tuyenngoc.army2forum.repository.PlayerRepository;
 import com.tuyenngoc.army2forum.repository.UserRepository;
 import com.tuyenngoc.army2forum.security.CustomUserDetails;
 import com.tuyenngoc.army2forum.security.jwt.JwtTokenProvider;
@@ -65,6 +67,8 @@ public class AuthServiceImpl implements AuthService {
     private final RoleService roleService;
 
     private final SendMailUtil sendMailUtil;
+
+    private final PlayerRepository playerRepository;
 
     @Override
     public LoginResponseDto login(LoginRequestDto request) {
@@ -172,6 +176,11 @@ public class AuthServiceImpl implements AuthService {
         User user = userMapper.toUser(requestDto);
         user.setPassword(passwordEncoder.encode(requestDto.getPassword()));
         user.setRole(roleService.getRole(RoleConstant.ROLE_USER.name()));
+
+        //Create new Player
+        Player player = new Player();
+        player.setUser(user);
+        playerRepository.save(player);
 
         return userRepository.save(user);
     }

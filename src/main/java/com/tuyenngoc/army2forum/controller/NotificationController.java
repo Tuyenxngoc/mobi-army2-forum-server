@@ -20,14 +20,14 @@ public class NotificationController {
 
     private final NotificationService notificationService;
 
-    @PreAuthorize("hasRole('ADMIN')")
+    @PreAuthorize("hasAnyRole('SUPER_ADMIN', 'ADMIN')")
     @Operation(summary = "API Create Notification")
     @PostMapping(UrlConstant.Notification.CREATE)
     public ResponseEntity<?> createNotification(@Valid @RequestBody CreateNotificationRequestDto requestDto) {
         return VsResponseUtil.success(notificationService.createNotification(requestDto));
     }
 
-    @PreAuthorize("hasRole('ADMIN')")
+    @PreAuthorize("hasAnyRole('SUPER_ADMIN', 'ADMIN')")
     @Operation(summary = "API Update Notification")
     @PutMapping(UrlConstant.Notification.UPDATE)
     public ResponseEntity<?> updateNotification(
@@ -37,7 +37,7 @@ public class NotificationController {
         return VsResponseUtil.success(notificationService.updateNotification(id, requestDto));
     }
 
-    @PreAuthorize("hasRole('ADMIN')")
+    @PreAuthorize("hasAnyRole('SUPER_ADMIN', 'ADMIN')")
     @Operation(summary = "API Delete Notification")
     @DeleteMapping(UrlConstant.Notification.DELETE)
     public ResponseEntity<?> deleteNotification(@PathVariable Long id) {

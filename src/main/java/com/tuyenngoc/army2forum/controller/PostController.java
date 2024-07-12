@@ -65,7 +65,7 @@ public class PostController {
         return VsResponseUtil.success(postService.deletePost(id, userDetails.getPlayerId()));
     }
 
-    @PreAuthorize("hasRole('ROLE_SUPPORT') or hasRole('ROLE_ADMIN')")
+    @PreAuthorize("hasAnyRole('SUPER_ADMIN', 'ADMIN', 'MODERATOR')")
     @Operation(summary = "API approve a post")
     @PostMapping(UrlConstant.Post.APPROVE)
     public ResponseEntity<?> approvePost(
@@ -75,14 +75,14 @@ public class PostController {
         return VsResponseUtil.success(postService.approvePost(id, userDetails.getPlayerId()));
     }
 
-    @PreAuthorize("hasRole('ROLE_SUPPORT') or hasRole('ROLE_ADMIN')")
+    @PreAuthorize("hasAnyRole('SUPER_ADMIN', 'ADMIN', 'MODERATOR')")
     @Operation(summary = "API lock a post")
     @PostMapping(UrlConstant.Post.LOCK)
     public ResponseEntity<?> lockPost(@PathVariable Long id) {
         return VsResponseUtil.success(postService.lockPost(id));
     }
 
-    @PreAuthorize("hasRole('ROLE_SUPPORT') or hasRole('ROLE_ADMIN')")
+    @PreAuthorize("hasAnyRole('SUPER_ADMIN', 'ADMIN', 'MODERATOR')")
     @Operation(summary = "API unlock a post")
     @PostMapping(UrlConstant.Post.UNLOCK)
     public ResponseEntity<?> unlockPost(@PathVariable Long id) {

@@ -19,21 +19,21 @@ public class CategoryController {
 
     private final CategoryService categoryService;
 
-    @PreAuthorize("hasRole('ADMIN')")
+    @PreAuthorize("hasAnyRole('SUPER_ADMIN', 'ADMIN')")
     @Operation(summary = "API Create Category")
     @PostMapping(UrlConstant.Category.CREATE)
     public ResponseEntity<?> createCategory(@RequestBody Category category) {
         return VsResponseUtil.success(categoryService.createCategory(category));
     }
 
-    @PreAuthorize("hasRole('ADMIN')")
+    @PreAuthorize("hasAnyRole('SUPER_ADMIN', 'ADMIN')")
     @Operation(summary = "API Update Category")
     @PutMapping(UrlConstant.Category.UPDATE)
     public ResponseEntity<?> updateCategory(@PathVariable Long id, @RequestBody Category category) {
         return VsResponseUtil.success(categoryService.updateCategory(id, category));
     }
 
-    @PreAuthorize("hasRole('ADMIN')")
+    @PreAuthorize("hasAnyRole('SUPER_ADMIN', 'ADMIN')")
     @Operation(summary = "API Delete Category")
     @DeleteMapping(UrlConstant.Category.DELETE)
     public ResponseEntity<?> deleteCategory(@PathVariable Long id) {
@@ -41,7 +41,7 @@ public class CategoryController {
         return VsResponseUtil.success(null);
     }
 
-    @PreAuthorize("hasRole('ADMIN')")
+    @PreAuthorize("hasAnyRole('SUPER_ADMIN', 'ADMIN')")
     @Operation(summary = "API Get Category by Id")
     @GetMapping(UrlConstant.Category.GET_BY_ID)
     public ResponseEntity<?> getCategoryById(@PathVariable Long id) {

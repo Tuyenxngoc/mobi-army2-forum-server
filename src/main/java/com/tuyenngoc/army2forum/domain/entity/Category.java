@@ -22,7 +22,7 @@ public class Category extends UserDateAuditing {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "category_id")
-    private Long categoryId;
+    private Long id;
 
     @Column(nullable = false)
     private String name;

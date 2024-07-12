@@ -1,7 +1,14 @@
 package com.tuyenngoc.army2forum.service.impl;
 
+import com.tuyenngoc.army2forum.domain.dto.request.NewCommentRequestDto;
 import com.tuyenngoc.army2forum.domain.entity.Comment;
+import com.tuyenngoc.army2forum.domain.entity.Player;
+import com.tuyenngoc.army2forum.domain.entity.Post;
+import com.tuyenngoc.army2forum.domain.mapper.CommentMapper;
+import com.tuyenngoc.army2forum.exception.NotFoundException;
 import com.tuyenngoc.army2forum.repository.CommentRepository;
+import com.tuyenngoc.army2forum.repository.PlayerRepository;
+import com.tuyenngoc.army2forum.repository.PostRepository;
 import com.tuyenngoc.army2forum.service.CommentService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
@@ -13,10 +20,27 @@ import java.util.Optional;
 @RequiredArgsConstructor
 public class CommentServiceImpl implements CommentService {
 
+    private final PlayerRepository playerRepository;
+
+    private final PostRepository postRepository;
+
     private final CommentRepository commentRepository;
 
+    private final CommentMapper commentMapper;
+
     @Override
-    public Comment createComment(Comment comment) {
+    public Comment createComment(Long playerId, NewCommentRequestDto requestDto) {
+        Comment comment = commentMapper.toComment(requestDto);
+
+        Player player = playerRepository.findById(playerId)
+                .orElseThrow(() -> new NotFoundException("Player not found"));
+
+        Post post = postRepository.findById(requestDto.getPostId())
+                .orElseThrow(() -> new NotFoundException("Post not found"));
+
+        comment.setPlayer(player);
+        comment.setPost(post);
+
         return commentRepository.save(comment);
     }
 
@@ -47,4 +71,10 @@ public class CommentServiceImpl implements CommentService {
     public List<Comment> getAllComments() {
         return commentRepository.findAll();
     }
+
+    @Override
+    public List<Comment> getCommentsByPostId(Long postId) {
+        return commentRepository.findByPostId(postId);
+    }
+
 }

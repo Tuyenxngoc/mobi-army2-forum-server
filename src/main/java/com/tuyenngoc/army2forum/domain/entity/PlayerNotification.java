@@ -19,7 +19,7 @@ public class PlayerNotification extends DateAuditing {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "player_notification_id")
-    private Long playerNotificationId;
+    private Long id;
 
     @Column(nullable = false)
     private String message;

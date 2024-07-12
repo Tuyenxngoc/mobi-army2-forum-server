@@ -23,7 +23,7 @@ public class PlayerNotificationServiceImpl implements PlayerNotificationService 
     @Override
     public void createNotification(Long playerId, String message) {
         Player player = new Player();
-        player.setPlayerId(playerId);
+        player.setId(playerId);
 
         PlayerNotification notification = new PlayerNotification();
         notification.setPlayer(player);

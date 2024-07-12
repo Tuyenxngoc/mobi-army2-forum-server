@@ -3,7 +3,6 @@ package com.tuyenngoc.army2forum.service;
 import com.tuyenngoc.army2forum.domain.dto.pagination.PaginationFullRequestDto;
 import com.tuyenngoc.army2forum.domain.dto.pagination.PaginationResponseDto;
 import com.tuyenngoc.army2forum.domain.dto.request.CreatePostRequestDto;
-import com.tuyenngoc.army2forum.domain.dto.request.ReasonRequestDto;
 import com.tuyenngoc.army2forum.domain.dto.request.UpdatePostRequestDto;
 import com.tuyenngoc.army2forum.domain.dto.response.CommonResponseDto;
 import com.tuyenngoc.army2forum.domain.dto.response.GetPostResponseDto;
@@ -15,7 +14,7 @@ public interface PostService {
 
     Post updatePost(Long id, Long playerId, UpdatePostRequestDto requestDto);
 
-    CommonResponseDto deletePost(Long id, Long playerId, ReasonRequestDto requestDto);
+    CommonResponseDto deletePost(Long id, Long playerId);
 
     Post getPostById(Long id);
 
@@ -23,7 +22,7 @@ public interface PostService {
 
     CommonResponseDto approvePost(Long id, Long playerId);
 
-    CommonResponseDto lockPost(Long id, ReasonRequestDto requestDto);
+    CommonResponseDto lockPost(Long id);
 
     CommonResponseDto unlockPost(Long id);
 

@@ -16,7 +16,7 @@ public interface PlayerNotificationRepository extends JpaRepository<PlayerNotifi
 
     @Query("SELECT new com.tuyenngoc.army2forum.domain.dto.response.GetPlayerNotificationResponseDto(p) " +
             "FROM PlayerNotification p WHERE " +
-            "p.player.playerId = :playerId")
+            "p.player.id = :playerId")
     Page<GetPlayerNotificationResponseDto> findByPlayerId(
             @Param("playerId") Long playerId,
             Pageable pageable
@@ -24,8 +24,8 @@ public interface PlayerNotificationRepository extends JpaRepository<PlayerNotifi
 
     @Query("SELECT p " +
             "FROM PlayerNotification p WHERE " +
-            "p.playerNotificationId = :id " +
-            "p.player.playerId = :playerId")
+            "p.id = :id AND " +
+            "p.player.id = :playerId")
     Optional<PlayerNotification> findByIdAndPlayerId(
             @Param("id") Long id,
             @Param("playerId") Long playerId

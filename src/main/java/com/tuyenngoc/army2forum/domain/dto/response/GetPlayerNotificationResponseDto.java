@@ -20,7 +20,7 @@ public class GetPlayerNotificationResponseDto extends DateAuditingDto {
     private boolean isRead;
 
     public GetPlayerNotificationResponseDto(PlayerNotification playerNotification) {
-        this.id = playerNotification.getPlayerNotificationId();
+        this.id = playerNotification.getId();
         this.message = playerNotification.getMessage();
         this.isRead = playerNotification.isRead();
         this.setCreatedDate(playerNotification.getCreatedDate());

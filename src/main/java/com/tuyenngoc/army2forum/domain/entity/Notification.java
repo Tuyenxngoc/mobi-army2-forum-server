@@ -18,7 +18,7 @@ public class Notification extends UserDateAuditing {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "notification_id")
-    private Long notificationId;
+    private Long id;
 
     @Column(nullable = false)
     private String title;

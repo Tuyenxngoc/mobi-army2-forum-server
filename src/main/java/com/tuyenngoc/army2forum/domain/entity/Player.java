@@ -22,7 +22,7 @@ public class Player extends DateAuditing {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "player_id")
-    private Long playerId;
+    private Long id;
 
     private int xu;
 

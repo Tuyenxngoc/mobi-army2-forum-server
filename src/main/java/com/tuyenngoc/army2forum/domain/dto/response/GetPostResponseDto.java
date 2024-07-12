@@ -25,7 +25,7 @@ public class GetPostResponseDto {
     private String author;
 
     public GetPostResponseDto(Post post) {
-        this.id = post.getPostId();
+        this.id = post.getId();
         this.title = post.getTitle();
         this.comments = post.getComments().size();
         this.favorites = post.getLikes().size();

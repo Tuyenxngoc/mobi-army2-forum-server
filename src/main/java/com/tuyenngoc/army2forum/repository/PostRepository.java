@@ -16,19 +16,19 @@ import java.util.Optional;
 @Repository
 public interface PostRepository extends JpaRepository<Post, Long> {
 
-    Optional<Post> findByPostIdAndPlayerPlayerId(Long postId, Long playerId);
+    Optional<Post> findByIdAndPlayerId(Long postId, Long playerId);
 
     @Modifying
     @Transactional
     @Query("DELETE " +
             "FROM Post p WHERE " +
-            "p.postId = :id AND " +
-            "p.player.playerId = :playerId")
+            "p.id = :id AND " +
+            "p.player.id = :playerId")
     int deleteByIdAndPlayerId(@Param("id") Long id, @Param("playerId") Long playerId);
 
     @Modifying
     @Transactional
-    @Query("UPDATE Post p SET p.viewCount = p.viewCount + 1 WHERE p.postId = :postId")
+    @Query("UPDATE Post p SET p.viewCount = p.viewCount + 1 WHERE p.id = :postId")
     void incrementViewCount(@Param("postId") Long postId);
 
     @Query("SELECT new com.tuyenngoc.army2forum.domain.dto.response.GetPostResponseDto(p) " +

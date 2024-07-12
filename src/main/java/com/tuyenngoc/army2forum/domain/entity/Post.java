@@ -22,7 +22,7 @@ public class Post extends DateAuditing {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "post_id")
-    private Long postId;
+    private Long id;
 
     @Column(nullable = false)
     private String title;

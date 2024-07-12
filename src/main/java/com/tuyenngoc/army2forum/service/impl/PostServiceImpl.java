@@ -7,7 +7,6 @@ import com.tuyenngoc.army2forum.domain.dto.pagination.PaginationFullRequestDto;
 import com.tuyenngoc.army2forum.domain.dto.pagination.PaginationResponseDto;
 import com.tuyenngoc.army2forum.domain.dto.pagination.PagingMeta;
 import com.tuyenngoc.army2forum.domain.dto.request.CreatePostRequestDto;
-import com.tuyenngoc.army2forum.domain.dto.request.ReasonRequestDto;
 import com.tuyenngoc.army2forum.domain.dto.request.UpdatePostRequestDto;
 import com.tuyenngoc.army2forum.domain.dto.response.CommonResponseDto;
 import com.tuyenngoc.army2forum.domain.dto.response.GetPostResponseDto;
@@ -63,7 +62,7 @@ public class PostServiceImpl implements PostService {
 
     @Override
     public Post updatePost(Long id, Long playerId, UpdatePostRequestDto requestDto) {
-        Post post = postRepository.findByPostIdAndPlayerPlayerId(id, playerId)
+        Post post = postRepository.findByIdAndPlayerId(id, playerId)
                 .orElseThrow(() -> new NotFoundException(ErrorMessage.Post.ERR_NOT_FOUND_ID, id));
 
         if (requestDto.getCategoryId() != null) {
@@ -84,13 +83,13 @@ public class PostServiceImpl implements PostService {
     }
 
     @Override
-    public CommonResponseDto deletePost(Long id, Long playerId, ReasonRequestDto requestDto) {
+    public CommonResponseDto deletePost(Long id, Long playerId) {
         int result = postRepository.deleteByIdAndPlayerId(id, playerId);
         if (result == 0) {
             throw new NotFoundException(ErrorMessage.Post.ERR_NOT_FOUND_ID, id);
         }
 
-        playerNotificationService.createNotification(playerId, "Your post has been deleted for: " + requestDto.getReason());
+        playerNotificationService.createNotification(playerId, "Your post has been deleted");
 
         String message = messageSource.getMessage(SuccessMessage.DELETE, null, LocaleContextHolder.getLocale());
         return new CommonResponseDto(message);
@@ -131,14 +130,14 @@ public class PostServiceImpl implements PostService {
         post.setApprovedBy(approver);
         postRepository.save(post);
 
-        playerNotificationService.createNotification(post.getPlayer().getPlayerId(), "Your post has been approved");
+        playerNotificationService.createNotification(post.getPlayer().getId(), "Your post has been approved");
 
         return new CommonResponseDto("Post approved successfully");
     }
 
     @Override
     @Transactional
-    public CommonResponseDto lockPost(Long id, ReasonRequestDto requestDto) {
+    public CommonResponseDto lockPost(Long id) {
         Post post = postRepository.findById(id).orElseThrow(() -> new RuntimeException("Post not found"));
 
         post.setLocked(true);

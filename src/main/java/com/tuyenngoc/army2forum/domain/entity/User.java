@@ -18,7 +18,7 @@ public class User extends DateAuditing {
     @Id
     @UuidGenerator
     @Column(name = "user_id", columnDefinition = "CHAR(36)")
-    private String userId;
+    private String id;
 
     @Column(nullable = false, unique = true)
     private String username;

@@ -6,7 +6,6 @@ import com.tuyenngoc.army2forum.base.VsResponseUtil;
 import com.tuyenngoc.army2forum.constant.UrlConstant;
 import com.tuyenngoc.army2forum.domain.dto.pagination.PaginationFullRequestDto;
 import com.tuyenngoc.army2forum.domain.dto.request.CreatePostRequestDto;
-import com.tuyenngoc.army2forum.domain.dto.request.ReasonRequestDto;
 import com.tuyenngoc.army2forum.domain.dto.request.UpdatePostRequestDto;
 import com.tuyenngoc.army2forum.security.CustomUserDetails;
 import com.tuyenngoc.army2forum.service.PostService;
@@ -61,10 +60,9 @@ public class PostController {
     @DeleteMapping(UrlConstant.Post.DELETE)
     public ResponseEntity<?> deletePost(
             @PathVariable Long id,
-            @Valid @RequestBody ReasonRequestDto requestDto,
             @CurrentUser CustomUserDetails userDetails
     ) {
-        return VsResponseUtil.success(postService.deletePost(id, userDetails.getPlayerId(), requestDto));
+        return VsResponseUtil.success(postService.deletePost(id, userDetails.getPlayerId()));
     }
 
     @PreAuthorize("hasAnyRole('SUPER_ADMIN', 'ADMIN', 'MODERATOR')")
@@ -87,11 +85,8 @@ public class PostController {
     @PreAuthorize("hasAnyRole('SUPER_ADMIN', 'ADMIN', 'MODERATOR')")
     @Operation(summary = "API lock a post")
     @PostMapping(UrlConstant.Post.LOCK)
-    public ResponseEntity<?> lockPost(
-            @PathVariable Long id,
-            @Valid @RequestBody ReasonRequestDto requestDto
-    ) {
-        return VsResponseUtil.success(postService.lockPost(id, requestDto));
+    public ResponseEntity<?> lockPost(@PathVariable Long id) {
+        return VsResponseUtil.success(postService.lockPost(id));
     }
 
     @PreAuthorize("hasAnyRole('SUPER_ADMIN', 'ADMIN', 'MODERATOR')")

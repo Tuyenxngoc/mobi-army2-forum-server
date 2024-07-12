@@ -18,7 +18,7 @@ public class Like {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "like_id")
-    private Long likeId;
+    private Long id;
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "player_id", foreignKey = @ForeignKey(name = "FK_LIKE_PLAYER_ID"), referencedColumnName = "player_id", nullable = false)

@@ -7,6 +7,7 @@ import com.tuyenngoc.army2forum.domain.dto.pagination.PaginationFullRequestDto;
 import com.tuyenngoc.army2forum.domain.dto.pagination.PaginationResponseDto;
 import com.tuyenngoc.army2forum.domain.dto.pagination.PagingMeta;
 import com.tuyenngoc.army2forum.domain.dto.request.CreatePostRequestDto;
+import com.tuyenngoc.army2forum.domain.dto.request.ReasonRequestDto;
 import com.tuyenngoc.army2forum.domain.dto.request.UpdatePostRequestDto;
 import com.tuyenngoc.army2forum.domain.dto.response.CommonResponseDto;
 import com.tuyenngoc.army2forum.domain.dto.response.GetPostResponseDto;
@@ -18,6 +19,7 @@ import com.tuyenngoc.army2forum.exception.NotFoundException;
 import com.tuyenngoc.army2forum.repository.CategoryRepository;
 import com.tuyenngoc.army2forum.repository.PlayerRepository;
 import com.tuyenngoc.army2forum.repository.PostRepository;
+import com.tuyenngoc.army2forum.service.PlayerNotificationService;
 import com.tuyenngoc.army2forum.service.PostService;
 import com.tuyenngoc.army2forum.util.PaginationUtil;
 import lombok.RequiredArgsConstructor;
@@ -41,6 +43,8 @@ public class PostServiceImpl implements PostService {
     private final PostMapper postMapper;
 
     private final MessageSource messageSource;
+
+    private final PlayerNotificationService playerNotificationService;
 
     @Override
     public Post createPost(CreatePostRequestDto requestDto, Long playerId) {
@@ -80,11 +84,13 @@ public class PostServiceImpl implements PostService {
     }
 
     @Override
-    public CommonResponseDto deletePost(Long id, Long playerId) {
+    public CommonResponseDto deletePost(Long id, Long playerId, ReasonRequestDto requestDto) {
         int result = postRepository.deleteByIdAndPlayerId(id, playerId);
         if (result == 0) {
             throw new NotFoundException(ErrorMessage.Post.ERR_NOT_FOUND_ID, id);
         }
+
+        playerNotificationService.createNotification(playerId, "Your post has been deleted for: " + requestDto.getReason());
 
         String message = messageSource.getMessage(SuccessMessage.DELETE, null, LocaleContextHolder.getLocale());
         return new CommonResponseDto(message);
@@ -115,18 +121,24 @@ public class PostServiceImpl implements PostService {
     @Transactional
     public CommonResponseDto approvePost(Long id, Long playerId) {
         Post post = postRepository.findById(id).orElseThrow(() -> new RuntimeException("Post not found"));
+        if (post.isApproved()) {
+            return new CommonResponseDto("Post is already approved");
+        }
+
         Player approver = playerRepository.findById(playerId).orElseThrow(() -> new RuntimeException("Player not found"));
 
         post.setApproved(true);
         post.setApprovedBy(approver);
         postRepository.save(post);
 
+        playerNotificationService.createNotification(post.getPlayer().getPlayerId(), "Your post has been approved");
+
         return new CommonResponseDto("Post approved successfully");
     }
 
     @Override
     @Transactional
-    public CommonResponseDto lockPost(Long id) {
+    public CommonResponseDto lockPost(Long id, ReasonRequestDto requestDto) {
         Post post = postRepository.findById(id).orElseThrow(() -> new RuntimeException("Post not found"));
 
         post.setLocked(true);
@@ -144,6 +156,20 @@ public class PostServiceImpl implements PostService {
         postRepository.save(post);
 
         return new CommonResponseDto("Post unlocked successfully");
+    }
+
+    @Override
+    public PaginationResponseDto<GetPostResponseDto> getPostsForReview(PaginationFullRequestDto requestDto) {
+        Pageable pageable = PaginationUtil.buildPageable(requestDto, SortByDataConstant.POST);
+
+        Page<GetPostResponseDto> page = postRepository.findByApprovedFalse(pageable);
+        PagingMeta pagingMeta = PaginationUtil.buildPagingMeta(requestDto, SortByDataConstant.POST, page);
+
+        PaginationResponseDto<GetPostResponseDto> responseDto = new PaginationResponseDto<>();
+        responseDto.setItems(page.getContent());
+        responseDto.setMeta(pagingMeta);
+
+        return responseDto;
     }
 
 }

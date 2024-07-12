@@ -36,4 +36,11 @@ public interface PostRepository extends JpaRepository<Post, Long> {
             "WHERE p.isApproved = TRUE " +
             "ORDER BY p.createdDate DESC")
     Page<GetPostResponseDto> getPosts(Pageable pageable);
+
+    @Query("SELECT new com.tuyenngoc.army2forum.domain.dto.response.GetPostResponseDto(p) " +
+            "FROM Post p " +
+            "WHERE p.isApproved = FALSE " +
+            "ORDER BY p.createdDate DESC")
+    Page<GetPostResponseDto> findByApprovedFalse(Pageable pageable);
+
 }

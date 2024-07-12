@@ -39,4 +39,17 @@ public class PaginationUtil {
                 request.getSearchBy()
         );
     }
+
+    public static <T> PagingMeta buildPagingMeta(PaginationRequestDto request, Page<T> pages) {
+        return new PagingMeta(
+                pages.getTotalElements(),
+                pages.getTotalPages(),
+                request.getPageNum() + CommonConstant.ONE_INT_VALUE,
+                request.getPageSize(),
+                null,
+                null,
+                null,
+                null
+        );
+    }
 }

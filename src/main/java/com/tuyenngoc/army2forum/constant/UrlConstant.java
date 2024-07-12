@@ -84,6 +84,16 @@ public class UrlConstant {
         public static final String UPDATE_SCHEDULE = PRE_FIX + "/{id}/schedule";
     }
 
+    public static class PlayerNotification {
+        private static final String PRE_FIX = "/player-notifications";
+
+        public static final String CREATE = PRE_FIX;
+        public static final String GET_ALL = PRE_FIX;
+        public static final String GET_BY_ID = PRE_FIX + "/{id}";
+        public static final String UPDATE = PRE_FIX + "/{id}";
+        public static final String DELETE = PRE_FIX + "/{id}";
+    }
+
     public static class Post {
         private static final String PRE_FIX = "/posts";
 
@@ -93,9 +103,10 @@ public class UrlConstant {
         public static final String UPDATE = PRE_FIX + "/{id}";
         public static final String DELETE = PRE_FIX + "/{id}";
 
-        public static final String APPROVE = PRE_FIX + "/approve/{id}";
-        public static final String LOCK = PRE_FIX + "/lock/{id}";
-        public static final String UNLOCK = PRE_FIX + "/unlock/{id}";
+        public static final String REVIEW = PRE_FIX + "/review";
+        public static final String APPROVE = PRE_FIX + "/{id}/approve";
+        public static final String LOCK = PRE_FIX + "/{id}/lock";
+        public static final String UNLOCK = PRE_FIX + "/{id}/unlock";
     }
 
     public static class Role {

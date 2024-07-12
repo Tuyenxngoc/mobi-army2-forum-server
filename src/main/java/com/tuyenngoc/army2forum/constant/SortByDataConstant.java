@@ -13,5 +13,10 @@ public enum SortByDataConstant implements SortByInterface {
             };
         }
     },
-
+    NOTIFICATION {
+        @Override
+        public String getSortBy(String sortBy) {
+            return "createdDate";
+        }
+    }
 }

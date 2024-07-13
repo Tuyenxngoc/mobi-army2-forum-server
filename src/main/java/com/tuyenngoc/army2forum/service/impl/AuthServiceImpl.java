@@ -176,13 +176,14 @@ public class AuthServiceImpl implements AuthService {
         User user = userMapper.toUser(requestDto);
         user.setPassword(passwordEncoder.encode(requestDto.getPassword()));
         user.setRole(roleService.getRole(RoleConstant.ROLE_USER.name()));
+        userRepository.save(user);
 
         //Create new Player
         Player player = new Player();
         player.setUser(user);
         playerRepository.save(player);
 
-        return userRepository.save(user);
+        return user;
     }
 
     @Override

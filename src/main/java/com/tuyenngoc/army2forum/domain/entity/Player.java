@@ -28,6 +28,8 @@ public class Player extends DateAuditing {
 
     private int luong;
 
+    private boolean isOnline;
+
     @OneToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "user_id", foreignKey = @ForeignKey(name = "FK_PLAYER_USER_ID"), referencedColumnName = "user_id", unique = true, nullable = false)
     @JsonIgnore

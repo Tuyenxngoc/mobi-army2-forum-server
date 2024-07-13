@@ -1,6 +1,11 @@
 package com.tuyenngoc.army2forum.service.impl;
 
+import com.tuyenngoc.army2forum.domain.dto.pagination.PaginationRequestDto;
+import com.tuyenngoc.army2forum.domain.dto.pagination.PaginationResponseDto;
+import com.tuyenngoc.army2forum.domain.dto.pagination.PagingMeta;
 import com.tuyenngoc.army2forum.domain.dto.request.NewCommentRequestDto;
+import com.tuyenngoc.army2forum.domain.dto.request.UpdateCommentRequestDto;
+import com.tuyenngoc.army2forum.domain.dto.response.GetCommentResponseDto;
 import com.tuyenngoc.army2forum.domain.entity.Comment;
 import com.tuyenngoc.army2forum.domain.entity.Player;
 import com.tuyenngoc.army2forum.domain.entity.Post;
@@ -10,11 +15,14 @@ import com.tuyenngoc.army2forum.repository.CommentRepository;
 import com.tuyenngoc.army2forum.repository.PlayerRepository;
 import com.tuyenngoc.army2forum.repository.PostRepository;
 import com.tuyenngoc.army2forum.service.CommentService;
+import com.tuyenngoc.army2forum.util.PaginationUtil;
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
+import org.springframework.security.access.AccessDeniedException;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
-import java.util.Optional;
 
 @Service
 @RequiredArgsConstructor
@@ -29,7 +37,7 @@ public class CommentServiceImpl implements CommentService {
     private final CommentMapper commentMapper;
 
     @Override
-    public Comment createComment(Long playerId, NewCommentRequestDto requestDto) {
+    public GetCommentResponseDto createComment(Long playerId, NewCommentRequestDto requestDto) {
         Comment comment = commentMapper.toComment(requestDto);
 
         Player player = playerRepository.findById(playerId)
@@ -41,20 +49,30 @@ public class CommentServiceImpl implements CommentService {
         comment.setPlayer(player);
         comment.setPost(post);
 
-        return commentRepository.save(comment);
+        commentRepository.save(comment);
+
+        return new GetCommentResponseDto(comment);
     }
 
     @Override
-    public Comment updateComment(Long id, Comment comment) {
-        Optional<Comment> existingComment = commentRepository.findById(id);
-        if (existingComment.isPresent()) {
-            Comment updatedComment = existingComment.get();
-            updatedComment.setContent(comment.getContent());
-            updatedComment.setPlayer(comment.getPlayer());
-            updatedComment.setPost(comment.getPost());
-            return commentRepository.save(updatedComment);
+    public Comment updateComment(Long id, Long playerId, UpdateCommentRequestDto requestDto) {
+        Player currentPlayer = playerRepository.findById(playerId)
+                .orElseThrow(() -> new NotFoundException("Player not found"));
+
+        Comment comment = commentRepository.findById(id)
+                .orElseThrow(() -> new NotFoundException("Comment not found"));
+
+        // Kiểm tra quyền của người dùng hiện tại
+        boolean isAdmin = currentPlayer.getUser().getRole().getName().contains("ADMIN");
+        boolean isOwner = comment.getPlayer().getId().equals(playerId);
+
+        if (isAdmin || isOwner) {
+            // Cập nhật comment
+            comment.setContent(requestDto.getContent());
+            return commentRepository.save(comment);
+        } else {
+            throw new AccessDeniedException("You do not have permission to update this comment");
         }
-        return null;
     }
 
     @Override
@@ -73,8 +91,17 @@ public class CommentServiceImpl implements CommentService {
     }
 
     @Override
-    public List<Comment> getCommentsByPostId(Long postId) {
-        return commentRepository.findByPostId(postId);
+    public PaginationResponseDto<GetCommentResponseDto> getCommentsByPostId(Long postId, PaginationRequestDto requestDto) {
+        Pageable pageable = PaginationUtil.buildPageable(requestDto);
+
+        Page<GetCommentResponseDto> page = commentRepository.getByPostId(pageable);
+        PagingMeta pagingMeta = PaginationUtil.buildPagingMeta(requestDto, page);
+
+        PaginationResponseDto<GetCommentResponseDto> responseDto = new PaginationResponseDto<>();
+        responseDto.setItems(page.getContent());
+        responseDto.setMeta(pagingMeta);
+
+        return responseDto;
     }
 
 }

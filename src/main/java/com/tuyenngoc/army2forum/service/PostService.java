@@ -8,6 +8,7 @@ import com.tuyenngoc.army2forum.domain.dto.response.CommonResponseDto;
 import com.tuyenngoc.army2forum.domain.dto.response.GetPostDetailResponseDto;
 import com.tuyenngoc.army2forum.domain.dto.response.GetPostResponseDto;
 import com.tuyenngoc.army2forum.domain.entity.Post;
+import com.tuyenngoc.army2forum.security.CustomUserDetails;
 
 public interface PostService {
 
@@ -15,9 +16,9 @@ public interface PostService {
 
     Post updatePost(Long id, Long playerId, UpdatePostRequestDto requestDto);
 
-    CommonResponseDto deletePost(Long id, Long playerId);
+    CommonResponseDto deletePost(Long id, CustomUserDetails playerId);
 
-    GetPostDetailResponseDto getPostById(Long id);
+    GetPostDetailResponseDto getPostById(Long id, CustomUserDetails authorities);
 
     PaginationResponseDto<GetPostResponseDto> getPosts(PaginationFullRequestDto requestDto);
 

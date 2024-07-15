@@ -33,8 +33,11 @@ public class PostController {
 
     @Operation(summary = "API get post by id")
     @GetMapping(UrlConstant.Post.GET_BY_ID)
-    public ResponseEntity<?> getPostById(@PathVariable Long id) {
-        return VsResponseUtil.success(postService.getPostById(id));
+    public ResponseEntity<?> getPostById(
+            @PathVariable Long id,
+            @CurrentUser CustomUserDetails userDetails
+    ) {
+        return VsResponseUtil.success(postService.getPostById(id, userDetails));
     }
 
     @Operation(summary = "API create a new post")
@@ -62,7 +65,7 @@ public class PostController {
             @PathVariable Long id,
             @CurrentUser CustomUserDetails userDetails
     ) {
-        return VsResponseUtil.success(postService.deletePost(id, userDetails.getPlayerId()));
+        return VsResponseUtil.success(postService.deletePost(id, userDetails));
     }
 
     @PreAuthorize("hasAnyRole('SUPER_ADMIN', 'ADMIN', 'MODERATOR')")

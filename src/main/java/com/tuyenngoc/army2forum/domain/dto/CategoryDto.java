@@ -1,6 +1,5 @@
 package com.tuyenngoc.army2forum.domain.dto;
 
-
 import com.tuyenngoc.army2forum.domain.entity.Category;
 import lombok.AllArgsConstructor;
 import lombok.Getter;

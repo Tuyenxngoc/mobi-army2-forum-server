@@ -1,6 +1,7 @@
 package com.tuyenngoc.army2forum.service.impl;
 
 import com.tuyenngoc.army2forum.constant.ErrorMessage;
+import com.tuyenngoc.army2forum.constant.RoleConstant;
 import com.tuyenngoc.army2forum.constant.SortByDataConstant;
 import com.tuyenngoc.army2forum.constant.SuccessMessage;
 import com.tuyenngoc.army2forum.domain.dto.pagination.PaginationFullRequestDto;
@@ -19,9 +20,11 @@ import com.tuyenngoc.army2forum.exception.NotFoundException;
 import com.tuyenngoc.army2forum.repository.CategoryRepository;
 import com.tuyenngoc.army2forum.repository.PlayerRepository;
 import com.tuyenngoc.army2forum.repository.PostRepository;
+import com.tuyenngoc.army2forum.security.CustomUserDetails;
 import com.tuyenngoc.army2forum.service.PlayerNotificationService;
 import com.tuyenngoc.army2forum.service.PostService;
 import com.tuyenngoc.army2forum.util.PaginationUtil;
+import com.tuyenngoc.army2forum.util.SecurityUtils;
 import lombok.RequiredArgsConstructor;
 import org.springframework.context.MessageSource;
 import org.springframework.context.i18n.LocaleContextHolder;
@@ -84,24 +87,38 @@ public class PostServiceImpl implements PostService {
     }
 
     @Override
-    public CommonResponseDto deletePost(Long id, Long playerId) {
-        int result = postRepository.deleteByIdAndPlayerId(id, playerId);
-        if (result == 0) {
-            throw new NotFoundException(ErrorMessage.Post.ERR_NOT_FOUND_ID, id);
+    public CommonResponseDto deletePost(Long id, CustomUserDetails userDetails) {
+        String[] requiredRoles = {RoleConstant.ROLE_ADMIN.name(), RoleConstant.ROLE_SUPER_ADMIN.name()};
+        boolean hasRequiredRole = SecurityUtils.hasRequiredRole(userDetails, requiredRoles);
+
+        if (hasRequiredRole) {
+            postRepository.deleteById(id);
+        } else {
+            postRepository.deleteByIdAndPlayerId(id, userDetails.getPlayerId());
         }
 
-        playerNotificationService.createNotification(playerId, "Your post has been deleted");
+        playerNotificationService.createNotification(userDetails.getPlayerId(), "Your post has been deleted");
 
         String message = messageSource.getMessage(SuccessMessage.DELETE, null, LocaleContextHolder.getLocale());
         return new CommonResponseDto(message);
     }
 
     @Override
-    public GetPostDetailResponseDto getPostById(Long id) {
-        postRepository.incrementViewCount(id);
+    public GetPostDetailResponseDto getPostById(Long id, CustomUserDetails userDetails) {
+        String[] requiredRoles = {RoleConstant.ROLE_ADMIN.name(), RoleConstant.ROLE_SUPER_ADMIN.name()};
+        boolean hasRequiredRole = SecurityUtils.hasRequiredRole(userDetails, requiredRoles);
+
         Post post = postRepository.findById(id)
                 .orElseThrow(() -> new NotFoundException(ErrorMessage.Post.ERR_NOT_FOUND_ID, id));
-        return new GetPostDetailResponseDto(post);
+
+        postRepository.incrementViewCount(id);
+
+        GetPostDetailResponseDto responseDto = new GetPostDetailResponseDto(post);
+        if (!hasRequiredRole) {
+            responseDto.setApprovedBy(null);
+        }
+
+        return responseDto;
     }
 
     @Override

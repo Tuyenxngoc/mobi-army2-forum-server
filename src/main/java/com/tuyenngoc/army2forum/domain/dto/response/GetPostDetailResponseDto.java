@@ -1,5 +1,6 @@
 package com.tuyenngoc.army2forum.domain.dto.response;
 
+import com.fasterxml.jackson.annotation.JsonInclude;
 import com.tuyenngoc.army2forum.domain.dto.CategoryDto;
 import com.tuyenngoc.army2forum.domain.dto.LikeDto;
 import com.tuyenngoc.army2forum.domain.dto.PlayerDto;
@@ -28,6 +29,7 @@ public class GetPostDetailResponseDto extends UserDateAuditingDto {
 
     private PlayerDto player;
 
+    @JsonInclude(JsonInclude.Include.NON_NULL)
     private PlayerDto approvedBy;
 
     private LikeDto like;

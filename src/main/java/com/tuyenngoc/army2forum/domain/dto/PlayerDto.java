@@ -12,15 +12,21 @@ import lombok.Setter;
 @AllArgsConstructor
 public class PlayerDto {
 
+    private Long id;
+
     private String avatar;
 
     private String name;
 
     private boolean isOnline;
 
+    private int points;
+
     public PlayerDto(Player player) {
+        this.id = player.getId();
         this.avatar = "";
         this.name = player.getUser().getUsername();
         this.isOnline = player.isOnline();
+        this.points = player.getComments().size() + player.getPosts().size();
     }
 }

@@ -6,6 +6,7 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
+import org.springframework.data.repository.query.Param;
 import org.springframework.stereotype.Repository;
 
 import java.util.List;
@@ -16,7 +17,8 @@ public interface CommentRepository extends JpaRepository<Comment, Long> {
     List<Comment> findByPostId(Long postId);
 
     @Query("SELECT new com.tuyenngoc.army2forum.domain.dto.response.GetCommentResponseDto(c) " +
-            "FROM Comment c " +
+            "FROM Comment c WHERE " +
+            "c.post.id = :postId " +
             "ORDER BY c.createdDate ASC")
-    Page<GetCommentResponseDto> getByPostId(Pageable pageable);
+    Page<GetCommentResponseDto> getByPostId(@Param("postId") Long postId, Pageable pageable);
 }

@@ -94,7 +94,7 @@ public class CommentServiceImpl implements CommentService {
     public PaginationResponseDto<GetCommentResponseDto> getCommentsByPostId(Long postId, PaginationRequestDto requestDto) {
         Pageable pageable = PaginationUtil.buildPageable(requestDto);
 
-        Page<GetCommentResponseDto> page = commentRepository.getByPostId(pageable);
+        Page<GetCommentResponseDto> page = commentRepository.getByPostId(postId, pageable);
         PagingMeta pagingMeta = PaginationUtil.buildPagingMeta(requestDto, page);
 
         PaginationResponseDto<GetCommentResponseDto> responseDto = new PaginationResponseDto<>();

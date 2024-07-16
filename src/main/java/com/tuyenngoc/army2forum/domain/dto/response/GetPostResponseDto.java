@@ -22,6 +22,8 @@ public class GetPostResponseDto {
 
     private long views;
 
+    private boolean locked;
+
     private String author;
 
     public GetPostResponseDto(Post post) {
@@ -30,6 +32,7 @@ public class GetPostResponseDto {
         this.comments = post.getComments().size();
         this.favorites = post.getLikes().size();
         this.views = post.getViewCount();
+        this.locked = post.isLocked();
         this.author = post.getPlayer().getUser().getUsername();
     }
 

@@ -49,8 +49,10 @@ public class GetPostDetailResponseDto extends UserDateAuditingDto {
         this.viewCount = post.getViewCount();
         this.isLocked = post.isLocked();
         this.player = new PlayerDto(post.getPlayer());
-        this.approvedBy = new PlayerDto(post.getApprovedBy());
         this.like = new LikeDto(post.getLikes());
+        if (post.getApprovedBy() != null) {
+            this.approvedBy = new PlayerDto(post.getApprovedBy());
+        }
         if (post.getCategory() != null) {
             this.category = new CategoryDto(post.getCategory());
         }

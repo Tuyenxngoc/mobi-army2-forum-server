@@ -29,11 +29,12 @@ public class GetPostDetailResponseDto extends UserDateAuditingDto {
 
     private PlayerDto player;
 
+    private LikeDto like;
+
     @JsonInclude(JsonInclude.Include.NON_NULL)
     private PlayerDto approvedBy;
 
-    private LikeDto like;
-
+    @JsonInclude(JsonInclude.Include.NON_NULL)
     private CategoryDto category;
 
     public GetPostDetailResponseDto(Post post) {
@@ -50,7 +51,9 @@ public class GetPostDetailResponseDto extends UserDateAuditingDto {
         this.player = new PlayerDto(post.getPlayer());
         this.approvedBy = new PlayerDto(post.getApprovedBy());
         this.like = new LikeDto(post.getLikes());
-        this.category = new CategoryDto(post.getCategory());
+        if (post.getCategory() != null) {
+            this.category = new CategoryDto(post.getCategory());
+        }
     }
 
 }

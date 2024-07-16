@@ -34,7 +34,7 @@ public interface PostRepository extends JpaRepository<Post, Long> {
     @Query("SELECT new com.tuyenngoc.army2forum.domain.dto.response.GetPostResponseDto(p) " +
             "FROM Post p " +
             "WHERE p.isApproved = FALSE " +
-            "ORDER BY p.createdDate DESC")
+            "ORDER BY p.createdDate ASC")
     Page<GetPostResponseDto> findByApprovedFalse(Pageable pageable);
 
     @Query("SELECT COUNT(p) " +

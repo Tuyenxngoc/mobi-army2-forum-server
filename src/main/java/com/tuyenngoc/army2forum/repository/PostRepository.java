@@ -18,13 +18,7 @@ public interface PostRepository extends JpaRepository<Post, Long> {
 
     Optional<Post> findByIdAndPlayerId(Long postId, Long playerId);
 
-    @Modifying
-    @Transactional
-    @Query("DELETE " +
-            "FROM Post p WHERE " +
-            "p.id = :id AND " +
-            "p.player.id = :playerId")
-    int deleteByIdAndPlayerId(@Param("id") Long id, @Param("playerId") Long playerId);
+    void deleteByIdAndPlayerId(Long postId, Long playerId);
 
     @Modifying
     @Transactional
@@ -43,4 +37,9 @@ public interface PostRepository extends JpaRepository<Post, Long> {
             "ORDER BY p.createdDate DESC")
     Page<GetPostResponseDto> findByApprovedFalse(Pageable pageable);
 
+    @Query("SELECT COUNT(p) " +
+            "FROM Post p WHERE " +
+            "p.player.id = :playerId AND " +
+            "p.isApproved = FALSE")
+    long countPostPending(@Param("playerId") Long playerId);
 }

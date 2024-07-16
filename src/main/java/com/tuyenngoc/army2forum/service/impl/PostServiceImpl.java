@@ -16,6 +16,7 @@ import com.tuyenngoc.army2forum.domain.entity.Category;
 import com.tuyenngoc.army2forum.domain.entity.Player;
 import com.tuyenngoc.army2forum.domain.entity.Post;
 import com.tuyenngoc.army2forum.domain.mapper.PostMapper;
+import com.tuyenngoc.army2forum.exception.InvalidException;
 import com.tuyenngoc.army2forum.exception.NotFoundException;
 import com.tuyenngoc.army2forum.repository.CategoryRepository;
 import com.tuyenngoc.army2forum.repository.PlayerRepository;
@@ -51,11 +52,19 @@ public class PostServiceImpl implements PostService {
 
     @Override
     public Post createPost(CreatePostRequestDto requestDto, Long playerId) {
+        long pendingPostsCount = postRepository.countPostPending(playerId);
+        if (pendingPostsCount >= 10) {
+            throw new InvalidException(ErrorMessage.Post.ERR_MAX_PENDING_POSTS, 10);
+        }
+
         Player player = playerRepository.findById(playerId)
                 .orElseThrow(() -> new NotFoundException(ErrorMessage.Player.ERR_NOT_FOUND_ID, playerId));
 
-        Category category = categoryRepository.findById(requestDto.getCategoryId())
-                .orElseThrow(() -> new NotFoundException(ErrorMessage.Category.ERR_NOT_FOUND_ID, requestDto.getCategoryId()));
+        Category category = null;
+        if (requestDto.getCategoryId() != null) {
+            category = categoryRepository.findById(requestDto.getCategoryId())
+                    .orElseThrow(() -> new NotFoundException(ErrorMessage.Category.ERR_NOT_FOUND_ID, requestDto.getCategoryId()));
+        }
 
         Post post = postMapper.toPost(requestDto);
         post.setCategory(category);

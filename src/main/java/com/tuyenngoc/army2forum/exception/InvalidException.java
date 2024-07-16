@@ -14,7 +14,7 @@ public class InvalidException extends RuntimeException {
 
     private HttpStatus status;
 
-    private String[] params;
+    private Object[] params;
 
     public InvalidException(String message) {
         super(message);
@@ -22,7 +22,7 @@ public class InvalidException extends RuntimeException {
         this.message = message;
     }
 
-    public InvalidException(String message, String... args) {
+    public InvalidException(String message, Object... args) {
         super(message);
         this.status = HttpStatus.BAD_REQUEST;
         this.message = message;

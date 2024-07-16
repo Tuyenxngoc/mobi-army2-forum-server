@@ -58,7 +58,7 @@ public class Post extends UserDateAuditing {
     private Player approvedBy;
 
     @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "category_id", foreignKey = @ForeignKey(name = "FK_POST_CATEGORY_ID"), referencedColumnName = "category_id", nullable = false)
+    @JoinColumn(name = "category_id", foreignKey = @ForeignKey(name = "FK_POST_CATEGORY_ID"), referencedColumnName = "category_id")
     @JsonIgnore
     private Category category;
 

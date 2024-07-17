@@ -20,6 +20,12 @@ public class User extends DateAuditing {
     @Column(name = "user_id", columnDefinition = "CHAR(36)")
     private String id;
 
+    @Column(name = "full-name")
+    private String fullName;
+
+    @Column(name = "phone-number", nullable = false, unique = true)
+    private String phoneNumber;
+
     @Column(nullable = false, unique = true)
     private String username;
 

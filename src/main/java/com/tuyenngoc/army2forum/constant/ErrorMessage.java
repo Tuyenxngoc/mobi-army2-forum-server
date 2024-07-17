@@ -24,6 +24,7 @@ public class ErrorMessage {
     public static final String INVALID_ARRAY_NOT_EMPTY = "invalid.array.not.empty";
     public static final String INVALID_NOT_BLANK_FIELD = "invalid.general.not-blank";
     public static final String INVALID_NOT_NULL_FIELD = "invalid.general.not-null";
+    public static final String INVALID_FORMAT_NAME = "invalid.name-format";
     public static final String INVALID_FORMAT_USERNAME = "invalid.username-format";
     public static final String INVALID_FORMAT_PASSWORD = "invalid.password-format";
     public static final String INVALID_REPEAT_PASSWORD = "invalid.password-repeat";

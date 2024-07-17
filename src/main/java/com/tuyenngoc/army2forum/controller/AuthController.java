@@ -15,9 +15,7 @@ import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.Authentication;
-import org.springframework.web.bind.annotation.PatchMapping;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.*;
 
 @RestApiV1
 @RequiredArgsConstructor
@@ -50,8 +48,26 @@ public class AuthController {
 
     @Operation(summary = "API Register")
     @PostMapping(UrlConstant.Auth.REGISTER)
-    public ResponseEntity<?> register(@Valid @RequestBody RegisterRequestDto requestDto) {
-        return VsResponseUtil.success(authService.register(requestDto));
+    public ResponseEntity<?> register(
+            @Valid @RequestBody RegisterRequestDto requestDto,
+            @RequestParam("siteURL") String siteURL
+    ) {
+        return VsResponseUtil.success(authService.register(requestDto, siteURL));
+    }
+
+    @Operation(summary = "API Confirm registration")
+    @GetMapping(UrlConstant.Auth.CONFIRM)
+    public ResponseEntity<?> confirmEmail(@RequestParam("code") String code) {
+        return VsResponseUtil.success(authService.confirmEmail(code));
+    }
+
+    @Operation(summary = "API resend confirmation email")
+    @PostMapping(UrlConstant.Auth.RESEND_CONFIRMATION_EMAIL)
+    public ResponseEntity<?> resendConfirmationEmail(
+            @RequestParam("email") String email,
+            @RequestParam("siteURL") String siteURL
+    ) {
+        return VsResponseUtil.success(authService.resendConfirmationEmail(email, siteURL));
     }
 
     @Operation(summary = "API forget password")

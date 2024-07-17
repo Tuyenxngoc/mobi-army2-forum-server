@@ -17,9 +17,14 @@ public interface AuthService {
 
     TokenRefreshResponseDto refresh(TokenRefreshRequestDto request);
 
-    User register(RegisterRequestDto requestDto);
+    User register(RegisterRequestDto requestDto, String siteURL);
 
     CommonResponseDto forgetPassword(ForgetPasswordRequestDto requestDto);
 
     CommonResponseDto changePassword(ChangePasswordRequestDto requestDto, String username);
+
+    CommonResponseDto confirmEmail(String code);
+
+    CommonResponseDto resendConfirmationEmail(String email, String siteURL);
+
 }

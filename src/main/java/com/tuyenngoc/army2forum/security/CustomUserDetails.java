@@ -28,21 +28,24 @@ public class CustomUserDetails implements UserDetails {
     @JsonIgnore
     private final String password;
 
+    private final boolean isEnabled;
+
     private final Collection<? extends GrantedAuthority> authorities;
 
-    public CustomUserDetails(String userId, Long playerId, String email, String username, String password, Collection<? extends GrantedAuthority> authorities) {
+    public CustomUserDetails(String userId, Long playerId, String email, String username, String password, boolean isEnabled, Collection<? extends GrantedAuthority> authorities) {
         this.userId = userId;
         this.playerId = playerId;
         this.email = email;
         this.username = username;
         this.password = password;
+        this.isEnabled = isEnabled;
         this.authorities = authorities;
     }
 
     public static CustomUserDetails create(User user) {
         List<GrantedAuthority> authorities = new ArrayList<>();
         authorities.add(new SimpleGrantedAuthority(user.getRole().getName()));
-        return new CustomUserDetails(user.getId(), user.getPlayer().getId(), user.getEmail(), user.getUsername(), user.getPassword(), authorities);
+        return new CustomUserDetails(user.getId(), user.getPlayer().getId(), user.getEmail(), user.getUsername(), user.getPassword(), user.isEnabled(), authorities);
     }
 
     @Override
@@ -77,7 +80,7 @@ public class CustomUserDetails implements UserDetails {
 
     @Override
     public boolean isEnabled() {
-        return true;
+        return isEnabled;
     }
 
 }

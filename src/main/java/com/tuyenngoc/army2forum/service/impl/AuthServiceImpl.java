@@ -21,6 +21,7 @@ import com.tuyenngoc.army2forum.security.CustomUserDetails;
 import com.tuyenngoc.army2forum.security.jwt.JwtTokenProvider;
 import com.tuyenngoc.army2forum.service.AuthService;
 import com.tuyenngoc.army2forum.service.JwtTokenService;
+import com.tuyenngoc.army2forum.service.EmailRateLimiterService;
 import com.tuyenngoc.army2forum.service.RoleService;
 import com.tuyenngoc.army2forum.util.RandomPasswordUtil;
 import com.tuyenngoc.army2forum.util.SendMailUtil;
@@ -40,10 +41,9 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.web.authentication.logout.SecurityContextLogoutHandler;
 import org.springframework.stereotype.Service;
 
-import java.util.Date;
-import java.util.HashMap;
-import java.util.Map;
+import java.util.*;
 import java.util.concurrent.CompletableFuture;
+import java.util.concurrent.TimeUnit;
 
 @Slf4j
 @Service
@@ -55,6 +55,8 @@ public class AuthServiceImpl implements AuthService {
     private final JwtTokenProvider jwtTokenProvider;
 
     private final JwtTokenService jwtTokenService;
+
+    private final EmailRateLimiterService emailRateLimiterService;
 
     private final MessageSource messageSource;
 
@@ -142,7 +144,7 @@ public class AuthServiceImpl implements AuthService {
     }
 
     @Override
-    public User register(RegisterRequestDto requestDto) {
+    public User register(RegisterRequestDto requestDto, String siteURL) {
         if (!requestDto.getPassword().equals(requestDto.getRepeatPassword())) {
             throw new InvalidException(ErrorMessage.INVALID_REPEAT_PASSWORD);
         }
@@ -155,9 +157,12 @@ public class AuthServiceImpl implements AuthService {
             throw new DataIntegrityViolationException(ErrorMessage.Auth.ERR_DUPLICATE_EMAIL);
         }
 
+        String code = UUID.randomUUID().toString();
+
         Map<String, Object> properties = new HashMap<>();
         properties.put("username", requestDto.getUsername());
         properties.put("password", requestDto.getPassword());
+        properties.put("url", siteURL + "/verify?code=" + code);
 
         DataMailDto mailDto = new DataMailDto();
         mailDto.setTo(requestDto.getEmail());
@@ -176,6 +181,8 @@ public class AuthServiceImpl implements AuthService {
         User user = userMapper.toUser(requestDto);
         user.setPassword(passwordEncoder.encode(requestDto.getPassword()));
         user.setRole(roleService.getRole(RoleConstant.ROLE_USER.name()));
+        user.setVerificationCode(code);
+        user.setEnabled(false);
         userRepository.save(user);
 
         //Create new Player
@@ -252,5 +259,68 @@ public class AuthServiceImpl implements AuthService {
 
         String message = messageSource.getMessage(SuccessMessage.User.CHANGE_PASSWORD, null, LocaleContextHolder.getLocale());
         return new CommonResponseDto(message);
+    }
+
+    @Override
+    public CommonResponseDto confirmEmail(String code) {
+        Optional<User> optionalUser = userRepository.findByVerificationCode(code);
+        if (optionalUser.isPresent()) {
+            User user = optionalUser.get();
+
+            if (user.isEnabled()) {
+                return new CommonResponseDto("Tài khoản đã đã xác thực!");
+            }
+
+            user.setVerificationCode(null);
+            user.setEnabled(true);
+            userRepository.save(user);
+
+            return new CommonResponseDto("Tài khoản đã được xác thực thành công!");
+        } else {
+            return new CommonResponseDto("Mã xác thực không hợp lệ!");
+        }
+    }
+
+    @Override
+    public CommonResponseDto resendConfirmationEmail(String email, String siteURL) {
+        // Kiểm tra giới hạn thời gian gửi email
+        if (emailRateLimiterService.isMailLimited(email)) {
+            return new CommonResponseDto("Bạn đã gửi yêu cầu quá nhiều lần, vui lòng thử lại sau.");
+        }
+
+        Optional<User> optionalUser = userRepository.findByEmail(email);
+        if (optionalUser.isPresent()) {
+            User user = optionalUser.get();
+
+            if (user.isEnabled()) {
+                return new CommonResponseDto("Tài khoản đã xác thực!");
+            }
+
+            String code = UUID.randomUUID().toString();
+            user.setVerificationCode(code);
+            userRepository.save(user);
+
+            Map<String, Object> properties = new HashMap<>();
+            properties.put("url", siteURL + "/verify?code=" + code);
+
+            DataMailDto mailDto = new DataMailDto();
+            mailDto.setTo(user.getEmail());
+            mailDto.setSubject("Kích hoạt tài khoản");
+            mailDto.setProperties(properties);
+
+            CompletableFuture.runAsync(() -> {
+                try {
+                    sendMailUtil.sendEmailWithHTML(mailDto, "resendConfirmationEmail.html");
+                } catch (MessagingException e) {
+                    log.error("Failed to send email {}", e.getMessage(), e);
+                }
+            });
+
+            emailRateLimiterService.setMailLimit(email, 1, TimeUnit.MINUTES);
+
+            return new CommonResponseDto("Gửi mã xác thực thành công!");
+        } else {
+            return new CommonResponseDto("Email không hợp lệ!");
+        }
     }
 }

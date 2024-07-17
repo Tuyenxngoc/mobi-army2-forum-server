@@ -13,6 +13,8 @@ public class UrlConstant {
         public static final String FORGET_PASSWORD = PRE_FIX + "/forget-password";
         public static final String CHANGE_PASSWORD = PRE_FIX + "/change-password";
         public static final String REFRESH_TOKEN = PRE_FIX + "/refresh-token";
+        public static final String CONFIRM = PRE_FIX + "/confirm";
+        public static final String RESEND_CONFIRMATION_EMAIL = PRE_FIX + "/resend-code";
     }
 
     public static class User {

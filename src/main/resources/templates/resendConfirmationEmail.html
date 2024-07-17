@@ -1,10 +1,9 @@
 <!DOCTYPE html>
-<html lang="en" xmlns:th="http://www.thymeleaf.org">
-
+<html lang="en">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Quên Mật Khẩu</title>
+    <title>Xác nhận email</title>
     <style>
         body {
             font-family: Arial, sans-serif;
@@ -68,17 +67,14 @@
         }
     </style>
 </head>
-
 <body>
 <div class="container">
     <div class="header">
-        <h2>Xác Nhận Đăng Ký Thành Công</h2>
+        <h2>Xác Nhận Email</h2>
     </div>
     <div class="content">
         <p>Xin chào,</p>
-        <p>Cám ơn bạn đã đăng ký tài khoản <b th:text="${username}"></b> với mật khẩu <b th:text="${password}"> </b> tại
-            trang web của chúng tôi.</p>
-        <p>Vui lòng xác nhận tại đây <a class="verify" th:href="${url}" target="_self">TẠI ĐÂY</a></p>
+        <p>Vui lòng xác nhận tải khoản của bạn tại đây <a class="verify" th:href="${url}" target="_self">TẠI ĐÂY</a></p>
         <p>Hãy nhớ giữ bí mật mật khẩu của mình và không chia sẻ nó với người khác.</p>
         <p>Nếu bạn có bất kỳ câu hỏi hoặc cần hỗ trợ thêm, vui lòng liên hệ với chúng tôi.</p>
         <p>Cảm ơn bạn đã sử dụng dịch vụ của chúng tôi!</p>
@@ -88,5 +84,4 @@
     </div>
 </div>
 </body>
-
 </html>

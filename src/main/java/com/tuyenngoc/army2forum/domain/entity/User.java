@@ -23,7 +23,7 @@ public class User extends DateAuditing {
     @Column(name = "full-name")
     private String fullName;
 
-    @Column(name = "phone-number", nullable = false, unique = true)
+    @Column(name = "phone-number", nullable = false)
     private String phoneNumber;
 
     @Column(nullable = false, unique = true)

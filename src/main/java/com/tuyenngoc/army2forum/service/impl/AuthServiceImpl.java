@@ -20,8 +20,8 @@ import com.tuyenngoc.army2forum.repository.UserRepository;
 import com.tuyenngoc.army2forum.security.CustomUserDetails;
 import com.tuyenngoc.army2forum.security.jwt.JwtTokenProvider;
 import com.tuyenngoc.army2forum.service.AuthService;
-import com.tuyenngoc.army2forum.service.JwtTokenService;
 import com.tuyenngoc.army2forum.service.EmailRateLimiterService;
+import com.tuyenngoc.army2forum.service.JwtTokenService;
 import com.tuyenngoc.army2forum.service.RoleService;
 import com.tuyenngoc.army2forum.util.RandomPasswordUtil;
 import com.tuyenngoc.army2forum.util.SendMailUtil;
@@ -159,24 +159,6 @@ public class AuthServiceImpl implements AuthService {
 
         String code = UUID.randomUUID().toString();
 
-        Map<String, Object> properties = new HashMap<>();
-        properties.put("username", requestDto.getUsername());
-        properties.put("password", requestDto.getPassword());
-        properties.put("url", siteURL + "/verify?code=" + code);
-
-        DataMailDto mailDto = new DataMailDto();
-        mailDto.setTo(requestDto.getEmail());
-        mailDto.setSubject("Đăng ký thành công");
-        mailDto.setProperties(properties);
-
-        CompletableFuture.runAsync(() -> {
-            try {
-                sendMailUtil.sendEmailWithHTML(mailDto, "registerSuccess.html");
-            } catch (MessagingException e) {
-                e.printStackTrace();
-            }
-        });
-
         //Create new User
         User user = userMapper.toUser(requestDto);
         user.setPassword(passwordEncoder.encode(requestDto.getPassword()));
@@ -185,10 +167,11 @@ public class AuthServiceImpl implements AuthService {
         user.setEnabled(false);
         userRepository.save(user);
 
-        //Create new Player
-        Player player = new Player();
-        player.setUser(user);
-        playerRepository.save(player);
+        Map<String, Object> properties = new HashMap<>();
+        properties.put("username", requestDto.getUsername());
+        properties.put("password", requestDto.getPassword());
+        properties.put("url", siteURL + "/verify?code=" + code);
+        sendEmail(requestDto.getEmail(), "Đăng ký thành công", properties, "registerSuccess.html");
 
         return user;
     }
@@ -206,19 +189,7 @@ public class AuthServiceImpl implements AuthService {
         Map<String, Object> properties = new HashMap<>();
         properties.put("username", requestDto.getUsername());
         properties.put("newPassword", newPassword);
-
-        DataMailDto mailDto = new DataMailDto();
-        mailDto.setTo(requestDto.getEmail());
-        mailDto.setSubject("Lấy lại mật khẩu");
-        mailDto.setProperties(properties);
-
-        CompletableFuture.runAsync(() -> {
-            try {
-                sendMailUtil.sendEmailWithHTML(mailDto, "forgetPassword.html");
-            } catch (MessagingException e) {
-                e.printStackTrace();
-            }
-        });
+        sendEmail(user.getEmail(), "Lấy lại mật khẩu", properties, "forgetPassword.html");
 
         String message = messageSource.getMessage(SuccessMessage.User.FORGET_PASSWORD, null, LocaleContextHolder.getLocale());
         return new CommonResponseDto(message);
@@ -243,19 +214,7 @@ public class AuthServiceImpl implements AuthService {
 
         Map<String, Object> properties = new HashMap<>();
         properties.put("currentTime", new Date());
-
-        DataMailDto mailDto = new DataMailDto();
-        mailDto.setTo(user.getEmail());
-        mailDto.setSubject("Đổi mật khẩu thành công");
-        mailDto.setProperties(properties);
-
-        CompletableFuture.runAsync(() -> {
-            try {
-                sendMailUtil.sendEmailWithHTML(mailDto, "changePassword.html");
-            } catch (MessagingException e) {
-                log.error("Failed to send email {}", e.getMessage(), e);
-            }
-        });
+        sendEmail(user.getEmail(), "Đổi mật khẩu thành công", properties, "changePassword.html");
 
         String message = messageSource.getMessage(SuccessMessage.User.CHANGE_PASSWORD, null, LocaleContextHolder.getLocale());
         return new CommonResponseDto(message);
@@ -274,6 +233,11 @@ public class AuthServiceImpl implements AuthService {
             user.setVerificationCode(null);
             user.setEnabled(true);
             userRepository.save(user);
+
+            //Create new Player
+            Player player = new Player();
+            player.setUser(user);
+            playerRepository.save(player);
 
             return new CommonResponseDto("Tài khoản đã được xác thực thành công!");
         } else {
@@ -300,27 +264,33 @@ public class AuthServiceImpl implements AuthService {
             user.setVerificationCode(code);
             userRepository.save(user);
 
+            emailRateLimiterService.setMailLimit(email, 1, TimeUnit.MINUTES);
+
             Map<String, Object> properties = new HashMap<>();
             properties.put("url", siteURL + "/verify?code=" + code);
-
-            DataMailDto mailDto = new DataMailDto();
-            mailDto.setTo(user.getEmail());
-            mailDto.setSubject("Kích hoạt tài khoản");
-            mailDto.setProperties(properties);
-
-            CompletableFuture.runAsync(() -> {
-                try {
-                    sendMailUtil.sendEmailWithHTML(mailDto, "resendConfirmationEmail.html");
-                } catch (MessagingException e) {
-                    log.error("Failed to send email {}", e.getMessage(), e);
-                }
-            });
-
-            emailRateLimiterService.setMailLimit(email, 1, TimeUnit.MINUTES);
+            sendEmail(user.getEmail(), "Kích hoạt tài khoản", properties, "resendConfirmationEmail.html");
 
             return new CommonResponseDto("Gửi mã xác thực thành công!");
         } else {
             return new CommonResponseDto("Email không hợp lệ!");
         }
     }
+
+    private void sendEmail(String to, String subject, Map<String, Object> properties, String templateName) {
+        // Tạo DataMailDto
+        DataMailDto mailDto = new DataMailDto();
+        mailDto.setTo(to);
+        mailDto.setSubject(subject);
+        mailDto.setProperties(properties);
+
+        // Gửi email bất đồng bộ
+        CompletableFuture.runAsync(() -> {
+            try {
+                sendMailUtil.sendEmailWithHTML(mailDto, templateName);
+            } catch (MessagingException e) {
+                e.printStackTrace();
+            }
+        });
+    }
+
 }

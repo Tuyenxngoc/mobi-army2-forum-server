@@ -27,7 +27,7 @@ public class Post extends UserDateAuditing {
     @Column(nullable = false)
     private String title;
 
-    @Column(nullable = false)
+    @Column(columnDefinition = "LONGTEXT", nullable = false)
     private String content;
 
     @Column(name = "view_count")

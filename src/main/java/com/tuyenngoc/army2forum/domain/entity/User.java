@@ -37,11 +37,12 @@ public class User extends DateAuditing {
     private String password;
 
     @Column(name = "verification_code", length = 64)
+    @JsonIgnore
     private String verificationCode;
 
     private boolean enabled;
 
-    @OneToOne(mappedBy = "user", fetch = FetchType.LAZY)
+    @OneToOne(mappedBy = "user", fetch = FetchType.LAZY, cascade = CascadeType.ALL)
     @JsonIgnore
     private Player player;
 

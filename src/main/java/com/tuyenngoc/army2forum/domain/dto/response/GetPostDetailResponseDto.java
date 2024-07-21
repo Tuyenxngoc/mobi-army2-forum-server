@@ -27,6 +27,8 @@ public class GetPostDetailResponseDto extends UserDateAuditingDto {
 
     private boolean isLocked;
 
+    private boolean followed;
+
     private PlayerDto player;
 
     private LikeDto like;

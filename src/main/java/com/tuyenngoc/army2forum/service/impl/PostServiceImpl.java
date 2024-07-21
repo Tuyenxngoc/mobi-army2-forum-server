@@ -145,6 +145,9 @@ public class PostServiceImpl implements PostService {
             boolean userHasLiked = post.getLikes().stream()
                     .anyMatch(like -> like.getPlayer().getId().equals(userDetails.getPlayerId()));
             responseDto.getLike().setHasLikes(userHasLiked);
+
+            boolean isFollowing = postFollowRepository.existsByPostIdAndPlayerId(postId, userDetails.getPlayerId());
+            responseDto.setFollowed(isFollowing);
         }
 
         if (!hasRequiredRole) {

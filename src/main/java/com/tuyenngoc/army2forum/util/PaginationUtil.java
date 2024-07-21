@@ -18,38 +18,41 @@ public class PaginationUtil {
     }
 
     public static Pageable buildPageable(PaginationSortRequestDto requestDto, SortByDataConstant constant) {
-        Sort sort;
-        if (requestDto.getIsAscending()) {
-            sort = Sort.by(requestDto.getSortBy(constant)).ascending();
-        } else {
-            sort = Sort.by(requestDto.getSortBy(constant)).descending();
-        }
+        Sort sort = Sort.by(requestDto.getSortBy(constant));
+        sort = requestDto.getIsAscending() ? sort.ascending() : sort.descending();
         return PageRequest.of(requestDto.getPageNum(), requestDto.getPageSize(), sort);
     }
 
+    public static <T> PagingMeta buildPagingMeta(PaginationRequestDto request, Page<T> pages) {
+        return buildPagingMeta(request.getPageNum(), request.getPageSize(), null, null, pages);
+    }
+
+    public static <T> PagingMeta buildPagingMeta(PaginationSortRequestDto request, SortByDataConstant constant, Page<T> pages) {
+        String sortBy = request.getSortBy(constant);
+        String sortOrder = request.getIsAscending() ? CommonConstant.SORT_TYPE_ASC : CommonConstant.SORT_TYPE_DESC;
+        return buildPagingMeta(request.getPageNum(), request.getPageSize(), sortBy, sortOrder, pages);
+    }
+
     public static <T> PagingMeta buildPagingMeta(PaginationFullRequestDto request, SortByDataConstant constant, Page<T> pages) {
+        String sortBy = request.getSortBy(constant);
+        String sortOrder = request.getIsAscending() ? CommonConstant.SORT_TYPE_ASC : CommonConstant.SORT_TYPE_DESC;
+        return buildPagingMeta(request.getPageNum(), request.getPageSize(), sortBy, sortOrder, pages, request.getKeyword(), request.getSearchBy());
+    }
+
+    private static <T> PagingMeta buildPagingMeta(int pageNum, int pageSize, String sortBy, String sortOrder, Page<T> pages, String keyword, String searchBy) {
         return new PagingMeta(
                 pages.getTotalElements(),
                 pages.getTotalPages(),
-                request.getPageNum() + CommonConstant.ONE_INT_VALUE,
-                request.getPageSize(),
-                request.getSortBy(constant),
-                request.getIsAscending().equals(Boolean.TRUE) ? CommonConstant.SORT_TYPE_ASC : CommonConstant.SORT_TYPE_DESC,
-                request.getKeyword(),
-                request.getSearchBy()
+                pageNum + CommonConstant.ONE_INT_VALUE,
+                pageSize,
+                sortBy,
+                sortOrder,
+                keyword,
+                searchBy
         );
     }
 
-    public static <T> PagingMeta buildPagingMeta(PaginationRequestDto request, Page<T> pages) {
-        return new PagingMeta(
-                pages.getTotalElements(),
-                pages.getTotalPages(),
-                request.getPageNum() + CommonConstant.ONE_INT_VALUE,
-                request.getPageSize(),
-                null,
-                null,
-                null,
-                null
-        );
+    private static <T> PagingMeta buildPagingMeta(int pageNum, int pageSize, String sortBy, String sortOrder, Page<T> pages) {
+        return buildPagingMeta(pageNum, pageSize, sortBy, sortOrder, pages, null, null);
     }
 }

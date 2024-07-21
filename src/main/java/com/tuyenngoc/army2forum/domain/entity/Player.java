@@ -59,4 +59,7 @@ public class Player extends DateAuditing {
     @JsonIgnore
     private List<PlayerNotification> notifications = new ArrayList<>();
 
+    public Player(Long id) {
+        this.id = id;
+    }
 }

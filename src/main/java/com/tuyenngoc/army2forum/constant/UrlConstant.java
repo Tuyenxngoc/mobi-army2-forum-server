@@ -112,6 +112,7 @@ public class UrlConstant {
         public static final String APPROVE = PRE_FIX + "/{id}/approve";
         public static final String LOCK = PRE_FIX + "/{id}/lock";
         public static final String UNLOCK = PRE_FIX + "/{id}/unlock";
+        public static final String FOLLOW = PRE_FIX + "/{id}/follow";
     }
 
     public static class Role {

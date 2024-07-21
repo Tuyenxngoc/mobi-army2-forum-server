@@ -4,8 +4,8 @@ import com.tuyenngoc.army2forum.constant.ErrorMessage;
 import com.tuyenngoc.army2forum.constant.RoleConstant;
 import com.tuyenngoc.army2forum.constant.SortByDataConstant;
 import com.tuyenngoc.army2forum.constant.SuccessMessage;
-import com.tuyenngoc.army2forum.domain.dto.pagination.PaginationFullRequestDto;
 import com.tuyenngoc.army2forum.domain.dto.pagination.PaginationResponseDto;
+import com.tuyenngoc.army2forum.domain.dto.pagination.PaginationSortRequestDto;
 import com.tuyenngoc.army2forum.domain.dto.pagination.PagingMeta;
 import com.tuyenngoc.army2forum.domain.dto.request.CreatePostRequestDto;
 import com.tuyenngoc.army2forum.domain.dto.request.UpdatePostRequestDto;
@@ -15,11 +15,13 @@ import com.tuyenngoc.army2forum.domain.dto.response.GetPostResponseDto;
 import com.tuyenngoc.army2forum.domain.entity.Category;
 import com.tuyenngoc.army2forum.domain.entity.Player;
 import com.tuyenngoc.army2forum.domain.entity.Post;
+import com.tuyenngoc.army2forum.domain.entity.PostFollow;
 import com.tuyenngoc.army2forum.domain.mapper.PostMapper;
 import com.tuyenngoc.army2forum.exception.InvalidException;
 import com.tuyenngoc.army2forum.exception.NotFoundException;
 import com.tuyenngoc.army2forum.repository.CategoryRepository;
 import com.tuyenngoc.army2forum.repository.PlayerRepository;
+import com.tuyenngoc.army2forum.repository.PostFollowRepository;
 import com.tuyenngoc.army2forum.repository.PostRepository;
 import com.tuyenngoc.army2forum.security.CustomUserDetails;
 import com.tuyenngoc.army2forum.service.PlayerNotificationService;
@@ -38,6 +40,8 @@ import org.springframework.transaction.annotation.Transactional;
 @RequiredArgsConstructor
 public class PostServiceImpl implements PostService {
 
+    private static final byte MAX_PENDING_POSTS = 10;
+
     private final PostRepository postRepository;
 
     private final PlayerRepository playerRepository;
@@ -48,46 +52,58 @@ public class PostServiceImpl implements PostService {
 
     private final MessageSource messageSource;
 
+    private final PostFollowRepository postFollowRepository;
+
     private final PlayerNotificationService playerNotificationService;
 
     @Override
+    public Post getPostById(Long postId) {
+        return postRepository.findById(postId)
+                .orElseThrow(() -> new NotFoundException(ErrorMessage.Post.ERR_NOT_FOUND_ID, postId));
+    }
+
+    @Override
     public Post createPost(CreatePostRequestDto requestDto, Long playerId) {
-        long pendingPostsCount = postRepository.countPostPending(playerId);
-        if (pendingPostsCount >= 10) {
-            throw new InvalidException(ErrorMessage.Post.ERR_MAX_PENDING_POSTS, 10);
+        long pendingPostsCount = postRepository.countByPlayerIdAndApprovedFalse(playerId);
+        if (pendingPostsCount >= MAX_PENDING_POSTS) {
+            throw new InvalidException(ErrorMessage.Post.ERR_MAX_PENDING_POSTS, MAX_PENDING_POSTS);
         }
 
-        Player player = playerRepository.findById(playerId)
-                .orElseThrow(() -> new NotFoundException(ErrorMessage.Player.ERR_NOT_FOUND_ID, playerId));
-
+        boolean isPlayerExists = playerRepository.existsById(playerId);
+        if (!isPlayerExists) {
+            throw new NotFoundException(ErrorMessage.Post.ERR_NOT_FOUND_ID, playerId);
+        }
         Category category = null;
         if (requestDto.getCategoryId() != null) {
-            category = categoryRepository.findById(requestDto.getCategoryId())
-                    .orElseThrow(() -> new NotFoundException(ErrorMessage.Category.ERR_NOT_FOUND_ID, requestDto.getCategoryId()));
+            boolean isCategoryExists = categoryRepository.existsById(requestDto.getCategoryId());
+            if (!isCategoryExists) {
+                throw new NotFoundException(ErrorMessage.Category.ERR_NOT_FOUND_ID, requestDto.getCategoryId());
+            }
+
+            category = new Category(requestDto.getCategoryId());
         }
 
         Post post = postMapper.toPost(requestDto);
         post.setCategory(category);
-        post.setPlayer(player);
+        post.setPlayer(new Player(playerId));
 
         return postRepository.save(post);
     }
 
     @Override
-    public Post updatePost(Long id, Long playerId, UpdatePostRequestDto requestDto) {
-        Post post = postRepository.findByIdAndPlayerId(id, playerId)
-                .orElseThrow(() -> new NotFoundException(ErrorMessage.Post.ERR_NOT_FOUND_ID, id));
+    public Post updatePost(Long postId, UpdatePostRequestDto requestDto) {
+        Post post = getPostById(postId);
 
         if (requestDto.getCategoryId() != null) {
-            Category category = categoryRepository.findById(requestDto.getCategoryId())
-                    .orElseThrow(() -> new NotFoundException(ErrorMessage.Category.ERR_NOT_FOUND_ID, requestDto.getCategoryId()));
-            post.setCategory(category);
+            boolean isCategoryExists = categoryRepository.existsById(requestDto.getCategoryId());
+            if (!isCategoryExists) {
+                throw new NotFoundException(ErrorMessage.Category.ERR_NOT_FOUND_ID, requestDto.getCategoryId());
+            }
+            post.setCategory(new Category(requestDto.getCategoryId()));
         }
-
         if (requestDto.getTitle() != null && !requestDto.getTitle().isEmpty()) {
             post.setTitle(requestDto.getTitle());
         }
-
         if (requestDto.getContent() != null && !requestDto.getContent().isEmpty()) {
             post.setContent(requestDto.getContent());
         }
@@ -96,49 +112,33 @@ public class PostServiceImpl implements PostService {
     }
 
     @Override
-    public CommonResponseDto deletePost(Long id, CustomUserDetails userDetails) {
+    public CommonResponseDto deletePost(Long postId, CustomUserDetails userDetails) {
         String[] requiredRoles = {RoleConstant.ROLE_ADMIN.name(), RoleConstant.ROLE_SUPER_ADMIN.name()};
         boolean hasRequiredRole = SecurityUtils.hasRequiredRole(userDetails, requiredRoles);
 
         if (hasRequiredRole) {
-            postRepository.deleteById(id);
+            postRepository.deleteById(postId);
         } else {
-            postRepository.deleteByIdAndPlayerId(id, userDetails.getPlayerId());
+            postRepository.deleteByIdAndPlayerId(postId, userDetails.getPlayerId());
         }
 
-        playerNotificationService.createNotification(userDetails.getPlayerId(), "Your post has been deleted");
+        String notificationMessage = messageSource.getMessage(SuccessMessage.Notification.POST_DELETE, null, LocaleContextHolder.getLocale());
+        playerNotificationService.createNotification(userDetails.getPlayerId(), notificationMessage);
 
         String message = messageSource.getMessage(SuccessMessage.DELETE, null, LocaleContextHolder.getLocale());
         return new CommonResponseDto(message);
     }
 
     @Override
-    public GetPostDetailResponseDto getPostById(Long id, CustomUserDetails userDetails) {
+    public GetPostDetailResponseDto getPostById(Long postId, CustomUserDetails userDetails) {
         String[] requiredRoles = {RoleConstant.ROLE_ADMIN.name(), RoleConstant.ROLE_SUPER_ADMIN.name()};
         boolean hasRequiredRole = SecurityUtils.hasRequiredRole(userDetails, requiredRoles);
 
-        Post post = postRepository.findById(id)
-                .orElseThrow(() -> new NotFoundException(ErrorMessage.Post.ERR_NOT_FOUND_ID, id));
-
-        postRepository.incrementViewCount(id);
-
-        GetPostDetailResponseDto responseDto = new GetPostDetailResponseDto(post);
-
-        if (userDetails != null) {
-            boolean userHasLiked = post.getLikes().stream()
-                    .anyMatch(like -> like.getPlayer().getId().equals(userDetails.getPlayerId()));
-            responseDto.getLike().setHasLikes(userHasLiked);
-        }
-
-        if (!hasRequiredRole) {
-            responseDto.setApprovedBy(null);
-        }
-
-        return responseDto;
+        return null;
     }
 
     @Override
-    public PaginationResponseDto<GetPostResponseDto> getPosts(PaginationFullRequestDto requestDto) {
+    public PaginationResponseDto<GetPostResponseDto> getPosts(PaginationSortRequestDto requestDto) {
         Pageable pageable = PaginationUtil.buildPageable(requestDto, SortByDataConstant.POST);
 
         Page<GetPostResponseDto> page = postRepository.getPosts(pageable);
@@ -153,47 +153,31 @@ public class PostServiceImpl implements PostService {
 
     @Override
     @Transactional
-    public CommonResponseDto approvePost(Long id, Long playerId) {
-        Post post = postRepository.findById(id).orElseThrow(() -> new RuntimeException("Post not found"));
+    public CommonResponseDto approvePost(Long postId, Long playerId) {
+        Post post = getPostById(postId);
         if (post.isApproved()) {
-            return new CommonResponseDto("Post is already approved");
+            String alreadyApprovedMessage = messageSource.getMessage(ErrorMessage.Post.ALREADY_APPROVED, null, LocaleContextHolder.getLocale());
+            return new CommonResponseDto(alreadyApprovedMessage);
         }
 
-        Player approver = playerRepository.findById(playerId).orElseThrow(() -> new RuntimeException("Player not found"));
+        boolean approver = playerRepository.existsById(playerId);
+        if (!approver) {
+            throw new NotFoundException(ErrorMessage.Player.ERR_NOT_FOUND_ID, playerId);
+        }
 
         post.setApproved(true);
-        post.setApprovedBy(approver);
+        post.setApprovedBy(new Player(playerId));
         postRepository.save(post);
 
-        playerNotificationService.createNotification(post.getPlayer().getId(), "Your post has been approved");
+        String notificationMessage = messageSource.getMessage(SuccessMessage.Notification.POST_APPROVED, null, LocaleContextHolder.getLocale());
+        playerNotificationService.createNotification(post.getPlayer().getId(), notificationMessage);
 
-        return new CommonResponseDto("Post approved successfully");
+        String successMessage = messageSource.getMessage(SuccessMessage.Post.APPROVED, null, LocaleContextHolder.getLocale());
+        return new CommonResponseDto(successMessage);
     }
 
     @Override
-    @Transactional
-    public CommonResponseDto lockPost(Long id) {
-        Post post = postRepository.findById(id).orElseThrow(() -> new RuntimeException("Post not found"));
-
-        post.setLocked(true);
-        postRepository.save(post);
-
-        return new CommonResponseDto("Post locked successfully");
-    }
-
-    @Override
-    @Transactional
-    public CommonResponseDto unlockPost(Long id) {
-        Post post = postRepository.findById(id).orElseThrow(() -> new RuntimeException("Post not found"));
-
-        post.setLocked(false);
-        postRepository.save(post);
-
-        return new CommonResponseDto("Post unlocked successfully");
-    }
-
-    @Override
-    public PaginationResponseDto<GetPostResponseDto> getPostsForReview(PaginationFullRequestDto requestDto) {
+    public PaginationResponseDto<GetPostResponseDto> getPostsForReview(PaginationSortRequestDto requestDto) {
         Pageable pageable = PaginationUtil.buildPageable(requestDto, SortByDataConstant.POST);
 
         Page<GetPostResponseDto> page = postRepository.findByApprovedFalse(pageable);
@@ -206,4 +190,46 @@ public class PostServiceImpl implements PostService {
         return responseDto;
     }
 
+    @Override
+    public CommonResponseDto toggleLockPost(Long postId) {
+        Post post = getPostById(postId);
+
+        post.setLocked(!post.isLocked());
+        postRepository.save(post);
+
+        String messageKey = post.isLocked() ? SuccessMessage.Post.LOCKED : SuccessMessage.Post.UNLOCKED;
+        String message = messageSource.getMessage(messageKey, null, LocaleContextHolder.getLocale());
+
+        return new CommonResponseDto(message);
+    }
+
+    @Override
+    public CommonResponseDto toggleFollowPost(Long postId, Long playerId) {
+        boolean isFollowing = postFollowRepository.existsByPostIdAndPlayerId(postId, playerId);
+
+        if (isFollowing) {
+            boolean playerExists = playerRepository.existsById(playerId);
+            if (!playerExists) {
+                throw new NotFoundException(ErrorMessage.Player.ERR_NOT_FOUND_ID, playerId);
+            }
+
+            boolean postExists = postRepository.existsById(postId);
+            if (!postExists) {
+                throw new NotFoundException(ErrorMessage.Post.ERR_NOT_FOUND_ID, postId);
+            }
+
+            PostFollow postFollow = new PostFollow();
+            postFollow.setPost(new Post(postId));
+            postFollow.setPlayer(new Player(playerId));
+            postFollowRepository.save(postFollow);
+
+            String followSuccessMessage = messageSource.getMessage(SuccessMessage.Post.FOLLOWED, null, LocaleContextHolder.getLocale());
+            return new CommonResponseDto(followSuccessMessage);
+        } else {
+            postFollowRepository.deleteByPostIdAndPlayerId(postId, playerId);
+
+            String unfollowSuccessMessage = messageSource.getMessage(SuccessMessage.Post.UNFOLLOWED, null, LocaleContextHolder.getLocale());
+            return new CommonResponseDto(unfollowSuccessMessage);
+        }
+    }
 }

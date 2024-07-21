@@ -66,4 +66,7 @@ public class Post extends UserDateAuditing {
     @JsonIgnore
     private Category category;
 
+    public Post(Long id) {
+        this.id = id;
+    }
 }

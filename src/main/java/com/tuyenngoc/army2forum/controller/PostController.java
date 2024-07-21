@@ -49,14 +49,14 @@ public class PostController {
         return VsResponseUtil.success(postService.createPost(postDto, userDetails.getPlayerId()));
     }
 
+    @PreAuthorize("hasAnyRole('SUPER_ADMIN', 'ADMIN', 'MODERATOR')")
     @Operation(summary = "API update an existing post")
     @PutMapping(UrlConstant.Post.UPDATE)
     public ResponseEntity<?> updatePost(
             @PathVariable Long id,
-            @Valid @RequestBody UpdatePostRequestDto requestDto,
-            @CurrentUser CustomUserDetails userDetails
+            @Valid @RequestBody UpdatePostRequestDto requestDto
     ) {
-        return VsResponseUtil.success(postService.updatePost(id, userDetails.getPlayerId(), requestDto));
+        return VsResponseUtil.success(postService.updatePost(id, requestDto));
     }
 
     @Operation(summary = "API delete a post")
@@ -86,17 +86,19 @@ public class PostController {
     }
 
     @PreAuthorize("hasAnyRole('SUPER_ADMIN', 'ADMIN', 'MODERATOR')")
-    @Operation(summary = "API lock a post")
+    @Operation(summary = "API toggle lock a post")
     @PostMapping(UrlConstant.Post.LOCK)
-    public ResponseEntity<?> lockPost(@PathVariable Long id) {
-        return VsResponseUtil.success(postService.lockPost(id));
+    public ResponseEntity<?> toggleLockPost(@PathVariable Long id) {
+        return VsResponseUtil.success(postService.toggleLockPost(id));
     }
 
-    @PreAuthorize("hasAnyRole('SUPER_ADMIN', 'ADMIN', 'MODERATOR')")
-    @Operation(summary = "API unlock a post")
-    @PostMapping(UrlConstant.Post.UNLOCK)
-    public ResponseEntity<?> unlockPost(@PathVariable Long id) {
-        return VsResponseUtil.success(postService.unlockPost(id));
+    @Operation(summary = "API toggle follow a post")
+    @PostMapping(UrlConstant.Post.FOLLOW)
+    public ResponseEntity<?> toggleFollowPost(
+            @PathVariable Long id,
+            @CurrentUser CustomUserDetails userDetails
+    ) {
+        return VsResponseUtil.success(postService.toggleFollowPost(id, userDetails.getPlayerId()));
     }
 
 }

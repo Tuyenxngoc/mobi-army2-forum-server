@@ -1,7 +1,7 @@
 package com.tuyenngoc.army2forum.service;
 
-import com.tuyenngoc.army2forum.domain.dto.pagination.PaginationFullRequestDto;
 import com.tuyenngoc.army2forum.domain.dto.pagination.PaginationResponseDto;
+import com.tuyenngoc.army2forum.domain.dto.pagination.PaginationSortRequestDto;
 import com.tuyenngoc.army2forum.domain.dto.request.CreatePostRequestDto;
 import com.tuyenngoc.army2forum.domain.dto.request.UpdatePostRequestDto;
 import com.tuyenngoc.army2forum.domain.dto.response.CommonResponseDto;
@@ -12,22 +12,24 @@ import com.tuyenngoc.army2forum.security.CustomUserDetails;
 
 public interface PostService {
 
+    Post getPostById(Long postId);
+
     Post createPost(CreatePostRequestDto requestDto, Long playerId);
 
-    Post updatePost(Long id, Long playerId, UpdatePostRequestDto requestDto);
+    Post updatePost(Long postId, UpdatePostRequestDto requestDto);
 
-    CommonResponseDto deletePost(Long id, CustomUserDetails playerId);
+    CommonResponseDto deletePost(Long postId, CustomUserDetails playerId);
 
-    GetPostDetailResponseDto getPostById(Long id, CustomUserDetails userDetails);
+    GetPostDetailResponseDto getPostById(Long postId, CustomUserDetails userDetails);
 
-    PaginationResponseDto<GetPostResponseDto> getPosts(PaginationFullRequestDto requestDto);
+    PaginationResponseDto<GetPostResponseDto> getPosts(PaginationSortRequestDto requestDto);
 
-    CommonResponseDto approvePost(Long id, Long playerId);
+    CommonResponseDto approvePost(Long postId, Long playerId);
 
-    CommonResponseDto lockPost(Long id);
+    PaginationResponseDto<GetPostResponseDto> getPostsForReview(PaginationSortRequestDto requestDto);
 
-    CommonResponseDto unlockPost(Long id);
+    CommonResponseDto toggleLockPost(Long postId);
 
-    PaginationResponseDto<GetPostResponseDto> getPostsForReview(PaginationFullRequestDto requestDto);
+    CommonResponseDto toggleFollowPost(Long postId, Long playerId);
 
 }

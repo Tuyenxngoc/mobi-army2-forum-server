@@ -36,4 +36,8 @@ public class Category extends UserDateAuditing {
     public Category(String name) {
         this.name = name;
     }
+
+    public Category(Long id) {
+        this.id = id;
+    }
 }

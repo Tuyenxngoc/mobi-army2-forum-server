@@ -7,6 +7,8 @@ import java.util.Collection;
 
 public interface PlayerService {
 
+    Player getPlayerById(Long playerId);
+
     Player updatePlayerRoles(Long playerId, Long roleId, Collection<? extends GrantedAuthority> authorities);
 
 }

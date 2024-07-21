@@ -63,6 +63,7 @@ public class PostServiceImpl implements PostService {
     }
 
     @Override
+    @Transactional
     public Post createPost(CreatePostRequestDto requestDto, Long playerId) {
         long pendingPostsCount = postRepository.countByPlayerIdAndApprovedFalse(playerId);
         if (pendingPostsCount >= MAX_PENDING_POSTS) {
@@ -91,6 +92,7 @@ public class PostServiceImpl implements PostService {
     }
 
     @Override
+    @Transactional
     public Post updatePost(Long postId, UpdatePostRequestDto requestDto) {
         Post post = getPostById(postId);
 
@@ -112,6 +114,7 @@ public class PostServiceImpl implements PostService {
     }
 
     @Override
+    @Transactional
     public CommonResponseDto deletePost(Long postId, CustomUserDetails userDetails) {
         String[] requiredRoles = {RoleConstant.ROLE_ADMIN.name(), RoleConstant.ROLE_SUPER_ADMIN.name()};
         boolean hasRequiredRole = SecurityUtils.hasRequiredRole(userDetails, requiredRoles);
@@ -191,6 +194,7 @@ public class PostServiceImpl implements PostService {
     }
 
     @Override
+    @Transactional
     public CommonResponseDto toggleLockPost(Long postId) {
         Post post = getPostById(postId);
 
@@ -204,6 +208,7 @@ public class PostServiceImpl implements PostService {
     }
 
     @Override
+    @Transactional
     public CommonResponseDto toggleFollowPost(Long postId, Long playerId) {
         boolean isFollowing = postFollowRepository.existsByPostIdAndPlayerId(postId, playerId);
 

@@ -85,4 +85,9 @@ public class AuthController {
         return VsResponseUtil.success(authService.changePassword(requestDto, userDetails.getUsername()));
     }
 
+    @Operation(summary = "API check if email is confirmed")
+    @GetMapping(UrlConstant.Auth.CHECK_EMAIL_CONFIRMED)
+    public ResponseEntity<?> checkEmailConfirmed(@RequestParam("email") String email) {
+        return VsResponseUtil.success(authService.isEmailConfirmed(email));
+    }
 }

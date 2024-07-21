@@ -1,5 +1,6 @@
 package com.tuyenngoc.army2forum.domain.dto;
 
+import com.fasterxml.jackson.annotation.JsonInclude;
 import com.tuyenngoc.army2forum.domain.entity.Like;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
@@ -17,6 +18,9 @@ public class LikeDto {
     private int likeCount;
 
     private String latestLiker;
+
+    @JsonInclude(JsonInclude.Include.NON_NULL)
+    private Boolean hasLikes;
 
     public LikeDto(List<Like> likeList) {
         this.likeCount = likeList.size();

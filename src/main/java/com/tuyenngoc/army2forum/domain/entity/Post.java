@@ -47,6 +47,10 @@ public class Post extends UserDateAuditing {
     @JsonIgnore
     private List<Like> likes = new ArrayList<>();
 
+    @OneToMany(mappedBy = "post", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
+    @JsonIgnore
+    private List<PostFollow> follows = new ArrayList<>();
+
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "player_id", foreignKey = @ForeignKey(name = "FK_POST_PLAYER_ID"), referencedColumnName = "player_id", nullable = false)
     @JsonIgnore

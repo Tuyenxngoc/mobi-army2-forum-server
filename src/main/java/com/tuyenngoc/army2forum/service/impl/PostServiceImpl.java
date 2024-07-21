@@ -123,6 +123,13 @@ public class PostServiceImpl implements PostService {
         postRepository.incrementViewCount(id);
 
         GetPostDetailResponseDto responseDto = new GetPostDetailResponseDto(post);
+
+        if (userDetails != null) {
+            boolean userHasLiked = post.getLikes().stream()
+                    .anyMatch(like -> like.getPlayer().getId().equals(userDetails.getPlayerId()));
+            responseDto.getLike().setHasLikes(userHasLiked);
+        }
+
         if (!hasRequiredRole) {
             responseDto.setApprovedBy(null);
         }

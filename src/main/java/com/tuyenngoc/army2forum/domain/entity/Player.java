@@ -53,6 +53,10 @@ public class Player extends DateAuditing {
 
     @OneToMany(mappedBy = "player", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
     @JsonIgnore
+    private List<PostFollow> follows = new ArrayList<>();
+
+    @OneToMany(mappedBy = "player", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
+    @JsonIgnore
     private List<PlayerNotification> notifications = new ArrayList<>();
 
 }

@@ -15,6 +15,7 @@ public class UrlConstant {
         public static final String REFRESH_TOKEN = PRE_FIX + "/refresh-token";
         public static final String CONFIRM = PRE_FIX + "/confirm";
         public static final String RESEND_CONFIRMATION_EMAIL = PRE_FIX + "/resend-code";
+        public static final String CHECK_EMAIL_CONFIRMED = PRE_FIX + "/check-email";
     }
 
     public static class User {

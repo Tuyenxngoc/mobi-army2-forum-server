@@ -276,6 +276,11 @@ public class AuthServiceImpl implements AuthService {
         }
     }
 
+    @Override
+    public boolean isEmailConfirmed(String email) {
+        return userRepository.existsByEmailAndEnabledTrue(email);
+    }
+
     private void sendEmail(String to, String subject, Map<String, Object> properties, String templateName) {
         // Tạo DataMailDto
         DataMailDto mailDto = new DataMailDto();

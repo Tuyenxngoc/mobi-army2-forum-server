@@ -18,7 +18,7 @@ public interface PostService {
 
     CommonResponseDto deletePost(Long id, CustomUserDetails playerId);
 
-    GetPostDetailResponseDto getPostById(Long id, CustomUserDetails authorities);
+    GetPostDetailResponseDto getPostById(Long id, CustomUserDetails userDetails);
 
     PaginationResponseDto<GetPostResponseDto> getPosts(PaginationFullRequestDto requestDto);
 

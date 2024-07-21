@@ -12,6 +12,8 @@ import java.util.Optional;
 @Repository
 public interface UserRepository extends JpaRepository<User, String> {
 
+    boolean existsByEmailAndEnabledTrue(String email);
+
     boolean existsByUsername(String username);
 
     boolean existsByEmail(String email);

@@ -27,4 +27,6 @@ public interface AuthService {
 
     CommonResponseDto resendConfirmationEmail(String email, String siteURL);
 
+    boolean isEmailConfirmed(String email);
+
 }

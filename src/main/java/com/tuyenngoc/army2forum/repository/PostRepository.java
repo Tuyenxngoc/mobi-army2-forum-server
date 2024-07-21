@@ -18,9 +18,9 @@ import java.util.Optional;
 @Repository
 public interface PostRepository extends JpaRepository<Post, Long>, JpaSpecificationExecutor<Post> {
 
-    Optional<Post> findByIdAndPlayerId(Long postId, Long playerId);
-
     void deleteByIdAndPlayerId(Long postId, Long playerId);
+
+    long countByPlayerIdAndIsApprovedFalse(Long playerId);
 
     @Query("SELECT p.isApproved " +
             "FROM Post p WHERE " +
@@ -44,12 +44,10 @@ public interface PostRepository extends JpaRepository<Post, Long>, JpaSpecificat
             "ORDER BY p.createdDate ASC")
     Page<GetPostResponseDto> findByApprovedFalse(Pageable pageable);
 
-    long countByPlayerIdAndApprovedFalse(Long playerId);
-
     @Query("SELECT new com.tuyenngoc.army2forum.domain.dto.response.GetPostDetailResponseDto(p) " +
             "FROM Post p WHERE " +
             "p.isApproved = FALSE AND " +
             "p.id = :postId")
-    GetPostDetailResponseDto getPostById(@Param("postId") Long postId);
+    Optional<GetPostDetailResponseDto> getPostById(@Param("postId") Long postId);
 
 }

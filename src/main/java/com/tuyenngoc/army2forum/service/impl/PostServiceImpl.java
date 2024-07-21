@@ -65,7 +65,7 @@ public class PostServiceImpl implements PostService {
     @Override
     @Transactional
     public Post createPost(CreatePostRequestDto requestDto, Long playerId) {
-        long pendingPostsCount = postRepository.countByPlayerIdAndApprovedFalse(playerId);
+        long pendingPostsCount = postRepository.countByPlayerIdAndIsApprovedFalse(playerId);
         if (pendingPostsCount >= MAX_PENDING_POSTS) {
             throw new InvalidException(ErrorMessage.Post.ERR_MAX_PENDING_POSTS, MAX_PENDING_POSTS);
         }
@@ -137,7 +137,21 @@ public class PostServiceImpl implements PostService {
         String[] requiredRoles = {RoleConstant.ROLE_ADMIN.name(), RoleConstant.ROLE_SUPER_ADMIN.name()};
         boolean hasRequiredRole = SecurityUtils.hasRequiredRole(userDetails, requiredRoles);
 
-        return null;
+        Post post = getPostById(postId);
+        postRepository.incrementViewCount(postId);
+        GetPostDetailResponseDto responseDto = new GetPostDetailResponseDto(post);
+
+        if (userDetails != null) {
+            boolean userHasLiked = post.getLikes().stream()
+                    .anyMatch(like -> like.getPlayer().getId().equals(userDetails.getPlayerId()));
+            responseDto.getLike().setHasLikes(userHasLiked);
+        }
+
+        if (!hasRequiredRole) {
+            responseDto.setApprovedBy(null);
+        }
+
+        return responseDto;
     }
 
     @Override
@@ -212,7 +226,7 @@ public class PostServiceImpl implements PostService {
     public CommonResponseDto toggleFollowPost(Long postId, Long playerId) {
         boolean isFollowing = postFollowRepository.existsByPostIdAndPlayerId(postId, playerId);
 
-        if (isFollowing) {
+        if (!isFollowing) {
             boolean playerExists = playerRepository.existsById(playerId);
             if (!playerExists) {
                 throw new NotFoundException(ErrorMessage.Player.ERR_NOT_FOUND_ID, playerId);

@@ -30,13 +30,16 @@ public class Post extends UserDateAuditing {
     @Column(columnDefinition = "LONGTEXT", nullable = false)
     private String content;
 
-    @Column(name = "view_count")
+    @Column(name = "view_count", nullable = false)
     private int viewCount = 0;
 
-    @Column(name = "is_approved")
+    @Column(name = "priority", nullable = false)
+    private int priority = 0;
+
+    @Column(name = "is_approved", nullable = false)
     private boolean isApproved = false;
 
-    @Column(name = "is_locked")
+    @Column(name = "is_locked", nullable = false)
     private boolean isLocked = false;
 
     @OneToMany(mappedBy = "post", cascade = CascadeType.ALL, fetch = FetchType.LAZY)

@@ -46,7 +46,7 @@ public class PostController {
             @Valid @RequestBody CreatePostRequestDto postDto,
             @CurrentUser CustomUserDetails userDetails
     ) {
-        return VsResponseUtil.success(postService.createPost(postDto, userDetails.getPlayerId()));
+        return VsResponseUtil.success(postService.createPost(postDto, userDetails));
     }
 
     @PreAuthorize("hasAnyRole('SUPER_ADMIN', 'ADMIN', 'MODERATOR')")

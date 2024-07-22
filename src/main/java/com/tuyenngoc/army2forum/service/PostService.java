@@ -1,5 +1,6 @@
 package com.tuyenngoc.army2forum.service;
 
+import com.tuyenngoc.army2forum.domain.dto.pagination.PaginationFullRequestDto;
 import com.tuyenngoc.army2forum.domain.dto.pagination.PaginationResponseDto;
 import com.tuyenngoc.army2forum.domain.dto.pagination.PaginationSortRequestDto;
 import com.tuyenngoc.army2forum.domain.dto.request.CreatePostRequestDto;
@@ -14,7 +15,7 @@ public interface PostService {
 
     Post getPostById(Long postId);
 
-    Post createPost(CreatePostRequestDto requestDto, Long playerId);
+    Post createPost(CreatePostRequestDto requestDto, CustomUserDetails userDetails);
 
     Post updatePost(Long postId, UpdatePostRequestDto requestDto);
 
@@ -22,7 +23,7 @@ public interface PostService {
 
     GetPostDetailResponseDto getPostById(Long postId, CustomUserDetails userDetails);
 
-    PaginationResponseDto<GetPostResponseDto> getPosts(PaginationSortRequestDto requestDto);
+    PaginationResponseDto<GetPostResponseDto> getPosts(PaginationFullRequestDto requestDto);
 
     CommonResponseDto approvePost(Long postId, Long playerId);
 

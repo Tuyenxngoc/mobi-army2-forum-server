@@ -21,4 +21,6 @@ public class CreatePostRequestDto {
 
     private Long categoryId;
 
+    private Integer priority;
+
 }

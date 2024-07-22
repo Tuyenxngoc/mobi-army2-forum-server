@@ -1,9 +1,7 @@
 package com.tuyenngoc.army2forum.service.impl;
 
-import com.tuyenngoc.army2forum.constant.ErrorMessage;
-import com.tuyenngoc.army2forum.constant.RoleConstant;
-import com.tuyenngoc.army2forum.constant.SortByDataConstant;
-import com.tuyenngoc.army2forum.constant.SuccessMessage;
+import com.tuyenngoc.army2forum.constant.*;
+import com.tuyenngoc.army2forum.domain.dto.pagination.PaginationFullRequestDto;
 import com.tuyenngoc.army2forum.domain.dto.pagination.PaginationResponseDto;
 import com.tuyenngoc.army2forum.domain.dto.pagination.PaginationSortRequestDto;
 import com.tuyenngoc.army2forum.domain.dto.pagination.PagingMeta;
@@ -17,6 +15,7 @@ import com.tuyenngoc.army2forum.domain.entity.Player;
 import com.tuyenngoc.army2forum.domain.entity.Post;
 import com.tuyenngoc.army2forum.domain.entity.PostFollow;
 import com.tuyenngoc.army2forum.domain.mapper.PostMapper;
+import com.tuyenngoc.army2forum.domain.specification.PostSpecification;
 import com.tuyenngoc.army2forum.exception.InvalidException;
 import com.tuyenngoc.army2forum.exception.NotFoundException;
 import com.tuyenngoc.army2forum.repository.CategoryRepository;
@@ -37,6 +36,9 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
+import java.util.List;
+import java.util.stream.Collectors;
 
 @Service
 @RequiredArgsConstructor
@@ -66,14 +68,14 @@ public class PostServiceImpl implements PostService {
 
     @Override
     @Transactional
-    public Post createPost(CreatePostRequestDto requestDto, Long playerId) {
-        long pendingPostsCount = postRepository.countByPlayerIdAndIsApprovedFalse(playerId);
+    public Post createPost(CreatePostRequestDto requestDto, CustomUserDetails userDetails) {
+        long pendingPostsCount = postRepository.countByPlayerIdAndIsApprovedFalse(userDetails.getPlayerId());
         if (pendingPostsCount >= MAX_PENDING_POSTS) {
             throw new InvalidException(ErrorMessage.Post.ERR_MAX_PENDING_POSTS, MAX_PENDING_POSTS);
         }
 
-        Player player = playerRepository.findById(playerId)
-                .orElseThrow(() -> new NotFoundException(ErrorMessage.Post.ERR_NOT_FOUND_ID, playerId));
+        Player player = playerRepository.findById(userDetails.getPlayerId())
+                .orElseThrow(() -> new NotFoundException(ErrorMessage.Post.ERR_NOT_FOUND_ID, userDetails.getPlayerId()));
 
         Category category = null;
         if (requestDto.getCategoryId() != null) {
@@ -84,6 +86,12 @@ public class PostServiceImpl implements PostService {
         Post post = postMapper.toPost(requestDto);
         post.setCategory(category);
         post.setPlayer(player);
+
+        String[] requiredRoles = {RoleConstant.ROLE_ADMIN.name(), RoleConstant.ROLE_SUPER_ADMIN.name()};
+        boolean hasRequiredRole = SecurityUtils.hasRequiredRole(userDetails, requiredRoles);
+        if (!hasRequiredRole) {
+            post.setPriority(0);
+        }
 
         return postRepository.save(post);
     }
@@ -156,14 +164,25 @@ public class PostServiceImpl implements PostService {
     }
 
     @Override
-    public PaginationResponseDto<GetPostResponseDto> getPosts(PaginationSortRequestDto requestDto) {
-        Pageable pageable = PaginationUtil.buildPageable(requestDto, SortByDataConstant.POST);
+    public PaginationResponseDto<GetPostResponseDto> getPosts(PaginationFullRequestDto requestDto) {
+        List<String> sortByFields = List.of("priority", "createdDate");
+        List<Boolean> sortDirections = List.of(false, false);
 
-        Page<GetPostResponseDto> page = postRepository.getPosts(pageable);
+        Pageable pageable = PaginationUtil.buildPageable(requestDto, sortByFields, sortDirections);
+
+        Page<Post> page = postRepository.findAll(
+                PostSpecification.filterPosts(requestDto.getKeyword(), requestDto.getSearchBy()),
+                pageable
+        );
+
+        List<GetPostResponseDto> items = page.getContent().stream()
+                .map(GetPostResponseDto::new)
+                .collect(Collectors.toList());
+
         PagingMeta pagingMeta = PaginationUtil.buildPagingMeta(requestDto, SortByDataConstant.POST, page);
 
         PaginationResponseDto<GetPostResponseDto> responseDto = new PaginationResponseDto<>();
-        responseDto.setItems(page.getContent());
+        responseDto.setItems(items);
         responseDto.setMeta(pagingMeta);
 
         return responseDto;
@@ -185,8 +204,12 @@ public class PostServiceImpl implements PostService {
         post.setApprovedBy(approver);
         postRepository.save(post);
 
+        LocalDateTime now = LocalDateTime.now();
+        DateTimeFormatter formatter = DateTimeFormatter.ofPattern(CommonConstant.PATTERN_DATE_TIME);
+        String formattedDateTime = now.format(formatter);
+
         String title = messageSource.getMessage(SuccessMessage.Notification.POST_APPROVED, null, LocaleContextHolder.getLocale());
-        String message = messageSource.getMessage(SuccessMessage.Notification.POST_APPROVE_DETAIL, new Object[]{approver.getUser().getUsername(), LocalDateTime.now()}, LocaleContextHolder.getLocale());
+        String message = messageSource.getMessage(SuccessMessage.Notification.POST_APPROVE_DETAIL, new Object[]{approver.getUser().getUsername(), formattedDateTime}, LocaleContextHolder.getLocale());
         playerNotificationService.createNotification(post.getPlayer().getId(), title, message);
 
         String successMessage = messageSource.getMessage(SuccessMessage.Post.APPROVED, null, LocaleContextHolder.getLocale());

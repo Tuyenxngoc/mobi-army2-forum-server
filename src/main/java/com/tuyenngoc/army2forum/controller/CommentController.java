@@ -34,35 +34,21 @@ public class CommentController {
         return VsResponseUtil.success(commentService.createComment(userDetails.getPlayerId(), requestDto));
     }
 
+    @PreAuthorize("hasAnyRole('SUPER_ADMIN', 'ADMIN')")
     @Operation(summary = "API Update Comment")
     @PutMapping(UrlConstant.Comment.UPDATE)
     public ResponseEntity<?> updateComment(
             @PathVariable Long id,
-            @Valid @RequestBody UpdateCommentRequestDto requestDto,
-            @CurrentUser CustomUserDetails userDetails
+            @Valid @RequestBody UpdateCommentRequestDto requestDto
     ) {
-        return VsResponseUtil.success(commentService.updateComment(id, userDetails.getPlayerId(), requestDto));
+        return VsResponseUtil.success(commentService.updateComment(id, requestDto));
     }
 
     @PreAuthorize("hasAnyRole('SUPER_ADMIN', 'ADMIN')")
     @Operation(summary = "API Delete Comment")
     @DeleteMapping(UrlConstant.Comment.DELETE)
     public ResponseEntity<?> deleteComment(@PathVariable Long id) {
-        commentService.deleteComment(id);
-        return VsResponseUtil.success(null);
-    }
-
-    @PreAuthorize("hasAnyRole('SUPER_ADMIN', 'ADMIN', 'USER')")
-    @Operation(summary = "API Get Comment by Id")
-    @GetMapping(UrlConstant.Comment.GET_BY_ID)
-    public ResponseEntity<?> getCommentById(@PathVariable Long id) {
-        return VsResponseUtil.success(commentService.getCommentById(id));
-    }
-
-    @Operation(summary = "API Get All Comments")
-    @GetMapping(UrlConstant.Comment.GET_ALL)
-    public ResponseEntity<?> getAllComments() {
-        return VsResponseUtil.success(commentService.getAllComments());
+        return VsResponseUtil.success(commentService.deleteComment(id));
     }
 
     @Operation(summary = "API Get Comments by Post Id")

@@ -90,4 +90,8 @@ public class ErrorMessage {
         public static final String ERR_MAX_PENDING_POSTS = "exception.post.max.pending.posts";
         public static final String ALREADY_APPROVED = "exception.post.already-approved";
     }
+
+    public static class Comment {
+        public static final String ERR_NOT_FOUND_ID = "exception.comment.not.found.id";
+    }
 }

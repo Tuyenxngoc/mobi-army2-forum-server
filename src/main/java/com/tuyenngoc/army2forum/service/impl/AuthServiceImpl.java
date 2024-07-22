@@ -227,7 +227,8 @@ public class AuthServiceImpl implements AuthService {
             User user = optionalUser.get();
 
             if (user.isEnabled()) {
-                return new CommonResponseDto("Tài khoản đã đã xác thực!");
+                String message = messageSource.getMessage(ErrorMessage.User.ALREADY_VERIFIED, null, LocaleContextHolder.getLocale());
+                return new CommonResponseDto(message);
             }
 
             user.setVerificationCode(null);
@@ -239,9 +240,11 @@ public class AuthServiceImpl implements AuthService {
             player.setUser(user);
             playerRepository.save(player);
 
-            return new CommonResponseDto("Tài khoản đã được xác thực thành công!");
+            String message = messageSource.getMessage(SuccessMessage.User.VERIFIED_SUCCESS, null, LocaleContextHolder.getLocale());
+            return new CommonResponseDto(message);
         } else {
-            return new CommonResponseDto("Mã xác thực không hợp lệ!");
+            String message = messageSource.getMessage(ErrorMessage.User.INVALID_VERIFICATION_CODE, null, LocaleContextHolder.getLocale());
+            return new CommonResponseDto(message);
         }
     }
 
@@ -249,7 +252,8 @@ public class AuthServiceImpl implements AuthService {
     public CommonResponseDto resendConfirmationEmail(String email, String siteURL) {
         // Kiểm tra giới hạn thời gian gửi email
         if (emailRateLimiterService.isMailLimited(email)) {
-            return new CommonResponseDto("Bạn đã gửi yêu cầu quá nhiều lần, vui lòng thử lại sau.");
+            String message = messageSource.getMessage(ErrorMessage.User.RATE_LIMIT, null, LocaleContextHolder.getLocale());
+            return new CommonResponseDto(message);
         }
 
         Optional<User> optionalUser = userRepository.findByEmail(email);
@@ -257,7 +261,8 @@ public class AuthServiceImpl implements AuthService {
             User user = optionalUser.get();
 
             if (user.isEnabled()) {
-                return new CommonResponseDto("Tài khoản đã xác thực!");
+                String message = messageSource.getMessage(ErrorMessage.User.ALREADY_VERIFIED, null, LocaleContextHolder.getLocale());
+                return new CommonResponseDto(message);
             }
 
             String code = UUID.randomUUID().toString();
@@ -270,9 +275,11 @@ public class AuthServiceImpl implements AuthService {
             properties.put("url", siteURL + "/verify?code=" + code);
             sendEmail(user.getEmail(), "Kích hoạt tài khoản", properties, "resendConfirmationEmail.html");
 
-            return new CommonResponseDto("Gửi mã xác thực thành công!");
+            String message = messageSource.getMessage(SuccessMessage.User.RESEND_CONFIRMATION, null, LocaleContextHolder.getLocale());
+            return new CommonResponseDto(message);
         } else {
-            return new CommonResponseDto("Email không hợp lệ!");
+            String message = messageSource.getMessage(ErrorMessage.User.INVALID_EMAIL, null, LocaleContextHolder.getLocale());
+            return new CommonResponseDto(message);
         }
     }
 

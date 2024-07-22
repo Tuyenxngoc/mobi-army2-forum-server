@@ -56,4 +56,5 @@ public class CommentController {
     public ResponseEntity<?> getCommentsByPostId(@PathVariable Long postId, @ParameterObject PaginationRequestDto requestDto) {
         return VsResponseUtil.success(commentService.getCommentsByPostId(postId, requestDto));
     }
+
 }

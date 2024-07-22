@@ -70,23 +70,18 @@ public class PostServiceImpl implements PostService {
             throw new InvalidException(ErrorMessage.Post.ERR_MAX_PENDING_POSTS, MAX_PENDING_POSTS);
         }
 
-        boolean isPlayerExists = playerRepository.existsById(playerId);
-        if (!isPlayerExists) {
-            throw new NotFoundException(ErrorMessage.Post.ERR_NOT_FOUND_ID, playerId);
-        }
+        Player player = playerRepository.findById(playerId)
+                .orElseThrow(() -> new NotFoundException(ErrorMessage.Post.ERR_NOT_FOUND_ID, playerId));
+
         Category category = null;
         if (requestDto.getCategoryId() != null) {
-            boolean isCategoryExists = categoryRepository.existsById(requestDto.getCategoryId());
-            if (!isCategoryExists) {
-                throw new NotFoundException(ErrorMessage.Category.ERR_NOT_FOUND_ID, requestDto.getCategoryId());
-            }
-
-            category = new Category(requestDto.getCategoryId());
+            category = categoryRepository.findById(requestDto.getCategoryId())
+                    .orElseThrow(() -> new NotFoundException(ErrorMessage.Category.ERR_NOT_FOUND_ID, requestDto.getCategoryId()));
         }
 
         Post post = postMapper.toPost(requestDto);
         post.setCategory(category);
-        post.setPlayer(new Player(playerId));
+        post.setPlayer(player);
 
         return postRepository.save(post);
     }

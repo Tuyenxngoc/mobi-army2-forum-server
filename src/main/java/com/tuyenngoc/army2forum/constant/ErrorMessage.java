@@ -98,4 +98,8 @@ public class ErrorMessage {
     public static class Comment {
         public static final String ERR_NOT_FOUND_ID = "exception.comment.not.found.id";
     }
+
+    public static class PlayerNotification {
+        public static final String ERR_NOT_FOUND_ID = "exception.player-notification.not.found.id";
+    }
 }

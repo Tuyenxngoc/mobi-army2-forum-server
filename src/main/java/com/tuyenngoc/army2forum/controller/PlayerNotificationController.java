@@ -12,6 +12,7 @@ import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.RequiredArgsConstructor;
 import org.springdoc.core.annotations.ParameterObject;
 import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 
@@ -38,6 +39,15 @@ public class PlayerNotificationController {
             @CurrentUser CustomUserDetails userDetails
     ) {
         return VsResponseUtil.success(playerNotificationService.getPlayerNotificationById(id, userDetails.getPlayerId()));
+    }
+
+    @Operation(summary = "API delete player notification by id")
+    @DeleteMapping(UrlConstant.PlayerNotification.DELETE)
+    public ResponseEntity<?> deletePlayerNotificationById(
+            @PathVariable Long id,
+            @CurrentUser CustomUserDetails userDetails
+    ) {
+        return VsResponseUtil.success(playerNotificationService.deletePlayerNotificationById(id, userDetails.getPlayerId()));
     }
 
 }

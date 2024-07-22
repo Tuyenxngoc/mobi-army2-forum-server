@@ -15,7 +15,9 @@ public class SuccessMessage {
 
     public static class Notification {
         public static final String POST_DELETE = "success.notification.post.delete";
+        public static final String POST_DELETE_DETAIL = "success.notification.post.delete-detail";
         public static final String POST_APPROVED = "success.notification.post.approved";
+        public static final String POST_APPROVE_DETAIL = "success.notification.post.approved-detail";
     }
 
     public static class Post {

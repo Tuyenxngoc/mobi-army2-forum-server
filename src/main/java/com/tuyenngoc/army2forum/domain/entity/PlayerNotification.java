@@ -22,6 +22,9 @@ public class PlayerNotification extends DateAuditing {
     private Long id;
 
     @Column(nullable = false)
+    private String title;
+
+    @Column(nullable = false)
     private String message;
 
     @Column(name = "is_read", nullable = false)

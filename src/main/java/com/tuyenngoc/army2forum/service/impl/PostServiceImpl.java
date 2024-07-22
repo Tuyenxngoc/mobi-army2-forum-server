@@ -36,6 +36,8 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.time.LocalDateTime;
+
 @Service
 @RequiredArgsConstructor
 public class PostServiceImpl implements PostService {
@@ -120,8 +122,9 @@ public class PostServiceImpl implements PostService {
             postRepository.deleteByIdAndPlayerId(postId, userDetails.getPlayerId());
         }
 
-        String notificationMessage = messageSource.getMessage(SuccessMessage.Notification.POST_DELETE, null, LocaleContextHolder.getLocale());
-        playerNotificationService.createNotification(userDetails.getPlayerId(), notificationMessage);
+        String title = messageSource.getMessage(SuccessMessage.Notification.POST_DELETE, null, LocaleContextHolder.getLocale());
+        String notificationMessage = messageSource.getMessage(SuccessMessage.Notification.POST_DELETE_DETAIL, new Object[]{postId}, LocaleContextHolder.getLocale());
+        playerNotificationService.createNotification(userDetails.getPlayerId(), title, notificationMessage);
 
         String message = messageSource.getMessage(SuccessMessage.DELETE, null, LocaleContextHolder.getLocale());
         return new CommonResponseDto(message);
@@ -175,17 +178,16 @@ public class PostServiceImpl implements PostService {
             return new CommonResponseDto(alreadyApprovedMessage);
         }
 
-        boolean approver = playerRepository.existsById(playerId);
-        if (!approver) {
-            throw new NotFoundException(ErrorMessage.Player.ERR_NOT_FOUND_ID, playerId);
-        }
+        Player approver = playerRepository.findById(playerId)
+                .orElseThrow(() -> new NotFoundException(ErrorMessage.Post.ERR_NOT_FOUND_ID, playerId));
 
         post.setApproved(true);
-        post.setApprovedBy(new Player(playerId));
+        post.setApprovedBy(approver);
         postRepository.save(post);
 
-        String notificationMessage = messageSource.getMessage(SuccessMessage.Notification.POST_APPROVED, null, LocaleContextHolder.getLocale());
-        playerNotificationService.createNotification(post.getPlayer().getId(), notificationMessage);
+        String title = messageSource.getMessage(SuccessMessage.Notification.POST_APPROVED, null, LocaleContextHolder.getLocale());
+        String message = messageSource.getMessage(SuccessMessage.Notification.POST_APPROVE_DETAIL, new Object[]{approver.getUser().getUsername(), LocalDateTime.now()}, LocaleContextHolder.getLocale());
+        playerNotificationService.createNotification(post.getPlayer().getId(), title, message);
 
         String successMessage = messageSource.getMessage(SuccessMessage.Post.APPROVED, null, LocaleContextHolder.getLocale());
         return new CommonResponseDto(successMessage);

@@ -26,6 +26,8 @@ public class SuccessMessage {
         public static final String UNLOCKED = "success.post.unlock";
         public static final String UNFOLLOWED = "success.post.unfollowed";
         public static final String FOLLOWED = "success.post.followed";
+        public static final String CREATE = "success.post.create";
+        public static final String ADMIN_CREATE = "success.post.admin-create";
     }
 
     public static class Auth {

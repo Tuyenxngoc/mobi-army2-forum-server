@@ -23,13 +23,15 @@ public interface PostRepository extends JpaRepository<Post, Long>, JpaSpecificat
     long countByPlayerIdAndIsApprovedFalse(Long playerId);
 
     @Query("SELECT p.isApproved " +
-            "FROM Post p WHERE " +
-            "p.id = :id")
+            "FROM Post p " +
+            "WHERE p.id = :id")
     Boolean findIsApprovedById(@Param("id") Long id);
 
     @Modifying
     @Transactional
-    @Query("UPDATE Post p SET p.viewCount = p.viewCount + 1 WHERE p.id = :postId")
+    @Query("UPDATE Post p " +
+            "SET p.viewCount = p.viewCount + 1 " +
+            "WHERE p.id = :postId")
     void incrementViewCount(@Param("postId") Long postId);
 
     @Query("SELECT new com.tuyenngoc.army2forum.domain.dto.response.GetPostResponseDto(p) " +
@@ -45,9 +47,15 @@ public interface PostRepository extends JpaRepository<Post, Long>, JpaSpecificat
     Page<GetPostResponseDto> findByApprovedFalse(Pageable pageable);
 
     @Query("SELECT new com.tuyenngoc.army2forum.domain.dto.response.GetPostDetailResponseDto(p) " +
-            "FROM Post p WHERE " +
-            "p.isApproved = FALSE AND " +
-            "p.id = :postId")
+            "FROM Post p " +
+            "WHERE p.isApproved = FALSE AND p.id = :postId")
     Optional<GetPostDetailResponseDto> getPostById(@Param("postId") Long postId);
 
+    @Query("SELECT new com.tuyenngoc.army2forum.domain.dto.response.GetPostResponseDto(p) " +
+            "FROM Post p JOIN p.follows f " +
+            "WHERE f.player.id = :playerId")
+    Page<GetPostResponseDto> findFollowingPostsByPlayerId(
+            @Param("playerId") Long playerId,
+            Pageable pageable
+    );
 }

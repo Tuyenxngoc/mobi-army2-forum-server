@@ -15,7 +15,7 @@ public interface PostService {
 
     Post getPostById(Long postId);
 
-    Post createPost(CreatePostRequestDto requestDto, CustomUserDetails userDetails);
+    CommonResponseDto createPost(CreatePostRequestDto requestDto, CustomUserDetails userDetails);
 
     Post updatePost(Long postId, UpdatePostRequestDto requestDto);
 

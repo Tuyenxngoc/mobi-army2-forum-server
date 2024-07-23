@@ -68,7 +68,7 @@ public class PostServiceImpl implements PostService {
 
     @Override
     @Transactional
-    public Post createPost(CreatePostRequestDto requestDto, CustomUserDetails userDetails) {
+    public CommonResponseDto createPost(CreatePostRequestDto requestDto, CustomUserDetails userDetails) {
         long pendingPostsCount = postRepository.countByPlayerIdAndIsApprovedFalse(userDetails.getPlayerId());
         if (pendingPostsCount >= MAX_PENDING_POSTS) {
             throw new InvalidException(ErrorMessage.Post.ERR_MAX_PENDING_POSTS, MAX_PENDING_POSTS);
@@ -89,11 +89,19 @@ public class PostServiceImpl implements PostService {
 
         String[] requiredRoles = {RoleConstant.ROLE_ADMIN.name(), RoleConstant.ROLE_SUPER_ADMIN.name()};
         boolean hasRequiredRole = SecurityUtils.hasRequiredRole(userDetails, requiredRoles);
+        String message;
         if (!hasRequiredRole) {
             post.setPriority(0);
+            message = messageSource.getMessage(SuccessMessage.Post.CREATE, null, LocaleContextHolder.getLocale());
+        } else {
+            post.setApproved(true);
+            post.setApprovedBy(player);
+            message = messageSource.getMessage(SuccessMessage.Post.ADMIN_CREATE, null, LocaleContextHolder.getLocale());
         }
 
-        return postRepository.save(post);
+        postRepository.save(post);
+
+        return new CommonResponseDto(message);
     }
 
     @Override

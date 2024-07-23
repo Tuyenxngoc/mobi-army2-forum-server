@@ -87,6 +87,7 @@ public class UrlConstant {
 
         public static final String UPDATE_ROLE = PRE_FIX + "/{id}/role/{roleId}";
         public static final String UPDATE_SCHEDULE = PRE_FIX + "/{id}/schedule";
+        public static final String GET_FOLLOWING = PRE_FIX + "/following-post";
     }
 
     public static class PlayerNotification {
@@ -111,7 +112,6 @@ public class UrlConstant {
         public static final String REVIEW = PRE_FIX + "/review";
         public static final String APPROVE = PRE_FIX + "/{id}/approve";
         public static final String LOCK = PRE_FIX + "/{id}/lock";
-        public static final String UNLOCK = PRE_FIX + "/{id}/unlock";
         public static final String FOLLOW = PRE_FIX + "/{id}/follow";
     }
 

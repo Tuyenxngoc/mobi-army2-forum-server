@@ -5,16 +5,16 @@ import com.tuyenngoc.army2forum.annotation.RestApiV1;
 import com.tuyenngoc.army2forum.base.VsResponseUtil;
 import com.tuyenngoc.army2forum.constant.UrlConstant;
 import com.tuyenngoc.army2forum.domain.dto.pagination.PaginationRequestDto;
+import com.tuyenngoc.army2forum.domain.dto.request.CreatePlayerNotificationDto;
 import com.tuyenngoc.army2forum.security.CustomUserDetails;
 import com.tuyenngoc.army2forum.service.PlayerNotificationService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
+import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springdoc.core.annotations.ParameterObject;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.DeleteMapping;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.*;
 
 @RestApiV1
 @RequiredArgsConstructor
@@ -48,6 +48,12 @@ public class PlayerNotificationController {
             @CurrentUser CustomUserDetails userDetails
     ) {
         return VsResponseUtil.success(playerNotificationService.deletePlayerNotificationById(id, userDetails.getPlayerId()));
+    }
+
+    @Operation(summary = "API create new player notification")
+    @PostMapping(UrlConstant.PlayerNotification.CREATE)
+    public ResponseEntity<?> createPlayerNotification(@Valid @RequestBody CreatePlayerNotificationDto createPlayerNotificationDto) {
+        return VsResponseUtil.success(playerNotificationService.createPlayerNotification(createPlayerNotificationDto));
     }
 
 }

@@ -5,12 +5,15 @@ import com.tuyenngoc.army2forum.constant.SuccessMessage;
 import com.tuyenngoc.army2forum.domain.dto.pagination.PaginationRequestDto;
 import com.tuyenngoc.army2forum.domain.dto.pagination.PaginationResponseDto;
 import com.tuyenngoc.army2forum.domain.dto.pagination.PagingMeta;
+import com.tuyenngoc.army2forum.domain.dto.request.CreatePlayerNotificationDto;
 import com.tuyenngoc.army2forum.domain.dto.response.CommonResponseDto;
 import com.tuyenngoc.army2forum.domain.dto.response.GetPlayerNotificationResponseDto;
 import com.tuyenngoc.army2forum.domain.entity.Player;
 import com.tuyenngoc.army2forum.domain.entity.PlayerNotification;
+import com.tuyenngoc.army2forum.domain.mapper.PlayerNotificationMapper;
 import com.tuyenngoc.army2forum.exception.NotFoundException;
 import com.tuyenngoc.army2forum.repository.PlayerNotificationRepository;
+import com.tuyenngoc.army2forum.repository.PlayerRepository;
 import com.tuyenngoc.army2forum.service.PlayerNotificationService;
 import com.tuyenngoc.army2forum.util.PaginationUtil;
 import lombok.RequiredArgsConstructor;
@@ -21,13 +24,19 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.util.List;
+
 @Service
 @RequiredArgsConstructor
 public class PlayerNotificationServiceImpl implements PlayerNotificationService {
 
     private final PlayerNotificationRepository playerNotificationRepository;
 
+    private final PlayerRepository playerRepository;
+
     private final MessageSource messageSource;
+
+    private final PlayerNotificationMapper playerNotificationMapper;
 
     @Override
     public void createNotification(Long playerId, String title, String message) {
@@ -72,6 +81,20 @@ public class PlayerNotificationServiceImpl implements PlayerNotificationService 
         playerNotificationRepository.deleteByIdAndPlayerId(id, playerId);
 
         String message = messageSource.getMessage(SuccessMessage.DELETE, null, LocaleContextHolder.getLocale());
+        return new CommonResponseDto(message);
+    }
+
+    @Override
+    public CommonResponseDto createPlayerNotification(CreatePlayerNotificationDto createPlayerNotificationDto) {
+        List<Player> players = playerRepository.findAll();
+        for (Player player : players) {
+            PlayerNotification notification = playerNotificationMapper.toPlayerNotification(createPlayerNotificationDto);
+
+            notification.setPlayer(player);
+            playerNotificationRepository.save(notification);
+        }
+
+        String message = messageSource.getMessage(SuccessMessage.CREATE, null, LocaleContextHolder.getLocale());
         return new CommonResponseDto(message);
     }
 }

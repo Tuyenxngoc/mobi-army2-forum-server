@@ -1,6 +1,7 @@
 package com.tuyenngoc.army2forum.service.impl;
 
 import com.tuyenngoc.army2forum.constant.ErrorMessage;
+import com.tuyenngoc.army2forum.constant.RoleConstant;
 import com.tuyenngoc.army2forum.constant.SuccessMessage;
 import com.tuyenngoc.army2forum.domain.dto.pagination.PaginationRequestDto;
 import com.tuyenngoc.army2forum.domain.dto.pagination.PaginationResponseDto;
@@ -14,6 +15,7 @@ import com.tuyenngoc.army2forum.domain.mapper.PlayerNotificationMapper;
 import com.tuyenngoc.army2forum.exception.NotFoundException;
 import com.tuyenngoc.army2forum.repository.PlayerNotificationRepository;
 import com.tuyenngoc.army2forum.repository.PlayerRepository;
+import com.tuyenngoc.army2forum.repository.RoleRepository;
 import com.tuyenngoc.army2forum.service.PlayerNotificationService;
 import com.tuyenngoc.army2forum.util.PaginationUtil;
 import lombok.RequiredArgsConstructor;
@@ -85,16 +87,28 @@ public class PlayerNotificationServiceImpl implements PlayerNotificationService 
     }
 
     @Override
-    public CommonResponseDto createPlayerNotification(CreatePlayerNotificationDto createPlayerNotificationDto) {
-        List<Player> players = playerRepository.findAll();
-        for (Player player : players) {
-            PlayerNotification notification = playerNotificationMapper.toPlayerNotification(createPlayerNotificationDto);
+    public CommonResponseDto createPlayerNotification(CreatePlayerNotificationDto requestDto) {
+        List<Long> playerIds;
 
-            notification.setPlayer(player);
-            playerNotificationRepository.save(notification);
+        if (requestDto.getIsPrivate()) {
+            List<String> roleNames = List.of(RoleConstant.ROLE_SUPER_ADMIN.name(), RoleConstant.ROLE_ADMIN.name(), RoleConstant.ROLE_MODERATOR.name());
+            playerIds = playerRepository.findPlayerIdsByRoleNames(roleNames);
+        } else {
+            playerIds = playerRepository.findAllPlayerIds();
         }
+
+        savePlayerNotifications(requestDto, playerIds);
 
         String message = messageSource.getMessage(SuccessMessage.CREATE, null, LocaleContextHolder.getLocale());
         return new CommonResponseDto(message);
     }
+
+    private void savePlayerNotifications(CreatePlayerNotificationDto requestDto, List<Long> playerIds) {
+        for (Long playerId : playerIds) {
+            PlayerNotification playerNotification = playerNotificationMapper.toPlayerNotification(requestDto);
+            playerNotification.setPlayer(new Player(playerId));
+            playerNotificationRepository.save(playerNotification);
+        }
+    }
+
 }

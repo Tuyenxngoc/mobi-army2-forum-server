@@ -17,6 +17,6 @@ public interface PlayerNotificationService {
 
     CommonResponseDto deletePlayerNotificationById(Long id, Long playerId);
 
-    CommonResponseDto createPlayerNotification(CreatePlayerNotificationDto createPlayerNotificationDto);
+    CommonResponseDto createPlayerNotification(CreatePlayerNotificationDto requestDto);
 
 }

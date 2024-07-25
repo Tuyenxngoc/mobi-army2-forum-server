@@ -53,7 +53,7 @@ public class CommentServiceImpl implements CommentService {
         Player player = playerRepository.findById(playerId)
                 .orElseThrow(() -> new NotFoundException(ErrorMessage.Player.ERR_NOT_FOUND_ID, playerId));
 
-        Post post = postRepository.findById(requestDto.getPostId())
+        Post post = postRepository.findByIdAndIsLockedFalse(requestDto.getPostId())
                 .orElseThrow(() -> new NotFoundException(ErrorMessage.Post.ERR_NOT_FOUND_ID, requestDto.getPostId()));
 
         comment.setPlayer(player);

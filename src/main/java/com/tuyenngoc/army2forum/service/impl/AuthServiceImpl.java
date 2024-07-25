@@ -181,6 +181,12 @@ public class AuthServiceImpl implements AuthService {
         User user = userRepository.findByUsernameAndEmail(requestDto.getUsername(), requestDto.getEmail())
                 .orElseThrow(() -> new NotFoundException(ErrorMessage.User.ERR_NOT_FOUND_ACCOUNT));
 
+        // Kiểm tra giới hạn thời gian gửi email
+        if (emailRateLimiterService.isMailLimited(requestDto.getEmail())) {
+            String message = messageSource.getMessage(ErrorMessage.User.RATE_LIMIT, null, LocaleContextHolder.getLocale());
+            return new CommonResponseDto(message);
+        }
+
         String newPassword = RandomPasswordUtil.random();
 
         user.setPassword(passwordEncoder.encode(newPassword));
@@ -190,6 +196,8 @@ public class AuthServiceImpl implements AuthService {
         properties.put("username", requestDto.getUsername());
         properties.put("newPassword", newPassword);
         sendEmail(user.getEmail(), "Lấy lại mật khẩu", properties, "forgetPassword.html");
+
+        emailRateLimiterService.setMailLimit(requestDto.getEmail(), 1, TimeUnit.MINUTES);
 
         String message = messageSource.getMessage(SuccessMessage.User.FORGET_PASSWORD, null, LocaleContextHolder.getLocale());
         return new CommonResponseDto(message);
@@ -250,18 +258,18 @@ public class AuthServiceImpl implements AuthService {
 
     @Override
     public CommonResponseDto resendConfirmationEmail(String email, String siteURL) {
-        // Kiểm tra giới hạn thời gian gửi email
-        if (emailRateLimiterService.isMailLimited(email)) {
-            String message = messageSource.getMessage(ErrorMessage.User.RATE_LIMIT, null, LocaleContextHolder.getLocale());
-            return new CommonResponseDto(message);
-        }
-
         Optional<User> optionalUser = userRepository.findByEmail(email);
         if (optionalUser.isPresent()) {
             User user = optionalUser.get();
 
             if (user.isEnabled()) {
                 String message = messageSource.getMessage(ErrorMessage.User.ALREADY_VERIFIED, null, LocaleContextHolder.getLocale());
+                return new CommonResponseDto(message);
+            }
+
+            // Kiểm tra giới hạn thời gian gửi email
+            if (emailRateLimiterService.isMailLimited(email)) {
+                String message = messageSource.getMessage(ErrorMessage.User.RATE_LIMIT, null, LocaleContextHolder.getLocale());
                 return new CommonResponseDto(message);
             }
 

@@ -24,6 +24,8 @@ public interface PostRepository extends JpaRepository<Post, Long>, JpaSpecificat
 
     Optional<Post> findByIdAndIsLockedFalse(Long postId);
 
+    Optional<Post> findByIdAndIsApprovedTrue(Long postId);
+
     @Query("SELECT p.isApproved " +
             "FROM Post p " +
             "WHERE p.id = :id")

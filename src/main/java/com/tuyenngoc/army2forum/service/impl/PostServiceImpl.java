@@ -151,7 +151,14 @@ public class PostServiceImpl implements PostService {
         String[] requiredRoles = {RoleConstant.ROLE_ADMIN.name(), RoleConstant.ROLE_SUPER_ADMIN.name()};
         boolean hasRequiredRole = SecurityUtils.hasRequiredRole(userDetails, requiredRoles);
 
-        Post post = getPostById(postId);
+        Post post;
+        if (hasRequiredRole) {
+            post = getPostById(postId);
+        } else {
+            post = postRepository.findByIdAndIsApprovedTrue(postId)
+                    .orElseThrow(() -> new NotFoundException(ErrorMessage.Post.ERR_NOT_FOUND_ID, postId));
+        }
+
         postRepository.incrementViewCount(postId);
         GetPostDetailResponseDto responseDto = new GetPostDetailResponseDto(post);
 

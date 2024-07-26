@@ -5,6 +5,7 @@ import com.tuyenngoc.army2forum.annotation.RestApiV1;
 import com.tuyenngoc.army2forum.base.VsResponseUtil;
 import com.tuyenngoc.army2forum.constant.UrlConstant;
 import com.tuyenngoc.army2forum.domain.dto.pagination.PaginationFullRequestDto;
+import com.tuyenngoc.army2forum.domain.dto.pagination.PaginationRequestDto;
 import com.tuyenngoc.army2forum.domain.dto.request.CreatePostRequestDto;
 import com.tuyenngoc.army2forum.domain.dto.request.UpdatePostRequestDto;
 import com.tuyenngoc.army2forum.security.CustomUserDetails;
@@ -27,8 +28,11 @@ public class PostController {
 
     @Operation(summary = "API get posts")
     @GetMapping(UrlConstant.Post.GET_ALL)
-    public ResponseEntity<?> getPost(@ParameterObject PaginationFullRequestDto requestDto) {
-        return VsResponseUtil.success(postService.getPosts(requestDto));
+    public ResponseEntity<?> getPost(
+            @ParameterObject PaginationRequestDto requestDto,
+            @RequestParam(required = false) Long categoryId
+    ) {
+        return VsResponseUtil.success(postService.getPosts(requestDto, categoryId));
     }
 
     @Operation(summary = "API get post by id")
@@ -69,13 +73,6 @@ public class PostController {
     }
 
     @PreAuthorize("hasAnyRole('SUPER_ADMIN', 'ADMIN', 'MODERATOR')")
-    @Operation(summary = "API get posts for review")
-    @GetMapping(UrlConstant.Post.REVIEW)
-    public ResponseEntity<?> getPostsForReview(@ParameterObject PaginationFullRequestDto requestDto) {
-        return VsResponseUtil.success(postService.getPostsForReview(requestDto));
-    }
-
-    @PreAuthorize("hasAnyRole('SUPER_ADMIN', 'ADMIN', 'MODERATOR')")
     @Operation(summary = "API approve a post")
     @PostMapping(UrlConstant.Post.APPROVE)
     public ResponseEntity<?> approvePost(
@@ -101,4 +98,17 @@ public class PostController {
         return VsResponseUtil.success(postService.toggleFollowPost(id, userDetails.getPlayerId()));
     }
 
+    @PreAuthorize("hasAnyRole('SUPER_ADMIN', 'ADMIN')")
+    @Operation(summary = "API get posts for admin")
+    @GetMapping(UrlConstant.Post.ADMIN_GET_ALL)
+    public ResponseEntity<?> getPostsForAdmin(@ParameterObject PaginationFullRequestDto requestDto) {
+        return VsResponseUtil.success(postService.getPostsForAdmin(requestDto));
+    }
+
+    @PreAuthorize("hasAnyRole('SUPER_ADMIN', 'ADMIN')")
+    @Operation(summary = "API get posts for admin")
+    @GetMapping(UrlConstant.Post.ADMIN_GET_BY_ID)
+    public ResponseEntity<?> getPostByIdForAdmin(@PathVariable Long id) {
+        return VsResponseUtil.success(postService.getPostByIdForAdmin(id));
+    }
 }

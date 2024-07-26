@@ -1,4 +1,4 @@
-package com.tuyenngoc.army2forum.domain.dto.response;
+package com.tuyenngoc.army2forum.domain.dto.response.post;
 
 import com.tuyenngoc.army2forum.domain.dto.common.UserDateAuditingDto;
 import com.tuyenngoc.army2forum.domain.entity.Post;
@@ -11,7 +11,7 @@ import lombok.Setter;
 @Setter
 @NoArgsConstructor
 @AllArgsConstructor
-public class GetPostResponseDto extends UserDateAuditingDto {
+public class GetPostsForAdminResponseDto extends UserDateAuditingDto {
 
     private Long id;
 
@@ -25,11 +25,13 @@ public class GetPostResponseDto extends UserDateAuditingDto {
 
     private boolean locked;
 
+    private boolean approved;
+
     private int priority;
 
     private String author;
 
-    public GetPostResponseDto(Post post) {
+    public GetPostsForAdminResponseDto(Post post) {
         this.setCreatedDate(post.getCreatedDate());
         this.setLastModifiedDate(post.getLastModifiedDate());
         this.setCreatedBy(post.getCreatedBy());
@@ -41,6 +43,7 @@ public class GetPostResponseDto extends UserDateAuditingDto {
         this.favorites = post.getLikes().size();
         this.views = post.getViewCount();
         this.locked = post.isLocked();
+        this.approved = post.isApproved();
         this.priority = post.getPriority();
         this.author = post.getPlayer().getUser().getUsername();
     }

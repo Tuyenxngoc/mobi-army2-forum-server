@@ -2,7 +2,7 @@ package com.tuyenngoc.army2forum.service;
 
 import com.tuyenngoc.army2forum.domain.dto.pagination.PaginationResponseDto;
 import com.tuyenngoc.army2forum.domain.dto.pagination.PaginationSortRequestDto;
-import com.tuyenngoc.army2forum.domain.dto.response.GetPostResponseDto;
+import com.tuyenngoc.army2forum.domain.dto.response.post.GetPostResponseDto;
 import com.tuyenngoc.army2forum.domain.entity.Player;
 import org.springframework.security.core.GrantedAuthority;
 

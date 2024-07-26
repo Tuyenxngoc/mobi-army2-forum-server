@@ -12,7 +12,7 @@ import lombok.Setter;
 @AllArgsConstructor
 public class PlayerDto {
 
-    private Long id;
+    private long id;
 
     private String avatar;
 

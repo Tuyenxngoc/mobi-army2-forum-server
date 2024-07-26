@@ -2,14 +2,16 @@ package com.tuyenngoc.army2forum.service.impl;
 
 import com.tuyenngoc.army2forum.constant.*;
 import com.tuyenngoc.army2forum.domain.dto.pagination.PaginationFullRequestDto;
+import com.tuyenngoc.army2forum.domain.dto.pagination.PaginationRequestDto;
 import com.tuyenngoc.army2forum.domain.dto.pagination.PaginationResponseDto;
-import com.tuyenngoc.army2forum.domain.dto.pagination.PaginationSortRequestDto;
 import com.tuyenngoc.army2forum.domain.dto.pagination.PagingMeta;
 import com.tuyenngoc.army2forum.domain.dto.request.CreatePostRequestDto;
 import com.tuyenngoc.army2forum.domain.dto.request.UpdatePostRequestDto;
 import com.tuyenngoc.army2forum.domain.dto.response.CommonResponseDto;
-import com.tuyenngoc.army2forum.domain.dto.response.GetPostDetailResponseDto;
-import com.tuyenngoc.army2forum.domain.dto.response.GetPostResponseDto;
+import com.tuyenngoc.army2forum.domain.dto.response.post.GetPostDetailForAdminResponseDto;
+import com.tuyenngoc.army2forum.domain.dto.response.post.GetPostDetailResponseDto;
+import com.tuyenngoc.army2forum.domain.dto.response.post.GetPostResponseDto;
+import com.tuyenngoc.army2forum.domain.dto.response.post.GetPostsForAdminResponseDto;
 import com.tuyenngoc.army2forum.domain.entity.Category;
 import com.tuyenngoc.army2forum.domain.entity.Player;
 import com.tuyenngoc.army2forum.domain.entity.Post;
@@ -18,10 +20,7 @@ import com.tuyenngoc.army2forum.domain.mapper.PostMapper;
 import com.tuyenngoc.army2forum.domain.specification.PostSpecification;
 import com.tuyenngoc.army2forum.exception.InvalidException;
 import com.tuyenngoc.army2forum.exception.NotFoundException;
-import com.tuyenngoc.army2forum.repository.CategoryRepository;
-import com.tuyenngoc.army2forum.repository.PlayerRepository;
-import com.tuyenngoc.army2forum.repository.PostFollowRepository;
-import com.tuyenngoc.army2forum.repository.PostRepository;
+import com.tuyenngoc.army2forum.repository.*;
 import com.tuyenngoc.army2forum.security.CustomUserDetails;
 import com.tuyenngoc.army2forum.service.PlayerNotificationService;
 import com.tuyenngoc.army2forum.service.PostService;
@@ -58,12 +57,47 @@ public class PostServiceImpl implements PostService {
 
     private final PostFollowRepository postFollowRepository;
 
+    private final LikeRepository likeRepository;
+
     private final PlayerNotificationService playerNotificationService;
 
     @Override
     public Post getPostById(Long postId) {
         return postRepository.findById(postId)
                 .orElseThrow(() -> new NotFoundException(ErrorMessage.Post.ERR_NOT_FOUND_ID, postId));
+    }
+
+    @Override
+    public GetPostDetailResponseDto getPostById(Long postId, CustomUserDetails userDetails) {
+        Post post = postRepository.findByIdAndIsApprovedTrue(postId)
+                .orElseThrow(() -> new NotFoundException(ErrorMessage.Post.ERR_NOT_FOUND_ID, postId));
+
+        postRepository.incrementViewCount(postId);
+
+        GetPostDetailResponseDto responseDto = new GetPostDetailResponseDto(post);
+        if (userDetails != null) {
+            boolean userHasLiked = likeRepository.existsByPostIdAndPlayerId(postId, userDetails.getPlayerId());
+            responseDto.getLike().setHasLikes(userHasLiked);
+
+            boolean isFollowing = postFollowRepository.existsByPostIdAndPlayerId(postId, userDetails.getPlayerId());
+            responseDto.setFollowed(isFollowing);
+        }
+
+        return responseDto;
+    }
+
+    @Override
+    public PaginationResponseDto<GetPostResponseDto> getPosts(PaginationRequestDto requestDto, Long categoryId) {
+        Pageable pageable = PaginationUtil.buildPageable(requestDto);
+
+        Page<GetPostResponseDto> page = postRepository.getPosts(pageable, categoryId);
+        PagingMeta pagingMeta = PaginationUtil.buildPagingMeta(requestDto, page);
+
+        PaginationResponseDto<GetPostResponseDto> responseDto = new PaginationResponseDto<>();
+        responseDto.setItems(page.getContent());
+        responseDto.setMeta(pagingMeta);
+
+        return responseDto;
     }
 
     @Override
@@ -150,63 +184,6 @@ public class PostServiceImpl implements PostService {
     }
 
     @Override
-    public GetPostDetailResponseDto getPostById(Long postId, CustomUserDetails userDetails) {
-        String[] requiredRoles = {RoleConstant.ROLE_ADMIN.name(), RoleConstant.ROLE_SUPER_ADMIN.name()};
-        boolean hasRequiredRole = SecurityUtils.hasRequiredRole(userDetails, requiredRoles);
-
-        Post post;
-        if (hasRequiredRole) {
-            post = getPostById(postId);
-        } else {
-            post = postRepository.findByIdAndIsApprovedTrue(postId)
-                    .orElseThrow(() -> new NotFoundException(ErrorMessage.Post.ERR_NOT_FOUND_ID, postId));
-        }
-
-        postRepository.incrementViewCount(postId);
-        GetPostDetailResponseDto responseDto = new GetPostDetailResponseDto(post);
-
-        if (userDetails != null) {
-            boolean userHasLiked = post.getLikes().stream()
-                    .anyMatch(like -> like.getPlayer().getId().equals(userDetails.getPlayerId()));
-            responseDto.getLike().setHasLikes(userHasLiked);
-
-            boolean isFollowing = postFollowRepository.existsByPostIdAndPlayerId(postId, userDetails.getPlayerId());
-            responseDto.setFollowed(isFollowing);
-        }
-
-        if (!hasRequiredRole) {
-            responseDto.setApprovedBy(null);
-        }
-
-        return responseDto;
-    }
-
-    @Override
-    public PaginationResponseDto<GetPostResponseDto> getPosts(PaginationFullRequestDto requestDto) {
-        List<String> sortByFields = List.of("priority", "createdDate");
-        List<Boolean> sortDirections = List.of(false, false);
-
-        Pageable pageable = PaginationUtil.buildPageable(requestDto, sortByFields, sortDirections);
-
-        Page<Post> page = postRepository.findAll(
-                PostSpecification.filterPosts(requestDto.getKeyword(), requestDto.getSearchBy()).and(PostSpecification.isApprovedTrue()),
-                pageable
-        );
-
-        List<GetPostResponseDto> items = page.getContent().stream()
-                .map(GetPostResponseDto::new)
-                .collect(Collectors.toList());
-
-        PagingMeta pagingMeta = PaginationUtil.buildPagingMeta(requestDto, SortByDataConstant.POST, page);
-
-        PaginationResponseDto<GetPostResponseDto> responseDto = new PaginationResponseDto<>();
-        responseDto.setItems(items);
-        responseDto.setMeta(pagingMeta);
-
-        return responseDto;
-    }
-
-    @Override
     @Transactional
     public CommonResponseDto approvePost(Long postId, Long playerId) {
         Post post = getPostById(postId);
@@ -232,20 +209,6 @@ public class PostServiceImpl implements PostService {
 
         String successMessage = messageSource.getMessage(SuccessMessage.Post.APPROVED, null, LocaleContextHolder.getLocale());
         return new CommonResponseDto(successMessage);
-    }
-
-    @Override
-    public PaginationResponseDto<GetPostResponseDto> getPostsForReview(PaginationSortRequestDto requestDto) {
-        Pageable pageable = PaginationUtil.buildPageable(requestDto, SortByDataConstant.POST);
-
-        Page<GetPostResponseDto> page = postRepository.findByApprovedFalse(pageable);
-        PagingMeta pagingMeta = PaginationUtil.buildPagingMeta(requestDto, SortByDataConstant.POST, page);
-
-        PaginationResponseDto<GetPostResponseDto> responseDto = new PaginationResponseDto<>();
-        responseDto.setItems(page.getContent());
-        responseDto.setMeta(pagingMeta);
-
-        return responseDto;
     }
 
     @Override
@@ -291,5 +254,34 @@ public class PostServiceImpl implements PostService {
             String unfollowSuccessMessage = messageSource.getMessage(SuccessMessage.Post.UNFOLLOWED, null, LocaleContextHolder.getLocale());
             return new CommonResponseDto(unfollowSuccessMessage);
         }
+    }
+
+    @Override
+    public PaginationResponseDto<GetPostsForAdminResponseDto> getPostsForAdmin(PaginationFullRequestDto requestDto) {
+        Pageable pageable = PaginationUtil.buildPageable(requestDto, SortByDataConstant.POST);
+
+        Page<Post> page = postRepository.findAll(
+                PostSpecification.filterPosts(requestDto.getKeyword(), requestDto.getSearchBy()),
+                pageable
+        );
+
+        List<GetPostsForAdminResponseDto> items = page.getContent().stream()
+                .map(GetPostsForAdminResponseDto::new)
+                .collect(Collectors.toList());
+
+        PagingMeta pagingMeta = PaginationUtil.buildPagingMeta(requestDto, SortByDataConstant.POST, page);
+
+        PaginationResponseDto<GetPostsForAdminResponseDto> responseDto = new PaginationResponseDto<>();
+        responseDto.setItems(items);
+        responseDto.setMeta(pagingMeta);
+
+        return responseDto;
+    }
+
+    @Override
+    public GetPostDetailForAdminResponseDto getPostByIdForAdmin(Long id) {
+        Post post = getPostById(id);
+
+        return new GetPostDetailForAdminResponseDto(post);
     }
 }

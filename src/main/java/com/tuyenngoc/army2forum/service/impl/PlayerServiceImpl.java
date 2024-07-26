@@ -5,7 +5,7 @@ import com.tuyenngoc.army2forum.constant.SortByDataConstant;
 import com.tuyenngoc.army2forum.domain.dto.pagination.PaginationResponseDto;
 import com.tuyenngoc.army2forum.domain.dto.pagination.PaginationSortRequestDto;
 import com.tuyenngoc.army2forum.domain.dto.pagination.PagingMeta;
-import com.tuyenngoc.army2forum.domain.dto.response.GetPostResponseDto;
+import com.tuyenngoc.army2forum.domain.dto.response.post.GetPostResponseDto;
 import com.tuyenngoc.army2forum.domain.entity.Player;
 import com.tuyenngoc.army2forum.domain.entity.Role;
 import com.tuyenngoc.army2forum.exception.NotFoundException;

@@ -25,7 +25,7 @@ public class PaginationUtil {
         return PageRequest.of(requestDto.getPageNum(), requestDto.getPageSize(), sort);
     }
 
-    public static Pageable buildPageable(PaginationSortRequestDto requestDto, List<String> sortByFields, List<Boolean> sortDirections) {
+    public static Pageable buildPageable(PaginationRequestDto requestDto, List<String> sortByFields, List<Boolean> sortDirections) {
         if (sortByFields.size() != sortDirections.size()) {
             throw new IllegalArgumentException("Number of sort fields and sort directions must match");
         }

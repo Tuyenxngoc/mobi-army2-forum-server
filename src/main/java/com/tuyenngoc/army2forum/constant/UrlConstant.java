@@ -109,10 +109,13 @@ public class UrlConstant {
         public static final String UPDATE = PRE_FIX + "/{id}";
         public static final String DELETE = PRE_FIX + "/{id}";
 
-        public static final String REVIEW = PRE_FIX + "/review";
         public static final String APPROVE = PRE_FIX + "/{id}/approve";
         public static final String LOCK = PRE_FIX + "/{id}/lock";
         public static final String FOLLOW = PRE_FIX + "/{id}/follow";
+
+        public static final String ADMIN_GET_ALL = ADMIN_URL + PRE_FIX;
+        public static final String ADMIN_GET_BY_ID = ADMIN_URL + PRE_FIX + "/{id}";
+
     }
 
     public static class Role {

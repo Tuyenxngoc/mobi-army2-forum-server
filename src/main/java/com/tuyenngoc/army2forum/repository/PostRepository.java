@@ -39,9 +39,9 @@ public interface PostRepository extends JpaRepository<Post, Long>, JpaSpecificat
     void incrementViewCount(@Param("postId") Long postId);
 
     @Query("SELECT new com.tuyenngoc.army2forum.domain.dto.response.post.GetPostResponseDto(p) " +
-            "FROM Post p JOIN p.category c " +
+            "FROM Post p LEFT JOIN p.category c " +
             "WHERE p.isApproved = TRUE AND " +
-            "c.id = :categoryId " +
+            "(:categoryId IS NULL OR p.category.id = :categoryId) " +
             "ORDER BY p.priority DESC, p.createdDate DESC")
     Page<GetPostResponseDto> getPosts(Pageable pageable, @Param("categoryId") Long categoryId);
 

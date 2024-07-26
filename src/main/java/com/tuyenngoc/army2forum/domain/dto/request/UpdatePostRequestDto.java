@@ -17,4 +17,6 @@ public class UpdatePostRequestDto {
 
     private Long categoryId;
 
+    private Integer priority;
+
 }

@@ -116,6 +116,9 @@ public class PostServiceImpl implements PostService {
             }
             post.setCategory(new Category(requestDto.getCategoryId()));
         }
+        if (requestDto.getPriority() != null) {
+            post.setPriority(requestDto.getPriority());
+        }
         if (requestDto.getTitle() != null && !requestDto.getTitle().isEmpty()) {
             post.setTitle(requestDto.getTitle());
         }
@@ -186,7 +189,7 @@ public class PostServiceImpl implements PostService {
         Pageable pageable = PaginationUtil.buildPageable(requestDto, sortByFields, sortDirections);
 
         Page<Post> page = postRepository.findAll(
-                PostSpecification.filterPosts(requestDto.getKeyword(), requestDto.getSearchBy()),
+                PostSpecification.filterPosts(requestDto.getKeyword(), requestDto.getSearchBy()).and(PostSpecification.isApprovedTrue()),
                 pageable
         );
 

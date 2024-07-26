@@ -1,8 +1,6 @@
 package com.tuyenngoc.army2forum.domain.specification;
 
-import com.tuyenngoc.army2forum.domain.entity.Category_;
-import com.tuyenngoc.army2forum.domain.entity.Post;
-import com.tuyenngoc.army2forum.domain.entity.Post_;
+import com.tuyenngoc.army2forum.domain.entity.*;
 import com.tuyenngoc.army2forum.util.SpecificationsUtil;
 import jakarta.persistence.criteria.Predicate;
 import org.apache.commons.lang3.StringUtils;
@@ -12,7 +10,12 @@ public class PostSpecification {
 
     public static Specification<Post> hasTitle(String title) {
         return (root, query, criteriaBuilder) ->
-                criteriaBuilder.equal(root.get(Post_.TITLE), title);
+                criteriaBuilder.equal(root.get(Post_.title), title);
+    }
+
+    public static Specification<Post> isApprovedTrue() {
+        return (root, query, criteriaBuilder) ->
+                criteriaBuilder.isTrue(root.get(Post_.isApproved));
     }
 
     public static Specification<Post> filterPosts(String keyword, String searchBy) {
@@ -24,6 +27,8 @@ public class PostSpecification {
             if (StringUtils.isNotBlank(keyword) && StringUtils.isNotBlank(searchBy)) {
                 switch (searchBy) {
                     case Post_.TITLE -> predicate = builder.and(predicate, builder.like(root.get(Post_.title), "%" + keyword + "%"));
+
+                    case Post_.PLAYER -> predicate = builder.and(predicate, builder.like(root.get(Post_.player).get(Player_.user).get(User_.username), "%" + keyword + "%"));
 
                     case Post_.CATEGORY -> predicate = builder.and(predicate, builder.equal(root.get(Post_.category).get(Category_.id),
                             SpecificationsUtil.castToRequiredType(root.get(Post_.category).get(Category_.id).getJavaType(), keyword)));

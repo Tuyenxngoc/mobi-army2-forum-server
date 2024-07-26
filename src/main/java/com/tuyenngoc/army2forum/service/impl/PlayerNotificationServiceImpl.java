@@ -15,7 +15,6 @@ import com.tuyenngoc.army2forum.domain.mapper.PlayerNotificationMapper;
 import com.tuyenngoc.army2forum.exception.NotFoundException;
 import com.tuyenngoc.army2forum.repository.PlayerNotificationRepository;
 import com.tuyenngoc.army2forum.repository.PlayerRepository;
-import com.tuyenngoc.army2forum.repository.RoleRepository;
 import com.tuyenngoc.army2forum.service.PlayerNotificationService;
 import com.tuyenngoc.army2forum.util.PaginationUtil;
 import lombok.RequiredArgsConstructor;

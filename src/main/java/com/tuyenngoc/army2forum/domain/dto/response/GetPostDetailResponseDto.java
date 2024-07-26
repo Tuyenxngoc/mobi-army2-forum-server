@@ -25,6 +25,8 @@ public class GetPostDetailResponseDto extends UserDateAuditingDto {
 
     private int viewCount;
 
+    private int priority;
+
     private boolean isLocked;
 
     private boolean followed;
@@ -32,6 +34,9 @@ public class GetPostDetailResponseDto extends UserDateAuditingDto {
     private PlayerDto player;
 
     private LikeDto like;
+
+    @JsonInclude(JsonInclude.Include.NON_NULL)
+    private Long categoryId;
 
     @JsonInclude(JsonInclude.Include.NON_NULL)
     private PlayerDto approvedBy;
@@ -49,9 +54,13 @@ public class GetPostDetailResponseDto extends UserDateAuditingDto {
         this.title = post.getTitle();
         this.content = post.getContent();
         this.viewCount = post.getViewCount();
+        this.priority = post.getPriority();
         this.isLocked = post.isLocked();
         this.player = new PlayerDto(post.getPlayer());
         this.like = new LikeDto(post.getLikes());
+        if (post.getCategory() != null) {
+            this.categoryId = post.getCategory().getId();
+        }
         if (post.getApprovedBy() != null) {
             this.approvedBy = new PlayerDto(post.getApprovedBy());
         }

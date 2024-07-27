@@ -24,10 +24,6 @@ public class Player extends DateAuditing {
     @Column(name = "player_id")
     private Long id;
 
-    private int xu;
-
-    private int luong;
-
     private boolean isOnline;
 
     @OneToOne(fetch = FetchType.LAZY)

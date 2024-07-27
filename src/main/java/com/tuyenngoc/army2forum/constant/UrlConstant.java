@@ -37,6 +37,9 @@ public class UrlConstant {
         public static final String GET_BY_ID = PRE_FIX + "/{id}";
         public static final String UPDATE = PRE_FIX + "/{id}";
         public static final String DELETE = PRE_FIX + "/{id}";
+
+        public static final String ADMIN_GET_ALL = ADMIN_URL + PRE_FIX;
+        public static final String ADMIN_GET_BY_ID = ADMIN_URL + PRE_FIX + "/{id}";
     }
 
     public static class Notification {

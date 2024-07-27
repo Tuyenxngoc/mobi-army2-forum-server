@@ -149,7 +149,7 @@ public class PostServiceImpl implements PostService {
                 throw new NotFoundException(ErrorMessage.Category.ERR_NOT_FOUND_ID, requestDto.getCategoryId());
             }
             post.setCategory(new Category(requestDto.getCategoryId()));
-        }else{
+        } else {
             post.setCategory(null);
         }
         if (requestDto.getPriority() != null) {

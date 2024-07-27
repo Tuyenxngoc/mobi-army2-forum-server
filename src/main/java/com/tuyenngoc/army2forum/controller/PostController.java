@@ -106,7 +106,7 @@ public class PostController {
     }
 
     @PreAuthorize("hasAnyRole('SUPER_ADMIN', 'ADMIN')")
-    @Operation(summary = "API get posts for admin")
+    @Operation(summary = "API get post by id for admin")
     @GetMapping(UrlConstant.Post.ADMIN_GET_BY_ID)
     public ResponseEntity<?> getPostByIdForAdmin(@PathVariable Long id) {
         return VsResponseUtil.success(postService.getPostByIdForAdmin(id));

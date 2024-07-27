@@ -24,7 +24,7 @@ public class Category extends UserDateAuditing {
     @Column(name = "category_id")
     private Long id;
 
-    @Column(nullable = false)
+    @Column(nullable = false, unique = true)
     private String name;
 
     private String description;

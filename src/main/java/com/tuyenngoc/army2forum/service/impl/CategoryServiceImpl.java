@@ -2,34 +2,44 @@ package com.tuyenngoc.army2forum.service.impl;
 
 import com.tuyenngoc.army2forum.config.properties.AdminInfo;
 import com.tuyenngoc.army2forum.constant.ErrorMessage;
+import com.tuyenngoc.army2forum.constant.SortByDataConstant;
+import com.tuyenngoc.army2forum.constant.SuccessMessage;
 import com.tuyenngoc.army2forum.domain.dto.CategoryDto;
+import com.tuyenngoc.army2forum.domain.dto.pagination.PaginationFullRequestDto;
+import com.tuyenngoc.army2forum.domain.dto.pagination.PaginationResponseDto;
+import com.tuyenngoc.army2forum.domain.dto.pagination.PagingMeta;
+import com.tuyenngoc.army2forum.domain.dto.request.CategoryRequestDto;
+import com.tuyenngoc.army2forum.domain.dto.response.CommonResponseDto;
+import com.tuyenngoc.army2forum.domain.dto.response.category.GetCategoryResponseDto;
 import com.tuyenngoc.army2forum.domain.entity.Category;
+import com.tuyenngoc.army2forum.domain.mapper.CategoryMapper;
+import com.tuyenngoc.army2forum.domain.specification.CategorySpecification;
+import com.tuyenngoc.army2forum.exception.InvalidException;
 import com.tuyenngoc.army2forum.exception.NotFoundException;
 import com.tuyenngoc.army2forum.repository.CategoryRepository;
 import com.tuyenngoc.army2forum.service.CategoryService;
+import com.tuyenngoc.army2forum.util.PaginationUtil;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.context.MessageSource;
+import org.springframework.context.i18n.LocaleContextHolder;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
+import java.util.stream.Collectors;
 
 @Slf4j
 @Service
 @RequiredArgsConstructor
 public class CategoryServiceImpl implements CategoryService {
 
+    private final MessageSource messageSource;
+
+    private final CategoryMapper categoryMapper;
+
     private final CategoryRepository categoryRepository;
-
-    @Override
-    public Category getCategoryById(Long id) {
-        return categoryRepository.findById(id)
-                .orElseThrow(() -> new NotFoundException(ErrorMessage.Category.ERR_NOT_FOUND_ID, id));
-    }
-
-    @Override
-    public List<CategoryDto> getAllCategories() {
-        return categoryRepository.getAllCategories();
-    }
 
     @Override
     public void initCategories(AdminInfo adminInfo) {
@@ -44,5 +54,85 @@ public class CategoryServiceImpl implements CategoryService {
 
             log.info("Added category " + categoryRepository.count() + " categories");
         }
+    }
+
+    @Override
+    public Category getCategoryById(Long categoryId) {
+        return categoryRepository.findById(categoryId)
+                .orElseThrow(() -> new NotFoundException(ErrorMessage.Category.ERR_NOT_FOUND_ID, categoryId));
+    }
+
+    @Override
+    public List<CategoryDto> getCategories() {
+        return categoryRepository.getAllCategories();
+    }
+
+    @Override
+    public CategoryDto getCategoryByIdForAdmin(Long categoryId) {
+        Category category = categoryRepository.findById(categoryId)
+                .orElseThrow(() -> new NotFoundException(ErrorMessage.Category.ERR_NOT_FOUND_ID, categoryId));
+
+        return new CategoryDto(category);
+    }
+
+    @Override
+    public PaginationResponseDto<GetCategoryResponseDto> getCategoriesForAdmin(PaginationFullRequestDto requestDto) {
+        Pageable pageable = PaginationUtil.buildPageable(requestDto, SortByDataConstant.CATEGORY);
+
+        Page<Category> page = categoryRepository.findAll(
+                CategorySpecification.filterCategories(requestDto.getKeyword(), requestDto.getSearchBy()),
+                pageable
+        );
+
+        List<GetCategoryResponseDto> items = page.getContent().stream()
+                .map(GetCategoryResponseDto::new)
+                .collect(Collectors.toList());
+
+        PagingMeta pagingMeta = PaginationUtil.buildPagingMeta(requestDto, SortByDataConstant.CATEGORY, page);
+
+        PaginationResponseDto<GetCategoryResponseDto> responseDto = new PaginationResponseDto<>();
+        responseDto.setItems(items);
+        responseDto.setMeta(pagingMeta);
+
+        return responseDto;
+    }
+
+    @Override
+    public CommonResponseDto createCategory(CategoryRequestDto requestDto) {
+        boolean existsByName = categoryRepository.existsByName(requestDto.getName());
+        if (existsByName) {
+            throw new InvalidException(ErrorMessage.Category.ERR_DUPLICATE_NAME, requestDto.getName());
+        }
+
+        Category category = categoryMapper.toCategory(requestDto);
+
+        categoryRepository.save(category);
+
+        String message = messageSource.getMessage(SuccessMessage.CREATE, null, LocaleContextHolder.getLocale());
+        return new CommonResponseDto(message);
+    }
+
+    @Override
+    public CommonResponseDto updateCategory(Long categoryId, CategoryRequestDto requestDto) {
+        boolean existsByName = categoryRepository.existsByName(requestDto.getName());
+        if (existsByName) {
+            throw new InvalidException(ErrorMessage.Category.ERR_DUPLICATE_NAME, requestDto.getName());
+        }
+
+        Category category = categoryMapper.toCategory(requestDto);
+        category.setId(categoryId);
+
+        categoryRepository.save(category);
+
+        String message = messageSource.getMessage(SuccessMessage.UPDATE, null, LocaleContextHolder.getLocale());
+        return new CommonResponseDto(message);
+    }
+
+    @Override
+    public CommonResponseDto deleteCategory(Long categoryId) {
+        categoryRepository.deleteById(categoryId);
+
+        String message = messageSource.getMessage(SuccessMessage.DELETE, null, LocaleContextHolder.getLocale());
+        return new CommonResponseDto(message);
     }
 }

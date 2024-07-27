@@ -1,4 +1,4 @@
-package com.tuyenngoc.army2forum.domain.dto.request;
+package com.tuyenngoc.army2forum.domain.dto.request.post;
 
 import com.tuyenngoc.army2forum.constant.ErrorMessage;
 import jakarta.validation.constraints.NotBlank;
@@ -11,12 +11,16 @@ import lombok.Setter;
 @Setter
 @NoArgsConstructor
 @AllArgsConstructor
-public class LoginRequestDto {
+public class CreatePostRequestDto {
 
     @NotBlank(message = ErrorMessage.INVALID_NOT_BLANK_FIELD)
-    private String username;
+    private String title;
 
     @NotBlank(message = ErrorMessage.INVALID_NOT_BLANK_FIELD)
-    private String password;
+    private String content;
+
+    private Long categoryId;
+
+    private Integer priority;
 
 }

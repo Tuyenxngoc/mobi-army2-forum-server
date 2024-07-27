@@ -1,6 +1,6 @@
 package com.tuyenngoc.army2forum.domain.mapper;
 
-import com.tuyenngoc.army2forum.domain.dto.request.CreatePostRequestDto;
+import com.tuyenngoc.army2forum.domain.dto.request.post.CreatePostRequestDto;
 import com.tuyenngoc.army2forum.domain.entity.Post;
 import org.mapstruct.Mapper;
 

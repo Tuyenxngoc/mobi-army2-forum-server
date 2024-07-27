@@ -1,4 +1,4 @@
-package com.tuyenngoc.army2forum.domain.dto.request;
+package com.tuyenngoc.army2forum.domain.dto.request.auth;
 
 import com.tuyenngoc.army2forum.constant.ErrorMessage;
 import jakarta.validation.constraints.NotBlank;
@@ -11,9 +11,12 @@ import lombok.Setter;
 @Setter
 @NoArgsConstructor
 @AllArgsConstructor
-public class TokenRefreshRequestDto {
+public class LoginRequestDto {
 
     @NotBlank(message = ErrorMessage.INVALID_NOT_BLANK_FIELD)
-    private String refreshToken;
+    private String username;
+
+    @NotBlank(message = ErrorMessage.INVALID_NOT_BLANK_FIELD)
+    private String password;
 
 }

@@ -4,7 +4,7 @@ import com.tuyenngoc.army2forum.annotation.CurrentUser;
 import com.tuyenngoc.army2forum.annotation.RestApiV1;
 import com.tuyenngoc.army2forum.base.VsResponseUtil;
 import com.tuyenngoc.army2forum.constant.UrlConstant;
-import com.tuyenngoc.army2forum.domain.dto.request.*;
+import com.tuyenngoc.army2forum.domain.dto.request.auth.*;
 import com.tuyenngoc.army2forum.security.CustomUserDetails;
 import com.tuyenngoc.army2forum.service.AuthService;
 import io.swagger.v3.oas.annotations.Operation;

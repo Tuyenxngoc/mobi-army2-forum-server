@@ -19,6 +19,8 @@ public class SpecificationsUtil {
                 return Short.valueOf(value);
             } else if (fieldType.isAssignableFrom(Byte.class)) {
                 return Byte.valueOf(value);
+            } else if (fieldType.isAssignableFrom(Boolean.class)) {
+                return Boolean.valueOf(value);
             }
         } catch (NumberFormatException e) {
             throw new InvalidException(ErrorMessage.INVALID_NUMBER_FORMAT);

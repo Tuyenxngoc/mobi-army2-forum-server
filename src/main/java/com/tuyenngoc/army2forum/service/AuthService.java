@@ -1,6 +1,6 @@
 package com.tuyenngoc.army2forum.service;
 
-import com.tuyenngoc.army2forum.domain.dto.request.*;
+import com.tuyenngoc.army2forum.domain.dto.request.auth.*;
 import com.tuyenngoc.army2forum.domain.dto.response.CommonResponseDto;
 import com.tuyenngoc.army2forum.domain.dto.response.auth.LoginResponseDto;
 import com.tuyenngoc.army2forum.domain.dto.response.auth.TokenRefreshResponseDto;

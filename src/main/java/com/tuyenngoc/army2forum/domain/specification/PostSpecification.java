@@ -57,6 +57,16 @@ public class PostSpecification {
                         predicate = builder.and(predicate, builder.like(postCategoryJoin.get(Category_.name), "%" + keyword + "%"));
                     }
 
+                    case Post_.IS_APPROVED -> {
+                        predicate = builder.and(predicate, builder.equal(root.get(Post_.isApproved),
+                                SpecificationsUtil.castToRequiredType(root.get(Post_.isApproved).getJavaType(), keyword)));
+                    }
+
+                    case Post_.IS_LOCKED -> {
+                        predicate = builder.and(predicate, builder.equal(root.get(Post_.isLocked),
+                                SpecificationsUtil.castToRequiredType(root.get(Post_.isLocked).getJavaType(), keyword)));
+                    }
+
                     case Post_.VIEW_COUNT -> predicate = builder.and(predicate, builder.equal(root.get(Post_.viewCount),
                             SpecificationsUtil.castToRequiredType(root.get(Post_.viewCount).getJavaType(), keyword)));
                 }

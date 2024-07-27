@@ -5,8 +5,8 @@ import com.tuyenngoc.army2forum.domain.dto.pagination.PaginationFullRequestDto;
 import com.tuyenngoc.army2forum.domain.dto.pagination.PaginationRequestDto;
 import com.tuyenngoc.army2forum.domain.dto.pagination.PaginationResponseDto;
 import com.tuyenngoc.army2forum.domain.dto.pagination.PagingMeta;
-import com.tuyenngoc.army2forum.domain.dto.request.CreatePostRequestDto;
-import com.tuyenngoc.army2forum.domain.dto.request.UpdatePostRequestDto;
+import com.tuyenngoc.army2forum.domain.dto.request.post.CreatePostRequestDto;
+import com.tuyenngoc.army2forum.domain.dto.request.post.UpdatePostRequestDto;
 import com.tuyenngoc.army2forum.domain.dto.response.CommonResponseDto;
 import com.tuyenngoc.army2forum.domain.dto.response.post.GetPostDetailForAdminResponseDto;
 import com.tuyenngoc.army2forum.domain.dto.response.post.GetPostDetailResponseDto;
@@ -140,7 +140,7 @@ public class PostServiceImpl implements PostService {
 
     @Override
     @Transactional
-    public Post updatePost(Long postId, UpdatePostRequestDto requestDto) {
+    public CommonResponseDto updatePost(Long postId, UpdatePostRequestDto requestDto) {
         Post post = getPostById(postId);
 
         if (requestDto.getCategoryId() != null) {
@@ -160,7 +160,10 @@ public class PostServiceImpl implements PostService {
             post.setContent(requestDto.getContent());
         }
 
-        return postRepository.save(post);
+        postRepository.save(post);
+
+        String message = messageSource.getMessage(SuccessMessage.UPDATE, null, LocaleContextHolder.getLocale());
+        return new CommonResponseDto(message);
     }
 
     @Override

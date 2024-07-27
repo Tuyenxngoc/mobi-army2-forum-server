@@ -4,7 +4,7 @@ import com.tuyenngoc.army2forum.constant.ErrorMessage;
 import com.tuyenngoc.army2forum.constant.RoleConstant;
 import com.tuyenngoc.army2forum.constant.SuccessMessage;
 import com.tuyenngoc.army2forum.domain.dto.common.DataMailDto;
-import com.tuyenngoc.army2forum.domain.dto.request.*;
+import com.tuyenngoc.army2forum.domain.dto.request.auth.*;
 import com.tuyenngoc.army2forum.domain.dto.response.CommonResponseDto;
 import com.tuyenngoc.army2forum.domain.dto.response.auth.LoginResponseDto;
 import com.tuyenngoc.army2forum.domain.dto.response.auth.TokenRefreshResponseDto;

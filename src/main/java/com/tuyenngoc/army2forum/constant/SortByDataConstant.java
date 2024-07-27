@@ -18,6 +18,7 @@ public enum SortByDataConstant implements SortByInterface {
                 case "viewCount" -> "viewCount";
                 case "isLocked" -> "isLocked";
                 case "category" -> "category";
+                case "createdBy" -> "createdBy";
                 case "lastModifiedDate" -> "lastModifiedDate";
                 default -> "createdDate";
             };

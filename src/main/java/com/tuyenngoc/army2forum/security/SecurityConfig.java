@@ -84,7 +84,7 @@ public class SecurityConfig {
                                 "/api/v1/notifications",
                                 "/api/v1/posts",
                                 "/api/v1/posts/*",
-                                "api/v1/comments/by-post/*").permitAll()
+                                "/api/v1/posts/*/comments").permitAll()
                         .anyRequest().authenticated()
                 )
                 .sessionManagement(session -> session.sessionCreationPolicy(SessionCreationPolicy.STATELESS))

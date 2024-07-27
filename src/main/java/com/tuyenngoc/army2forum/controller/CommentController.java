@@ -5,8 +5,7 @@ import com.tuyenngoc.army2forum.annotation.RestApiV1;
 import com.tuyenngoc.army2forum.base.VsResponseUtil;
 import com.tuyenngoc.army2forum.constant.UrlConstant;
 import com.tuyenngoc.army2forum.domain.dto.pagination.PaginationRequestDto;
-import com.tuyenngoc.army2forum.domain.dto.request.NewCommentRequestDto;
-import com.tuyenngoc.army2forum.domain.dto.request.UpdateCommentRequestDto;
+import com.tuyenngoc.army2forum.domain.dto.request.CommentRequestDto;
 import com.tuyenngoc.army2forum.security.CustomUserDetails;
 import com.tuyenngoc.army2forum.service.CommentService;
 import io.swagger.v3.oas.annotations.Operation;
@@ -28,10 +27,12 @@ public class CommentController {
     @Operation(summary = "API Create Comment")
     @PostMapping(UrlConstant.Comment.CREATE)
     public ResponseEntity<?> createComment(
-            @Valid @RequestBody NewCommentRequestDto requestDto,
+            @PathVariable Long postId,
+            @Valid @RequestBody CommentRequestDto requestDto,
             @CurrentUser CustomUserDetails userDetails
+
     ) {
-        return VsResponseUtil.success(commentService.createComment(userDetails.getPlayerId(), requestDto));
+        return VsResponseUtil.success(commentService.createComment(userDetails.getPlayerId(), postId, requestDto));
     }
 
     @PreAuthorize("hasAnyRole('SUPER_ADMIN', 'ADMIN')")
@@ -39,7 +40,7 @@ public class CommentController {
     @PutMapping(UrlConstant.Comment.UPDATE)
     public ResponseEntity<?> updateComment(
             @PathVariable Long id,
-            @Valid @RequestBody UpdateCommentRequestDto requestDto
+            @Valid @RequestBody CommentRequestDto requestDto
     ) {
         return VsResponseUtil.success(commentService.updateComment(id, requestDto));
     }

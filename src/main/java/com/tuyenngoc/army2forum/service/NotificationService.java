@@ -1,19 +1,20 @@
 package com.tuyenngoc.army2forum.service;
 
-import com.tuyenngoc.army2forum.domain.dto.request.CreateNotificationRequestDto;
+import com.tuyenngoc.army2forum.domain.dto.request.NotificationRequestDto;
+import com.tuyenngoc.army2forum.domain.dto.response.CommonResponseDto;
 import com.tuyenngoc.army2forum.domain.entity.Notification;
 
 import java.util.List;
 
 public interface NotificationService {
 
-    Notification createNotification(CreateNotificationRequestDto requestDto);
+    Notification createNotification(NotificationRequestDto requestDto);
 
-    Notification updateNotification(Long id, CreateNotificationRequestDto requestDto);
+    Notification updateNotification(Long notificationId, NotificationRequestDto requestDto);
 
-    void deleteNotification(Long id);
+    CommonResponseDto deleteNotification(Long notificationId);
 
-    Notification getNotificationById(Long id);
+    Notification getNotificationById(Long notificationId);
 
     List<Notification> getAllNotifications();
 

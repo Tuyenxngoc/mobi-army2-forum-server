@@ -5,8 +5,7 @@ import com.tuyenngoc.army2forum.constant.SuccessMessage;
 import com.tuyenngoc.army2forum.domain.dto.pagination.PaginationRequestDto;
 import com.tuyenngoc.army2forum.domain.dto.pagination.PaginationResponseDto;
 import com.tuyenngoc.army2forum.domain.dto.pagination.PagingMeta;
-import com.tuyenngoc.army2forum.domain.dto.request.NewCommentRequestDto;
-import com.tuyenngoc.army2forum.domain.dto.request.UpdateCommentRequestDto;
+import com.tuyenngoc.army2forum.domain.dto.request.CommentRequestDto;
 import com.tuyenngoc.army2forum.domain.dto.response.CommonResponseDto;
 import com.tuyenngoc.army2forum.domain.dto.response.GetCommentResponseDto;
 import com.tuyenngoc.army2forum.domain.entity.Comment;
@@ -41,21 +40,20 @@ public class CommentServiceImpl implements CommentService {
     private final MessageSource messageSource;
 
     @Override
-    public Comment getCommentById(Long id) {
-        return commentRepository.findById(id)
-                .orElseThrow(() -> new NotFoundException(ErrorMessage.Comment.ERR_NOT_FOUND_ID, id));
+    public Comment getCommentById(Long commentId) {
+        return commentRepository.findById(commentId)
+                .orElseThrow(() -> new NotFoundException(ErrorMessage.Comment.ERR_NOT_FOUND_ID, commentId));
     }
 
     @Override
-    public GetCommentResponseDto createComment(Long playerId, NewCommentRequestDto requestDto) {
-        Comment comment = commentMapper.toComment(requestDto);
-
+    public GetCommentResponseDto createComment(Long playerId, Long postId, CommentRequestDto requestDto) {
         Player player = playerRepository.findById(playerId)
                 .orElseThrow(() -> new NotFoundException(ErrorMessage.Player.ERR_NOT_FOUND_ID, playerId));
 
-        Post post = postRepository.findByIdAndIsLockedFalse(requestDto.getPostId())
-                .orElseThrow(() -> new NotFoundException(ErrorMessage.Post.ERR_NOT_FOUND_ID, requestDto.getPostId()));
+        Post post = postRepository.findByIdAndIsLockedFalse(postId)
+                .orElseThrow(() -> new NotFoundException(ErrorMessage.Post.ERR_NOT_FOUND_ID, postId));
 
+        Comment comment = commentMapper.toComment(requestDto);
         comment.setPlayer(player);
         comment.setPost(post);
 
@@ -65,8 +63,8 @@ public class CommentServiceImpl implements CommentService {
     }
 
     @Override
-    public GetCommentResponseDto updateComment(Long id, UpdateCommentRequestDto requestDto) {
-        Comment comment = getCommentById(id);
+    public GetCommentResponseDto updateComment(Long commentId, CommentRequestDto requestDto) {
+        Comment comment = getCommentById(commentId);
 
         comment.setContent(requestDto.getContent());
         commentRepository.save(comment);
@@ -75,8 +73,8 @@ public class CommentServiceImpl implements CommentService {
     }
 
     @Override
-    public CommonResponseDto deleteComment(Long id) {
-        commentRepository.deleteById(id);
+    public CommonResponseDto deleteComment(Long commentId) {
+        commentRepository.deleteById(commentId);
 
         String message = messageSource.getMessage(SuccessMessage.DELETE, null, LocaleContextHolder.getLocale());
         return new CommonResponseDto(message);

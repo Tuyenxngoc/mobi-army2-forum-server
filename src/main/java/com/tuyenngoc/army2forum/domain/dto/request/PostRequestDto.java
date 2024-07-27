@@ -1,4 +1,4 @@
-package com.tuyenngoc.army2forum.domain.dto.request.post;
+package com.tuyenngoc.army2forum.domain.dto.request;
 
 import com.tuyenngoc.army2forum.constant.ErrorMessage;
 import jakarta.validation.constraints.NotBlank;
@@ -11,7 +11,7 @@ import lombok.Setter;
 @Setter
 @NoArgsConstructor
 @AllArgsConstructor
-public class CreatePostRequestDto {
+public class PostRequestDto {
 
     @NotBlank(message = ErrorMessage.INVALID_NOT_BLANK_FIELD)
     private String title;

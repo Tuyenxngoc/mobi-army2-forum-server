@@ -5,8 +5,7 @@ import com.tuyenngoc.army2forum.domain.dto.pagination.PaginationFullRequestDto;
 import com.tuyenngoc.army2forum.domain.dto.pagination.PaginationRequestDto;
 import com.tuyenngoc.army2forum.domain.dto.pagination.PaginationResponseDto;
 import com.tuyenngoc.army2forum.domain.dto.pagination.PagingMeta;
-import com.tuyenngoc.army2forum.domain.dto.request.post.CreatePostRequestDto;
-import com.tuyenngoc.army2forum.domain.dto.request.post.UpdatePostRequestDto;
+import com.tuyenngoc.army2forum.domain.dto.request.PostRequestDto;
 import com.tuyenngoc.army2forum.domain.dto.response.CommonResponseDto;
 import com.tuyenngoc.army2forum.domain.dto.response.post.GetPostDetailForAdminResponseDto;
 import com.tuyenngoc.army2forum.domain.dto.response.post.GetPostDetailResponseDto;
@@ -102,7 +101,7 @@ public class PostServiceImpl implements PostService {
 
     @Override
     @Transactional
-    public CommonResponseDto createPost(CreatePostRequestDto requestDto, CustomUserDetails userDetails) {
+    public CommonResponseDto createPost(PostRequestDto requestDto, CustomUserDetails userDetails) {
         long pendingPostsCount = postRepository.countByPlayerIdAndIsApprovedFalse(userDetails.getPlayerId());
         if (pendingPostsCount >= MAX_PENDING_POSTS) {
             throw new InvalidException(ErrorMessage.Post.ERR_MAX_PENDING_POSTS, MAX_PENDING_POSTS);
@@ -140,9 +139,11 @@ public class PostServiceImpl implements PostService {
 
     @Override
     @Transactional
-    public CommonResponseDto updatePost(Long postId, UpdatePostRequestDto requestDto) {
+    public CommonResponseDto updatePost(Long postId, PostRequestDto requestDto) {
         Post post = getPostById(postId);
 
+        post.setTitle(requestDto.getTitle());
+        post.setContent(requestDto.getContent());
         if (requestDto.getCategoryId() != null) {
             boolean isCategoryExists = categoryRepository.existsById(requestDto.getCategoryId());
             if (!isCategoryExists) {
@@ -154,12 +155,6 @@ public class PostServiceImpl implements PostService {
         }
         if (requestDto.getPriority() != null) {
             post.setPriority(requestDto.getPriority());
-        }
-        if (requestDto.getTitle() != null && !requestDto.getTitle().isEmpty()) {
-            post.setTitle(requestDto.getTitle());
-        }
-        if (requestDto.getContent() != null && !requestDto.getContent().isEmpty()) {
-            post.setContent(requestDto.getContent());
         }
 
         postRepository.save(post);

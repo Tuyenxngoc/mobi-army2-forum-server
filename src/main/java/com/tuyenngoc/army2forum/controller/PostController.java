@@ -6,8 +6,7 @@ import com.tuyenngoc.army2forum.base.VsResponseUtil;
 import com.tuyenngoc.army2forum.constant.UrlConstant;
 import com.tuyenngoc.army2forum.domain.dto.pagination.PaginationFullRequestDto;
 import com.tuyenngoc.army2forum.domain.dto.pagination.PaginationRequestDto;
-import com.tuyenngoc.army2forum.domain.dto.request.post.CreatePostRequestDto;
-import com.tuyenngoc.army2forum.domain.dto.request.post.UpdatePostRequestDto;
+import com.tuyenngoc.army2forum.domain.dto.request.PostRequestDto;
 import com.tuyenngoc.army2forum.security.CustomUserDetails;
 import com.tuyenngoc.army2forum.service.PostService;
 import io.swagger.v3.oas.annotations.Operation;
@@ -47,7 +46,7 @@ public class PostController {
     @Operation(summary = "API create a new post")
     @PostMapping(UrlConstant.Post.CREATE)
     public ResponseEntity<?> createPost(
-            @Valid @RequestBody CreatePostRequestDto postDto,
+            @Valid @RequestBody PostRequestDto postDto,
             @CurrentUser CustomUserDetails userDetails
     ) {
         return VsResponseUtil.success(postService.createPost(postDto, userDetails));
@@ -58,7 +57,7 @@ public class PostController {
     @PutMapping(UrlConstant.Post.UPDATE)
     public ResponseEntity<?> updatePost(
             @PathVariable Long id,
-            @Valid @RequestBody UpdatePostRequestDto requestDto
+            @Valid @RequestBody PostRequestDto requestDto
     ) {
         return VsResponseUtil.success(postService.updatePost(id, requestDto));
     }

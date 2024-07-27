@@ -3,8 +3,7 @@ package com.tuyenngoc.army2forum.service;
 import com.tuyenngoc.army2forum.domain.dto.pagination.PaginationFullRequestDto;
 import com.tuyenngoc.army2forum.domain.dto.pagination.PaginationRequestDto;
 import com.tuyenngoc.army2forum.domain.dto.pagination.PaginationResponseDto;
-import com.tuyenngoc.army2forum.domain.dto.request.post.CreatePostRequestDto;
-import com.tuyenngoc.army2forum.domain.dto.request.post.UpdatePostRequestDto;
+import com.tuyenngoc.army2forum.domain.dto.request.PostRequestDto;
 import com.tuyenngoc.army2forum.domain.dto.response.CommonResponseDto;
 import com.tuyenngoc.army2forum.domain.dto.response.post.GetPostDetailForAdminResponseDto;
 import com.tuyenngoc.army2forum.domain.dto.response.post.GetPostDetailResponseDto;
@@ -21,9 +20,9 @@ public interface PostService {
 
     PaginationResponseDto<GetPostResponseDto> getPosts(PaginationRequestDto requestDto, Long categoryId);
 
-    CommonResponseDto createPost(CreatePostRequestDto requestDto, CustomUserDetails userDetails);
+    CommonResponseDto createPost(PostRequestDto requestDto, CustomUserDetails userDetails);
 
-    CommonResponseDto updatePost(Long postId, UpdatePostRequestDto requestDto);
+    CommonResponseDto updatePost(Long postId, PostRequestDto requestDto);
 
     CommonResponseDto deletePost(Long postId, CustomUserDetails playerId);
 

@@ -22,6 +22,8 @@ public class GetPostsForAdminResponseDto extends UserDateAuditingDto {
 
     private int favorites;
 
+    private long followers;
+
     private long views;
 
     private boolean locked;
@@ -42,6 +44,7 @@ public class GetPostsForAdminResponseDto extends UserDateAuditingDto {
         this.title = post.getTitle();
         this.comments = post.getComments().size();
         this.favorites = post.getLikes().size();
+        this.followers = post.getFollows().size();
         this.views = post.getViewCount();
         this.locked = post.isLocked();
         this.approved = post.isApproved();

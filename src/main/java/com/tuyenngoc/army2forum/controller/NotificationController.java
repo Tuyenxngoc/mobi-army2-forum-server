@@ -41,8 +41,7 @@ public class NotificationController {
     @Operation(summary = "API Delete Notification")
     @DeleteMapping(UrlConstant.Notification.DELETE)
     public ResponseEntity<?> deleteNotification(@PathVariable Long id) {
-        notificationService.deleteNotification(id);
-        return VsResponseUtil.success(null);
+        return VsResponseUtil.success(notificationService.deleteNotification(id));
     }
 
     @Operation(summary = "API Get Notification by Id")

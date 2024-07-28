@@ -5,7 +5,7 @@ import com.tuyenngoc.army2forum.annotation.RestApiV1;
 import com.tuyenngoc.army2forum.base.VsResponseUtil;
 import com.tuyenngoc.army2forum.constant.UrlConstant;
 import com.tuyenngoc.army2forum.domain.dto.pagination.PaginationRequestDto;
-import com.tuyenngoc.army2forum.domain.dto.request.CreatePlayerNotificationDto;
+import com.tuyenngoc.army2forum.domain.dto.request.PlayerNotificationRequestDto;
 import com.tuyenngoc.army2forum.security.CustomUserDetails;
 import com.tuyenngoc.army2forum.service.PlayerNotificationService;
 import io.swagger.v3.oas.annotations.Operation;
@@ -52,8 +52,8 @@ public class PlayerNotificationController {
 
     @Operation(summary = "API create new player notification")
     @PostMapping(UrlConstant.PlayerNotification.CREATE)
-    public ResponseEntity<?> createPlayerNotification(@Valid @RequestBody CreatePlayerNotificationDto createPlayerNotificationDto) {
-        return VsResponseUtil.success(playerNotificationService.createPlayerNotification(createPlayerNotificationDto));
+    public ResponseEntity<?> createPlayerNotification(@Valid @RequestBody PlayerNotificationRequestDto playerNotificationRequestDto) {
+        return VsResponseUtil.success(playerNotificationService.createPlayerNotification(playerNotificationRequestDto));
     }
 
 }

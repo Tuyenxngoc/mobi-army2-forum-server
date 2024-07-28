@@ -2,7 +2,7 @@ package com.tuyenngoc.army2forum.service;
 
 import com.tuyenngoc.army2forum.domain.dto.pagination.PaginationRequestDto;
 import com.tuyenngoc.army2forum.domain.dto.pagination.PaginationResponseDto;
-import com.tuyenngoc.army2forum.domain.dto.request.CreatePlayerNotificationDto;
+import com.tuyenngoc.army2forum.domain.dto.request.PlayerNotificationRequestDto;
 import com.tuyenngoc.army2forum.domain.dto.response.CommonResponseDto;
 import com.tuyenngoc.army2forum.domain.dto.response.GetPlayerNotificationResponseDto;
 import com.tuyenngoc.army2forum.domain.entity.PlayerNotification;
@@ -17,6 +17,6 @@ public interface PlayerNotificationService {
 
     CommonResponseDto deletePlayerNotificationById(Long id, Long playerId);
 
-    CommonResponseDto createPlayerNotification(CreatePlayerNotificationDto requestDto);
+    CommonResponseDto createPlayerNotification(PlayerNotificationRequestDto requestDto);
 
 }

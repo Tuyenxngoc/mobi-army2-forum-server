@@ -6,7 +6,7 @@ import com.tuyenngoc.army2forum.constant.SuccessMessage;
 import com.tuyenngoc.army2forum.domain.dto.pagination.PaginationRequestDto;
 import com.tuyenngoc.army2forum.domain.dto.pagination.PaginationResponseDto;
 import com.tuyenngoc.army2forum.domain.dto.pagination.PagingMeta;
-import com.tuyenngoc.army2forum.domain.dto.request.CreatePlayerNotificationDto;
+import com.tuyenngoc.army2forum.domain.dto.request.PlayerNotificationRequestDto;
 import com.tuyenngoc.army2forum.domain.dto.response.CommonResponseDto;
 import com.tuyenngoc.army2forum.domain.dto.response.GetPlayerNotificationResponseDto;
 import com.tuyenngoc.army2forum.domain.entity.Player;
@@ -86,7 +86,7 @@ public class PlayerNotificationServiceImpl implements PlayerNotificationService 
     }
 
     @Override
-    public CommonResponseDto createPlayerNotification(CreatePlayerNotificationDto requestDto) {
+    public CommonResponseDto createPlayerNotification(PlayerNotificationRequestDto requestDto) {
         List<Long> playerIds;
 
         if (requestDto.getIsPrivate()) {
@@ -102,7 +102,7 @@ public class PlayerNotificationServiceImpl implements PlayerNotificationService 
         return new CommonResponseDto(message);
     }
 
-    private void savePlayerNotifications(CreatePlayerNotificationDto requestDto, List<Long> playerIds) {
+    private void savePlayerNotifications(PlayerNotificationRequestDto requestDto, List<Long> playerIds) {
         for (Long playerId : playerIds) {
             PlayerNotification playerNotification = playerNotificationMapper.toPlayerNotification(requestDto);
             playerNotification.setPlayer(new Player(playerId));

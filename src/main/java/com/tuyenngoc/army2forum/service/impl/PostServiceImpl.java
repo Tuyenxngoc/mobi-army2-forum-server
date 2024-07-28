@@ -166,6 +166,8 @@ public class PostServiceImpl implements PostService {
     @Override
     @Transactional
     public CommonResponseDto deletePost(Long postId, CustomUserDetails userDetails) {
+        Post post = getPostById(postId);
+
         String[] requiredRoles = {RoleConstant.ROLE_ADMIN.name(), RoleConstant.ROLE_SUPER_ADMIN.name()};
         boolean hasRequiredRole = SecurityUtils.hasRequiredRole(userDetails, requiredRoles);
 
@@ -176,7 +178,7 @@ public class PostServiceImpl implements PostService {
         }
 
         String title = messageSource.getMessage(SuccessMessage.Notification.POST_DELETE, null, LocaleContextHolder.getLocale());
-        String notificationMessage = messageSource.getMessage(SuccessMessage.Notification.POST_DELETE_DETAIL, new Object[]{postId}, LocaleContextHolder.getLocale());
+        String notificationMessage = messageSource.getMessage(SuccessMessage.Notification.POST_DELETE_DETAIL, new Object[]{postId, post.getTitle()}, LocaleContextHolder.getLocale());
         playerNotificationService.createNotification(userDetails.getPlayerId(), title, notificationMessage);
 
         String message = messageSource.getMessage(SuccessMessage.DELETE, null, LocaleContextHolder.getLocale());
@@ -204,7 +206,7 @@ public class PostServiceImpl implements PostService {
         String formattedDateTime = now.format(formatter);
 
         String title = messageSource.getMessage(SuccessMessage.Notification.POST_APPROVED, null, LocaleContextHolder.getLocale());
-        String message = messageSource.getMessage(SuccessMessage.Notification.POST_APPROVE_DETAIL, new Object[]{approver.getUser().getUsername(), formattedDateTime}, LocaleContextHolder.getLocale());
+        String message = messageSource.getMessage(SuccessMessage.Notification.POST_APPROVE_DETAIL, new Object[]{post.getId(), post.getTitle(), approver.getUser().getUsername(), formattedDateTime}, LocaleContextHolder.getLocale());
         playerNotificationService.createNotification(post.getPlayer().getId(), title, message);
 
         String successMessage = messageSource.getMessage(SuccessMessage.Post.APPROVED, null, LocaleContextHolder.getLocale());

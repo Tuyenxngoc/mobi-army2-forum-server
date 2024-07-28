@@ -9,17 +9,16 @@ import lombok.Setter;
 @Setter
 @NoArgsConstructor
 @AllArgsConstructor
-public class NotFoundException extends RuntimeException {
+public class BadGatewayException extends RuntimeException {
 
     private Object[] params;
 
-    public NotFoundException(String message) {
+    public BadGatewayException(String message) {
         super(message);
     }
 
-    public NotFoundException(String message, Object... params) {
+    public BadGatewayException(String message, Object... params) {
         super(message);
         this.params = params;
     }
-
 }

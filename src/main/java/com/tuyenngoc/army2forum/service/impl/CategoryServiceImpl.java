@@ -14,7 +14,8 @@ import com.tuyenngoc.army2forum.domain.dto.response.category.GetCategoryResponse
 import com.tuyenngoc.army2forum.domain.entity.Category;
 import com.tuyenngoc.army2forum.domain.mapper.CategoryMapper;
 import com.tuyenngoc.army2forum.domain.specification.CategorySpecification;
-import com.tuyenngoc.army2forum.exception.InvalidException;
+import com.tuyenngoc.army2forum.exception.BadRequestException;
+import com.tuyenngoc.army2forum.exception.ConflictException;
 import com.tuyenngoc.army2forum.exception.NotFoundException;
 import com.tuyenngoc.army2forum.repository.CategoryRepository;
 import com.tuyenngoc.army2forum.service.CategoryService;
@@ -101,7 +102,7 @@ public class CategoryServiceImpl implements CategoryService {
     public CommonResponseDto createCategory(CategoryRequestDto requestDto) {
         boolean existsByName = categoryRepository.existsByName(requestDto.getName());
         if (existsByName) {
-            throw new InvalidException(ErrorMessage.Category.ERR_DUPLICATE_NAME, requestDto.getName());
+            throw new ConflictException(ErrorMessage.Category.ERR_DUPLICATE_NAME, requestDto.getName());
         }
 
         Category category = categoryMapper.toCategory(requestDto);
@@ -116,7 +117,7 @@ public class CategoryServiceImpl implements CategoryService {
     public CommonResponseDto updateCategory(Long categoryId, CategoryRequestDto requestDto) {
         boolean existsByName = categoryRepository.existsByName(requestDto.getName());
         if (existsByName) {
-            throw new InvalidException(ErrorMessage.Category.ERR_DUPLICATE_NAME, requestDto.getName());
+            throw new ConflictException(ErrorMessage.Category.ERR_DUPLICATE_NAME, requestDto.getName());
         }
 
         Category category = categoryMapper.toCategory(requestDto);
@@ -130,7 +131,13 @@ public class CategoryServiceImpl implements CategoryService {
 
     @Override
     public CommonResponseDto deleteCategory(Long categoryId) {
-        categoryRepository.deleteById(categoryId);
+        Category category = getCategoryById(categoryId);
+
+        if (!category.getPosts().isEmpty()) {
+            throw new BadRequestException(ErrorMessage.Category.ERR_NOT_EMPTY);
+        }
+
+        categoryRepository.delete(category);
 
         String message = messageSource.getMessage(SuccessMessage.DELETE, null, LocaleContextHolder.getLocale());
         return new CommonResponseDto(message);

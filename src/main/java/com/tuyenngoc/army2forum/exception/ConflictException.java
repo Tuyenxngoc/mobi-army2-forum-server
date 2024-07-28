@@ -9,17 +9,16 @@ import lombok.Setter;
 @Setter
 @NoArgsConstructor
 @AllArgsConstructor
-public class NotFoundException extends RuntimeException {
+public class ConflictException extends RuntimeException {
 
     private Object[] params;
 
-    public NotFoundException(String message) {
+    public ConflictException(String message) {
         super(message);
     }
 
-    public NotFoundException(String message, Object... params) {
+    public ConflictException(String message, Object... params) {
         super(message);
         this.params = params;
     }
-
 }

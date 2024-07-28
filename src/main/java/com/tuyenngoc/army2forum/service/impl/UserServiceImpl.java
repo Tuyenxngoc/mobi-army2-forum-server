@@ -4,6 +4,7 @@ import com.tuyenngoc.army2forum.config.properties.AdminInfo;
 import com.tuyenngoc.army2forum.constant.ErrorMessage;
 import com.tuyenngoc.army2forum.constant.RoleConstant;
 import com.tuyenngoc.army2forum.constant.SortByDataConstant;
+import com.tuyenngoc.army2forum.constant.SuccessMessage;
 import com.tuyenngoc.army2forum.domain.dto.UserDto;
 import com.tuyenngoc.army2forum.domain.dto.pagination.PaginationFullRequestDto;
 import com.tuyenngoc.army2forum.domain.dto.pagination.PaginationResponseDto;
@@ -21,6 +22,8 @@ import com.tuyenngoc.army2forum.service.UserService;
 import com.tuyenngoc.army2forum.util.PaginationUtil;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.context.MessageSource;
+import org.springframework.context.i18n.LocaleContextHolder;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.security.crypto.password.PasswordEncoder;
@@ -30,6 +33,8 @@ import org.springframework.stereotype.Service;
 @Service
 @RequiredArgsConstructor
 public class UserServiceImpl implements UserService {
+
+    private final MessageSource messageSource;
 
     private final UserRepository userRepository;
 
@@ -92,7 +97,8 @@ public class UserServiceImpl implements UserService {
 
         userRepository.deleteById(userId);
 
-        return new CommonResponseDto("User deleted successfully");
+        String message = messageSource.getMessage(SuccessMessage.DELETE, null, LocaleContextHolder.getLocale());
+        return new CommonResponseDto(message);
     }
 
     @Override

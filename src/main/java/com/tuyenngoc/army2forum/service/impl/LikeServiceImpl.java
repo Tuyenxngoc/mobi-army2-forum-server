@@ -10,7 +10,6 @@ import com.tuyenngoc.army2forum.repository.PlayerRepository;
 import com.tuyenngoc.army2forum.repository.PostRepository;
 import com.tuyenngoc.army2forum.service.LikeService;
 import lombok.RequiredArgsConstructor;
-import org.springframework.context.MessageSource;
 import org.springframework.stereotype.Service;
 
 import java.util.Optional;
@@ -18,8 +17,6 @@ import java.util.Optional;
 @Service
 @RequiredArgsConstructor
 public class LikeServiceImpl implements LikeService {
-
-    private final MessageSource messageSource;
 
     private final LikeRepository likeRepository;
 

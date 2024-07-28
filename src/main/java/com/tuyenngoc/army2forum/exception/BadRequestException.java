@@ -9,17 +9,17 @@ import lombok.Setter;
 @Setter
 @NoArgsConstructor
 @AllArgsConstructor
-public class NotFoundException extends RuntimeException {
+public class BadRequestException extends RuntimeException {
 
     private Object[] params;
 
-    public NotFoundException(String message) {
+    public BadRequestException(String message) {
         super(message);
     }
 
-    public NotFoundException(String message, Object... params) {
+    public BadRequestException(String message, Object... args) {
         super(message);
-        this.params = params;
+        this.params = args;
     }
 
 }

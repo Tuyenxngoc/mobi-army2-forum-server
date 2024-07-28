@@ -11,8 +11,8 @@ import com.tuyenngoc.army2forum.domain.dto.response.auth.TokenRefreshResponseDto
 import com.tuyenngoc.army2forum.domain.entity.Player;
 import com.tuyenngoc.army2forum.domain.entity.User;
 import com.tuyenngoc.army2forum.domain.mapper.UserMapper;
-import com.tuyenngoc.army2forum.exception.DataIntegrityViolationException;
-import com.tuyenngoc.army2forum.exception.InvalidException;
+import com.tuyenngoc.army2forum.exception.BadRequestException;
+import com.tuyenngoc.army2forum.exception.ConflictException;
 import com.tuyenngoc.army2forum.exception.NotFoundException;
 import com.tuyenngoc.army2forum.exception.UnauthorizedException;
 import com.tuyenngoc.army2forum.repository.PlayerRepository;
@@ -125,7 +125,7 @@ public class AuthServiceImpl implements AuthService {
 
             if (jwtTokenService.isRefreshTokenExists(refreshToken, username)) {
                 User user = userRepository.findByUsername(username)
-                        .orElseThrow(() -> new InvalidException(ErrorMessage.Auth.ERR_INVALID_REFRESH_TOKEN));
+                        .orElseThrow(() -> new BadRequestException(ErrorMessage.Auth.ERR_INVALID_REFRESH_TOKEN));
                 CustomUserDetails userDetails = CustomUserDetails.create(user);
 
                 String newAccessToken = jwtTokenProvider.generateToken(userDetails, Boolean.FALSE);
@@ -136,25 +136,25 @@ public class AuthServiceImpl implements AuthService {
 
                 return new TokenRefreshResponseDto(newAccessToken, newRefreshToken);
             } else {
-                throw new InvalidException(ErrorMessage.Auth.ERR_INVALID_REFRESH_TOKEN);
+                throw new BadRequestException(ErrorMessage.Auth.ERR_INVALID_REFRESH_TOKEN);
             }
         } else {
-            throw new InvalidException(ErrorMessage.Auth.ERR_INVALID_REFRESH_TOKEN);
+            throw new BadRequestException(ErrorMessage.Auth.ERR_INVALID_REFRESH_TOKEN);
         }
     }
 
     @Override
     public User register(RegisterRequestDto requestDto, String siteURL) {
         if (!requestDto.getPassword().equals(requestDto.getRepeatPassword())) {
-            throw new InvalidException(ErrorMessage.INVALID_REPEAT_PASSWORD);
+            throw new BadRequestException(ErrorMessage.INVALID_REPEAT_PASSWORD);
         }
         boolean isUsernameExists = userRepository.existsByUsername(requestDto.getUsername());
         if (isUsernameExists) {
-            throw new DataIntegrityViolationException(ErrorMessage.Auth.ERR_DUPLICATE_USERNAME);
+            throw new ConflictException(ErrorMessage.Auth.ERR_DUPLICATE_USERNAME);
         }
         boolean isEmailExists = userRepository.existsByEmail(requestDto.getEmail());
         if (isEmailExists) {
-            throw new DataIntegrityViolationException(ErrorMessage.Auth.ERR_DUPLICATE_EMAIL);
+            throw new ConflictException(ErrorMessage.Auth.ERR_DUPLICATE_EMAIL);
         }
 
         String code = UUID.randomUUID().toString();
@@ -206,7 +206,7 @@ public class AuthServiceImpl implements AuthService {
     @Override
     public CommonResponseDto changePassword(ChangePasswordRequestDto requestDto, String username) {
         if (!requestDto.getPassword().equals(requestDto.getRepeatPassword())) {
-            throw new InvalidException(ErrorMessage.INVALID_REPEAT_PASSWORD);
+            throw new BadRequestException(ErrorMessage.INVALID_REPEAT_PASSWORD);
         }
 
         User user = userRepository.findByUsername(username)
@@ -214,7 +214,7 @@ public class AuthServiceImpl implements AuthService {
 
         boolean isCorrectPassword = passwordEncoder.matches(requestDto.getOldPassword(), user.getPassword());
         if (!isCorrectPassword) {
-            throw new InvalidException(ErrorMessage.Auth.ERR_INCORRECT_PASSWORD);
+            throw new BadRequestException(ErrorMessage.Auth.ERR_INCORRECT_PASSWORD);
         }
 
         user.setPassword(passwordEncoder.encode(requestDto.getPassword()));

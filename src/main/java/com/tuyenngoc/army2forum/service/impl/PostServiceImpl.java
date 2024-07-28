@@ -17,7 +17,7 @@ import com.tuyenngoc.army2forum.domain.entity.Post;
 import com.tuyenngoc.army2forum.domain.entity.PostFollow;
 import com.tuyenngoc.army2forum.domain.mapper.PostMapper;
 import com.tuyenngoc.army2forum.domain.specification.PostSpecification;
-import com.tuyenngoc.army2forum.exception.InvalidException;
+import com.tuyenngoc.army2forum.exception.BadRequestException;
 import com.tuyenngoc.army2forum.exception.NotFoundException;
 import com.tuyenngoc.army2forum.repository.*;
 import com.tuyenngoc.army2forum.security.CustomUserDetails;
@@ -104,7 +104,7 @@ public class PostServiceImpl implements PostService {
     public CommonResponseDto createPost(PostRequestDto requestDto, CustomUserDetails userDetails) {
         long pendingPostsCount = postRepository.countByPlayerIdAndIsApprovedFalse(userDetails.getPlayerId());
         if (pendingPostsCount >= MAX_PENDING_POSTS) {
-            throw new InvalidException(ErrorMessage.Post.ERR_MAX_PENDING_POSTS, MAX_PENDING_POSTS);
+            throw new BadRequestException(ErrorMessage.Post.ERR_MAX_PENDING_POSTS, MAX_PENDING_POSTS);
         }
 
         Player player = playerRepository.findById(userDetails.getPlayerId())

@@ -1,6 +1,8 @@
 package com.tuyenngoc.army2forum.service.impl;
 
+import com.tuyenngoc.army2forum.constant.ErrorMessage;
 import com.tuyenngoc.army2forum.domain.entity.User;
+import com.tuyenngoc.army2forum.exception.NotFoundException;
 import com.tuyenngoc.army2forum.repository.UserRepository;
 import com.tuyenngoc.army2forum.security.CustomUserDetails;
 import jakarta.transaction.Transactional;
@@ -20,7 +22,8 @@ public class CustomUserDetailsServiceImpl implements UserDetailsService {
     @Transactional
     public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
         User user = userRepository.findByUsername(username)
-                .orElseThrow(() -> new RuntimeException("Could not find user"));
+                .orElseThrow(() -> new NotFoundException(ErrorMessage.User.ERR_NOT_FOUND_USERNAME, username));
+
         return CustomUserDetails.create(user);
     }
 

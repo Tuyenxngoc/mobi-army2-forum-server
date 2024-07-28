@@ -1,7 +1,7 @@
 package com.tuyenngoc.army2forum.util;
 
 import com.tuyenngoc.army2forum.constant.ErrorMessage;
-import com.tuyenngoc.army2forum.exception.InvalidException;
+import com.tuyenngoc.army2forum.exception.BadRequestException;
 
 public class SpecificationsUtil {
 
@@ -23,7 +23,7 @@ public class SpecificationsUtil {
                 return Boolean.valueOf(value);
             }
         } catch (NumberFormatException e) {
-            throw new InvalidException(ErrorMessage.INVALID_NUMBER_FORMAT);
+            throw new BadRequestException(ErrorMessage.INVALID_NUMBER_FORMAT);
         }
         return null;
     }

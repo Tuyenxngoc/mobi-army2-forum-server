@@ -32,7 +32,7 @@ public class PlayerController {
             @PathVariable Long roleId,
             @CurrentUser CustomUserDetails userDetails
     ) {
-        return VsResponseUtil.success(playerService.updatePlayerRoles(id, roleId, userDetails.getAuthorities()));
+        return VsResponseUtil.success(playerService.updatePlayerRoles(id, roleId, userDetails));
     }
 
     @Operation(summary = "API get following posts")

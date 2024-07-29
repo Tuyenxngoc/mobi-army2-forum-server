@@ -16,7 +16,8 @@ import java.util.List;
 @NoArgsConstructor
 @AllArgsConstructor
 @Entity
-@Table(name = "roles")
+@Table(name = "roles",
+        uniqueConstraints = @UniqueConstraint(name = "UN_ROLE_NAME", columnNames = "name"))
 public class Role extends DateAuditing {
 
     @Id
@@ -24,7 +25,7 @@ public class Role extends DateAuditing {
     @Column(name = "role_id")
     private Long id;
 
-    @Column(nullable = false, unique = true)
+    @Column(nullable = false)
     private String name;
 
     @OneToMany(mappedBy = "role", cascade = CascadeType.ALL, fetch = FetchType.LAZY)

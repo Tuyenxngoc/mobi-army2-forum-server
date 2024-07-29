@@ -16,7 +16,8 @@ import java.util.List;
 @NoArgsConstructor
 @AllArgsConstructor
 @Entity
-@Table(name = "categories")
+@Table(name = "categories",
+        uniqueConstraints = @UniqueConstraint(name = "UN_CATEGORY_NAME", columnNames = "name"))
 public class Category extends UserDateAuditing {
 
     @Id
@@ -24,7 +25,7 @@ public class Category extends UserDateAuditing {
     @Column(name = "category_id")
     private Long id;
 
-    @Column(nullable = false, unique = true)
+    @Column(nullable = false)
     private String name;
 
     private String description;

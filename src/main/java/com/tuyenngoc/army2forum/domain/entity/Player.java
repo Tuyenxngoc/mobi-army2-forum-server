@@ -16,7 +16,8 @@ import java.util.List;
 @NoArgsConstructor
 @AllArgsConstructor
 @Entity
-@Table(name = "players")
+@Table(name = "players",
+        uniqueConstraints = @UniqueConstraint(name = "UN_PLAYER_USER_ID", columnNames = "user_id"))
 public class Player extends DateAuditing {
 
     @Id
@@ -24,10 +25,10 @@ public class Player extends DateAuditing {
     @Column(name = "player_id")
     private Long id;
 
-    private boolean isOnline;
+    private boolean online;
 
     @OneToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "user_id", foreignKey = @ForeignKey(name = "FK_PLAYER_USER_ID"), referencedColumnName = "user_id", unique = true, nullable = false)
+    @JoinColumn(name = "user_id", foreignKey = @ForeignKey(name = "FK_PLAYER_USER_ID"), referencedColumnName = "user_id", nullable = false)
     @JsonIgnore
     private User user;
 

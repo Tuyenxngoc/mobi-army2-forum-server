@@ -12,7 +12,11 @@ import org.hibernate.annotations.UuidGenerator;
 @NoArgsConstructor
 @AllArgsConstructor
 @Entity
-@Table(name = "users")
+@Table(name = "users",
+        uniqueConstraints = {
+                @UniqueConstraint(name = "UN_USERNAME", columnNames = "username"),
+                @UniqueConstraint(name = "UN_EMAIL", columnNames = "email")
+        })
 public class User extends DateAuditing {
 
     @Id
@@ -26,10 +30,10 @@ public class User extends DateAuditing {
     @Column(name = "phone-number", nullable = false)
     private String phoneNumber;
 
-    @Column(nullable = false, unique = true)
+    @Column(nullable = false)
     private String username;
 
-    @Column(nullable = false, unique = true)
+    @Column(nullable = false)
     private String email;
 
     @Column(nullable = false)

@@ -4,6 +4,8 @@ import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.tuyenngoc.army2forum.converter.EquipmentChestConverter;
 import com.tuyenngoc.army2forum.converter.ItemChestConverter;
 import com.tuyenngoc.army2forum.domain.entity.common.DateAuditing;
+import com.tuyenngoc.army2forum.domain.json.EquipChest;
+import com.tuyenngoc.army2forum.domain.json.SpecialItemChest;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
@@ -33,11 +35,11 @@ public class Player extends DateAuditing {
 
     @Column(name = "ruong_item", columnDefinition = "varchar(1000) default '[]'")
     @Convert(converter = ItemChestConverter.class)
-    private List<SpecialItem> itemChest;
+    private List<SpecialItemChest> itemChest;
 
     @Column(name = "ruong_trang_bi", columnDefinition = "varchar(1000) default '[]'")
     @Convert(converter = EquipmentChestConverter.class)
-    private List<Equip> equipmentChest;
+    private List<EquipChest> equipmentChest;
 
     private boolean online;
 

@@ -1,6 +1,8 @@
 package com.tuyenngoc.army2forum.domain.entity;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.tuyenngoc.army2forum.converter.EquipmentChestConverter;
+import com.tuyenngoc.army2forum.converter.ItemChestConverter;
 import com.tuyenngoc.army2forum.domain.entity.common.DateAuditing;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
@@ -24,6 +26,18 @@ public class Player extends DateAuditing {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "player_id")
     private Long id;
+
+    private int xu;
+
+    private int luong;
+
+    @Column(name = "ruong_item", columnDefinition = "varchar(1000) default '[]'")
+    @Convert(converter = ItemChestConverter.class)
+    private List<SpecialItem> itemChest;
+
+    @Column(name = "ruong_trang_bi", columnDefinition = "varchar(1000) default '[]'")
+    @Convert(converter = EquipmentChestConverter.class)
+    private List<Equip> equipmentChest;
 
     private boolean online;
 

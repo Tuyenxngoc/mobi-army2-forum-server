@@ -92,6 +92,8 @@ public class UrlConstant {
         public static final String UPDATE_ROLE = PRE_FIX + "/{id}/role/{roleId}";
         public static final String UPDATE_SCHEDULE = PRE_FIX + "/{id}/schedule";
         public static final String GET_FOLLOWING = PRE_FIX + "/following-post";
+
+        public static final String GET_PLAYER_INFO = PRE_FIX + "/info";
     }
 
     public static class PlayerNotification {

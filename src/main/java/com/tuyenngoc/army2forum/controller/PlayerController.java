@@ -43,4 +43,13 @@ public class PlayerController {
     ) {
         return VsResponseUtil.success(playerService.getFollowingPosts(userDetails.getPlayerId(), requestDto));
     }
+
+    @Operation(summary = "Get player information by ID")
+    @GetMapping(UrlConstant.Player.GET_PLAYER_INFO)
+    public ResponseEntity<?> getPlayerInfo(
+            @CurrentUser CustomUserDetails userDetails
+    ) {
+        return VsResponseUtil.success(playerService.getPlayerInfo(userDetails.getPlayerId()));
+    }
+
 }

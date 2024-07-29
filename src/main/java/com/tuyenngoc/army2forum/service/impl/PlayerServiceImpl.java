@@ -5,6 +5,7 @@ import com.tuyenngoc.army2forum.constant.SortByDataConstant;
 import com.tuyenngoc.army2forum.domain.dto.pagination.PaginationResponseDto;
 import com.tuyenngoc.army2forum.domain.dto.pagination.PaginationSortRequestDto;
 import com.tuyenngoc.army2forum.domain.dto.pagination.PagingMeta;
+import com.tuyenngoc.army2forum.domain.dto.response.GetPlayerInfoResponseDto;
 import com.tuyenngoc.army2forum.domain.dto.response.post.GetPostResponseDto;
 import com.tuyenngoc.army2forum.domain.entity.Player;
 import com.tuyenngoc.army2forum.domain.entity.Role;
@@ -64,6 +65,13 @@ public class PlayerServiceImpl implements PlayerService {
         responseDto.setMeta(pagingMeta);
 
         return responseDto;
+    }
+
+    @Override
+    public GetPlayerInfoResponseDto getPlayerInfo(Long playerId) {
+        Player player = getPlayerById(playerId);
+
+        return new GetPlayerInfoResponseDto(player);
     }
 
 }

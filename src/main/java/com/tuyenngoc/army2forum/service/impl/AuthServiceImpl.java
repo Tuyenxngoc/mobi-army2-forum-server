@@ -313,4 +313,10 @@ public class AuthServiceImpl implements AuthService {
         });
     }
 
+    @Override
+    public LoginResponseDto handleOAuth2Callback(String code, HttpServletRequest request, HttpServletResponse response) {
+        System.out.println(code);
+        return null;
+    }
+
 }

@@ -24,7 +24,7 @@ public class PlayerDto {
 
     public PlayerDto(Player player) {
         this.id = player.getId();
-        this.avatar = "";
+        this.avatar = String.format("/avatar/%d.gif", player.getNvUsed());
         this.name = player.getUser().getUsername();
         this.isOnline = player.isOnline();
         this.points = player.getComments().size() + player.getPosts().size();

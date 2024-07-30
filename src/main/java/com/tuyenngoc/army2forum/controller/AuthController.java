@@ -90,4 +90,15 @@ public class AuthController {
     public ResponseEntity<?> checkEmailConfirmed(@RequestParam("email") String email) {
         return VsResponseUtil.success(authService.isEmailConfirmed(email));
     }
+
+    @Operation(summary = "API OAuth2 callback")
+    @GetMapping(UrlConstant.Auth.OAUTH2_CALLBACK)
+    public ResponseEntity<?> oauth2Callback(
+            @RequestParam("code") String code,
+            HttpServletRequest request,
+            HttpServletResponse response
+    ) {
+        return VsResponseUtil.success(authService.handleOAuth2Callback(code, request, response));
+    }
+
 }

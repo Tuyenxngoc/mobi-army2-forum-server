@@ -49,7 +49,8 @@ public class SecurityConfig {
             "/api/v1/auth/login",
             "/api/v1/auth/forget-password",
             // static resources
-            "/res/**"
+            "/res/**",
+            "/avatar/**",
     };
 
     private final UserDetailsService userDetailsService;
@@ -93,6 +94,7 @@ public class SecurityConfig {
                 .authenticationProvider(authenticationProvider())
                 .addFilterBefore(jwtAuthenticationFilter, UsernamePasswordAuthenticationFilter.class)
                 .exceptionHandling(exception -> exception.authenticationEntryPoint(new JwtAuthenticationEntryPoint()))
+                .oauth2Login(Customizer.withDefaults());
         ;
         return http.build();
     }

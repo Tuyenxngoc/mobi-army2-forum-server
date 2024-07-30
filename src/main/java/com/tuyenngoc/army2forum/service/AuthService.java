@@ -29,4 +29,6 @@ public interface AuthService {
 
     boolean isEmailConfirmed(String email);
 
+    LoginResponseDto handleOAuth2Callback(String code, HttpServletRequest request, HttpServletResponse response);
+
 }

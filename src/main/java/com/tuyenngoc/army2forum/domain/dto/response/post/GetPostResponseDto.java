@@ -1,5 +1,6 @@
 package com.tuyenngoc.army2forum.domain.dto.response.post;
 
+import com.tuyenngoc.army2forum.domain.dto.PlayerDto;
 import com.tuyenngoc.army2forum.domain.dto.common.DateAuditingDto;
 import com.tuyenngoc.army2forum.domain.entity.Post;
 import lombok.AllArgsConstructor;
@@ -27,7 +28,7 @@ public class GetPostResponseDto extends DateAuditingDto {
 
     private int priority;
 
-    private String author;
+    private PlayerDto player;
 
     public GetPostResponseDto(Post post) {
         this.setCreatedDate(post.getCreatedDate());
@@ -40,6 +41,6 @@ public class GetPostResponseDto extends DateAuditingDto {
         this.views = post.getViewCount();
         this.locked = post.isLocked();
         this.priority = post.getPriority();
-        this.author = post.getPlayer().getUser().getUsername();
+        this.player = new PlayerDto(post.getPlayer());
     }
 }

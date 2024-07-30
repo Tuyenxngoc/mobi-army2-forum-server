@@ -15,4 +15,6 @@ public class UserDto {
 
     private String roleName;
 
+    private PlayerDto player;
+
 }

@@ -135,8 +135,8 @@ public class UrlConstant {
         public static final String DELETE = PRE_FIX + "/{id}";
     }
 
-    public static class Thread {
-        private static final String PRE_FIX = "/threads";
+    public static class Clan {
+        private static final String PRE_FIX = "/clans";
 
         public static final String CREATE = PRE_FIX;
         public static final String GET_ALL = PRE_FIX;

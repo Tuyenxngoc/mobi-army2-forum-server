@@ -27,7 +27,7 @@ public class GetPlayerInfoResponseDto {
 
     public GetPlayerInfoResponseDto(Player player) {
         this.id = player.getId();
-        this.online = player.isOnline();
+        this.online = player.getOnline();
         this.xu = player.getXu();
         this.luong = player.getLuong();
         this.email = MaskingUtils.maskEmail(player.getUser().getEmail());

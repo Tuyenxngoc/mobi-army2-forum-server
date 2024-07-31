@@ -11,6 +11,7 @@ import com.tuyenngoc.army2forum.service.UserService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.Parameter;
 import io.swagger.v3.oas.annotations.tags.Tag;
+import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springdoc.core.annotations.ParameterObject;
 import org.springframework.http.ResponseEntity;
@@ -36,7 +37,10 @@ public class UserController {
     @PreAuthorize("hasAnyRole('SUPER_ADMIN', 'ADMIN')")
     @Operation(summary = "API Update User")
     @PutMapping(UrlConstant.User.UPDATE)
-    public ResponseEntity<?> updateUser(@PathVariable String id, @RequestBody UpdateUserRequestDto requestDto) {
+    public ResponseEntity<?> updateUser(
+            @PathVariable String id,
+            @Valid @RequestBody UpdateUserRequestDto requestDto
+    ) {
         return VsResponseUtil.success(userService.updateUser(id, requestDto));
     }
 

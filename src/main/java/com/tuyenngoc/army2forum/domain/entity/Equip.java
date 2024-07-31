@@ -18,7 +18,7 @@ public class Equip {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "equip_id", nullable = false)
-    private Short equipId;
+    private Long id;
 
     @Column(name = "character_id", nullable = false)
     private Byte characterId;

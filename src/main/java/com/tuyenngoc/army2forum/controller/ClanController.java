@@ -10,6 +10,7 @@ import com.tuyenngoc.army2forum.security.CustomUserDetails;
 import com.tuyenngoc.army2forum.service.ClanService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
+import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springdoc.core.annotations.ParameterObject;
 import org.springframework.http.ResponseEntity;
@@ -25,7 +26,7 @@ public class ClanController {
     @Operation(summary = "API Create Clan")
     @PostMapping(UrlConstant.Clan.CREATE)
     public ResponseEntity<?> createClan(
-            @RequestBody ClanRequestDto requestDto,
+            @Valid @RequestBody ClanRequestDto requestDto,
             @CurrentUser CustomUserDetails userDetails
     ) {
         return VsResponseUtil.success(clanService.createClan(requestDto, userDetails));
@@ -35,7 +36,7 @@ public class ClanController {
     @PutMapping(UrlConstant.Clan.UPDATE)
     public ResponseEntity<?> updateClan(
             @PathVariable Long id,
-            @RequestBody ClanRequestDto requestDto,
+            @Valid @RequestBody ClanRequestDto requestDto,
             @CurrentUser CustomUserDetails userDetails
     ) {
         return VsResponseUtil.success(clanService.updateClan(id, requestDto, userDetails));

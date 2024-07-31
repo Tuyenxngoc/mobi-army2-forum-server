@@ -17,7 +17,7 @@ public class SpecialItem {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "special_item_id")
-    private Byte id;
+    private Long id;
 
     @Column(name = "name", nullable = false, length = 100)
     private String name;
@@ -29,22 +29,22 @@ public class SpecialItem {
     private int priceXu;
 
     @Column(name = "price_luong", nullable = false, columnDefinition = "smallint default -1")
-    private short priceLuong = -1;
+    private Short priceLuong = -1;
 
     @Column(name = "price_sell_xu", nullable = false, columnDefinition = "int default -1")
     private int priceSellXu = -1;
 
     @Column(name = "expiration_days", nullable = false, columnDefinition = "smallint default 0")
-    private short expirationDays = 0;
+    private Short expirationDays = 0;
 
     @Column(name = "show_selection", nullable = false, columnDefinition = "tinyint default 1")
-    private byte showSelection = 1;
+    private Byte showSelection = 1;
 
     @Column(name = "is_on_sale", nullable = false, columnDefinition = "tinyint default 1")
-    private byte isOnSale = 1;
+    private Byte isOnSale = 1;
 
     @Column(name = "type", nullable = false)
-    private byte type;
+    private Byte type;
 
     @Column(name = "ability", nullable = false, length = 50, columnDefinition = "varchar(50) default '[0,0,0,0,0]'")
     private String ability = "[0,0,0,0,0]";

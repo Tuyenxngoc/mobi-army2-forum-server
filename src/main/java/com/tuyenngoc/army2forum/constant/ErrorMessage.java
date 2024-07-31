@@ -89,6 +89,7 @@ public class ErrorMessage {
 
     public static class Player {
         public static final String ERR_NOT_FOUND_ID = "exception.player.not.found.id";
+        public static final String ERR_NOT_ENOUGH_MONEY = "exception.player.not.enough.money";
     }
 
     public static class Post {
@@ -108,4 +109,12 @@ public class ErrorMessage {
     public static class PlayerNotification {
         public static final String ERR_NOT_FOUND_ID = "exception.player-notification.not.found.id";
     }
+
+    public static class Clan {
+        public static final String ERR_NOT_FOUND_ID = "exception.clan.not.found.id";
+        public static final String ERR_NOT_FOUND_NAME = "exception.clan.not.found.name";
+        public static final String ERR_DUPLICATE_NAME = "exception.clan.duplicate.name";
+        public static final String ERR_DUPLICATE_EMAIL = "exception.clan.duplicate.email";
+    }
+
 }

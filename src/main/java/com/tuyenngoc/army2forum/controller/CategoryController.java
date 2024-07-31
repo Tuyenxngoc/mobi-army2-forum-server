@@ -8,6 +8,7 @@ import com.tuyenngoc.army2forum.domain.dto.request.CategoryRequestDto;
 import com.tuyenngoc.army2forum.service.CategoryService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
+import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springdoc.core.annotations.ParameterObject;
 import org.springframework.http.ResponseEntity;
@@ -38,14 +39,17 @@ public class CategoryController {
     @PreAuthorize("hasAnyRole('SUPER_ADMIN', 'ADMIN')")
     @Operation(summary = "API Create Category")
     @PostMapping(UrlConstant.Category.CREATE)
-    public ResponseEntity<?> createCategory(@RequestBody CategoryRequestDto requestDto) {
+    public ResponseEntity<?> createCategory(@Valid @RequestBody CategoryRequestDto requestDto) {
         return VsResponseUtil.success(categoryService.createCategory(requestDto));
     }
 
     @PreAuthorize("hasAnyRole('SUPER_ADMIN', 'ADMIN')")
     @Operation(summary = "API Update Category")
     @PutMapping(UrlConstant.Category.UPDATE)
-    public ResponseEntity<?> updateCategory(@PathVariable Long id, @RequestBody CategoryRequestDto requestDto) {
+    public ResponseEntity<?> updateCategory(
+            @PathVariable Long id,
+            @Valid @RequestBody CategoryRequestDto requestDto
+    ) {
         return VsResponseUtil.success(categoryService.updateCategory(id, requestDto));
     }
 

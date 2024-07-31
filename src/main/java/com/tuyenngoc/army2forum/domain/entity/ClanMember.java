@@ -1,5 +1,6 @@
 package com.tuyenngoc.army2forum.domain.entity;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
@@ -19,16 +20,10 @@ public class ClanMember {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "clan_member_id")
-    private Integer clanMemberId;
-
-    @Column(name = "player_id", nullable = false)
-    private Integer playerId;
+    private Long id;
 
     @Column(name = "rights", nullable = false)
     private Byte rights = 0;
-
-    @Column(name = "join_time", nullable = false)
-    private LocalDateTime joinTime = LocalDateTime.of(2024, 1, 1, 0, 0, 0, 0);
 
     @Column(name = "xu", nullable = false)
     private Integer xu = 0;
@@ -46,9 +41,22 @@ public class ClanMember {
     private Short contributeCount = 0;
 
     @Column(name = "contribute_time", nullable = false)
-    private LocalDateTime contributeTime = LocalDateTime.of(2024, 1, 1, 0, 0, 0, 0);
+    private LocalDateTime contributeTime;
+
+    @Column(name = "join_time", nullable = false)
+    private LocalDateTime joinTime;
 
     @Column(name = "contribute_text", length = 30, nullable = false)
     private String contributeText = "0 xu";
+
+    @OneToOne
+    @JoinColumn(name = "player_id", nullable = false)
+    @JsonIgnore
+    private Player player;
+
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "clan_id", foreignKey = @ForeignKey(name = "FK_CLAN_MEMBER_CLAN_ID"), referencedColumnName = "clan_id", nullable = false )
+    @JsonIgnore
+    private Clan clan;
 
 }

@@ -1,19 +1,22 @@
 package com.tuyenngoc.army2forum.service;
 
 import com.tuyenngoc.army2forum.domain.dto.pagination.PaginationFullRequestDto;
+import com.tuyenngoc.army2forum.domain.dto.pagination.PaginationResponseDto;
 import com.tuyenngoc.army2forum.domain.dto.request.ClanRequestDto;
+import com.tuyenngoc.army2forum.domain.dto.response.CommonResponseDto;
+import com.tuyenngoc.army2forum.domain.dto.response.GetClanResponseDto;
 import com.tuyenngoc.army2forum.security.CustomUserDetails;
 
 public interface ClanService {
 
-    boolean createClan(ClanRequestDto requestDto, CustomUserDetails userDetails);
+    CommonResponseDto createClan(ClanRequestDto requestDto, CustomUserDetails userDetails);
 
-    boolean updateClan(Long id, ClanRequestDto requestDto, CustomUserDetails userDetails);
+    CommonResponseDto updateClan(Long clanId, ClanRequestDto requestDto, CustomUserDetails userDetails);
 
-    boolean deleteClan(Long id, CustomUserDetails userDetails);
+    CommonResponseDto deleteClan(Long clanId, CustomUserDetails userDetails);
 
-    boolean getClanById(Long id);
+    boolean getClanById(Long clanId);
 
-    boolean getClans(PaginationFullRequestDto requestDto);
+    PaginationResponseDto<GetClanResponseDto> getClans(PaginationFullRequestDto requestDto);
 
 }

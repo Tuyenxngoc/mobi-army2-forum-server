@@ -29,9 +29,9 @@ public class Player extends DateAuditing {
     @Column(name = "player_id")
     private Long id;
 
-    private int xu;
+    private Integer xu;
 
-    private int luong;
+    private Integer luong;
 
     @Column(name = "ruong_item", columnDefinition = "varchar(1000) default '[]'")
     @Convert(converter = ItemChestConverter.class)
@@ -41,10 +41,18 @@ public class Player extends DateAuditing {
     @Convert(converter = EquipmentChestConverter.class)
     private List<EquipChest> equipmentChest;
 
-    private boolean online;
+    private Boolean online;
 
     @Column(name = "nv_used", columnDefinition = "tinyint default 0")
-    private byte nvUsed;
+    private Byte nvUsed;
+
+    @OneToOne(mappedBy = "master", fetch = FetchType.LAZY, cascade = CascadeType.ALL)
+    @JsonIgnore
+    private Clan clan;
+
+    @OneToOne(mappedBy = "player", fetch = FetchType.LAZY, cascade = CascadeType.ALL)
+    @JsonIgnore
+    private ClanMember clanMember;
 
     @OneToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "user_id", foreignKey = @ForeignKey(name = "FK_PLAYER_USER_ID"), referencedColumnName = "user_id", nullable = false)

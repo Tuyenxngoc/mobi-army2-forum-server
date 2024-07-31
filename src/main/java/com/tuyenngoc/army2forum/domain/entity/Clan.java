@@ -20,7 +20,8 @@ import java.util.List;
 @Entity
 @Table(name = "clans", uniqueConstraints = {
         @UniqueConstraint(name = "UN_CLAN_NAME", columnNames = "name"),
-        @UniqueConstraint(name = "UN_CLAN_EMAIL", columnNames = "email")
+        @UniqueConstraint(name = "UN_CLAN_EMAIL", columnNames = "email"),
+        @UniqueConstraint(name = "UN_CLAN_MASTER", columnNames = "master_id")
 })
 public class Clan extends DateAuditing {
 
@@ -57,18 +58,14 @@ public class Clan extends DateAuditing {
     @Convert(converter = ClanItemConverter.class)
     private List<ClanItem> item = new ArrayList<>();
 
-    @Column(name = "mem", nullable = false)
-    private Byte mem = 1;
-
     @Column(name = "mem_max", nullable = false)
     private Byte memMax = 10;
 
     @Column(name = "description", nullable = false)
     private String description;
 
-    @OneToOne
-    @JoinColumn(name = "master_id", nullable = false)
-    @JsonIgnore
+    @OneToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "master_id", foreignKey = @ForeignKey(name = "FK_CLAN_MASTER_ID"), referencedColumnName = "player_id", nullable = false)
     private Player master;
 
     @OneToMany(mappedBy = "clan", cascade = CascadeType.ALL, fetch = FetchType.LAZY)

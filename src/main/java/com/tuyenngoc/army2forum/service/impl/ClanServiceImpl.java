@@ -8,8 +8,10 @@ import com.tuyenngoc.army2forum.domain.dto.pagination.PaginationResponseDto;
 import com.tuyenngoc.army2forum.domain.dto.pagination.PagingMeta;
 import com.tuyenngoc.army2forum.domain.dto.request.ClanRequestDto;
 import com.tuyenngoc.army2forum.domain.dto.response.CommonResponseDto;
+import com.tuyenngoc.army2forum.domain.dto.response.GetClanIconResponseDto;
 import com.tuyenngoc.army2forum.domain.dto.response.GetClanResponseDto;
 import com.tuyenngoc.army2forum.domain.entity.Clan;
+import com.tuyenngoc.army2forum.domain.entity.ClanMember;
 import com.tuyenngoc.army2forum.domain.entity.Player;
 import com.tuyenngoc.army2forum.domain.mapper.ClanMapper;
 import com.tuyenngoc.army2forum.domain.specification.ClanSpecification;
@@ -17,6 +19,7 @@ import com.tuyenngoc.army2forum.exception.BadRequestException;
 import com.tuyenngoc.army2forum.exception.ConflictException;
 import com.tuyenngoc.army2forum.exception.ForbiddenException;
 import com.tuyenngoc.army2forum.exception.NotFoundException;
+import com.tuyenngoc.army2forum.repository.ClanMemberRepository;
 import com.tuyenngoc.army2forum.repository.ClanRepository;
 import com.tuyenngoc.army2forum.repository.PlayerRepository;
 import com.tuyenngoc.army2forum.security.CustomUserDetails;
@@ -26,11 +29,18 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.MessageSource;
 import org.springframework.context.i18n.LocaleContextHolder;
+import org.springframework.core.io.ClassPathResource;
+import org.springframework.core.io.Resource;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.io.IOException;
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.nio.file.Paths;
+import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Objects;
 import java.util.stream.Collectors;
@@ -38,6 +48,9 @@ import java.util.stream.Collectors;
 @Service
 @RequiredArgsConstructor
 public class ClanServiceImpl implements ClanService {
+
+    @Value("${app.icons-directory}")
+    private String iconsDirectory;
 
     @Value("${clan.creation.price}")
     private int clanCreationPrice;
@@ -50,6 +63,8 @@ public class ClanServiceImpl implements ClanService {
 
     private final MessageSource messageSource;
 
+    private final ClanMemberRepository clanMemberRepository;
+
     @Override
     @Transactional
     public CommonResponseDto createClan(ClanRequestDto requestDto, CustomUserDetails userDetails) {
@@ -57,6 +72,10 @@ public class ClanServiceImpl implements ClanService {
 
         Player player = playerRepository.findById(userDetails.getPlayerId())
                 .orElseThrow(() -> new NotFoundException(ErrorMessage.Player.ERR_NOT_FOUND_ID, userDetails.getPlayerId()));
+
+        if (player.getClanMember() != null) {
+            throw new BadRequestException(ErrorMessage.Clan.ERR_ALREADY_HAS_CLAN);
+        }
 
         if (player.getLuong() < clanCreationPrice) {
             throw new BadRequestException(ErrorMessage.Player.ERR_NOT_ENOUGH_MONEY);
@@ -67,6 +86,13 @@ public class ClanServiceImpl implements ClanService {
         Clan clan = clanMapper.toClan(requestDto);
         clan.setMaster(player);
         clanRepository.save(clan);
+
+        ClanMember clanMember = new ClanMember();
+        clanMember.setClan(clan);
+        clanMember.setPlayer(player);
+        clanMember.setRights((byte) 2);
+        clanMember.setJoinTime(LocalDateTime.now());
+        clanMemberRepository.save(clanMember);
 
         String message = messageSource.getMessage(SuccessMessage.CREATE, null, LocaleContextHolder.getLocale());
         return new CommonResponseDto(message);
@@ -123,10 +149,10 @@ public class ClanServiceImpl implements ClanService {
     }
 
     @Override
-    public boolean getClanById(Long clanId) {
+    public GetClanResponseDto getClanById(Long clanId) {
         Clan clan = clanRepository.findById(clanId).
                 orElseThrow(() -> new NotFoundException(ErrorMessage.Clan.ERR_NOT_FOUND_ID, clanId));
-        return false;
+        return new GetClanResponseDto(clan);
     }
 
     @Override
@@ -149,6 +175,45 @@ public class ClanServiceImpl implements ClanService {
         responseDto.setMeta(pagingMeta);
 
         return responseDto;
+    }
+
+    @Override
+    public List<GetClanIconResponseDto> getClanIcons() {
+        try {
+            // Get the path to the resource directory
+            Resource resource = new ClassPathResource(iconsDirectory);
+            Path path = Paths.get(resource.getURI());
+
+            // List all files in the directory
+            return Files.list(path)
+                    .filter(Files::isRegularFile)
+                    .map(filePath -> {
+                        try {
+                            String fileName = filePath.getFileName().toString();
+                            Long id = Long.parseLong(fileName.split("\\.")[0]); // Extract ID from filename
+                            String src = "/res/icon/clan/" + fileName; // Relative URL to serve static content
+                            return new GetClanIconResponseDto(id, src);
+                        } catch (NumberFormatException e) {
+                            System.err.println("Error parsing ID from file: " + filePath + ", Exception: " + e.getMessage());
+                            return null; // Skip this file if parsing fails
+                        }
+                    })
+                    .filter(Objects::nonNull) // Filter out any null results
+                    .collect(Collectors.toList());
+        } catch (IOException e) {
+            e.printStackTrace();
+            return List.of();
+        }
+    }
+
+    @Override
+    public CommonResponseDto joinClan(Long id, CustomUserDetails userDetails) {
+        return null;
+    }
+
+    @Override
+    public CommonResponseDto leaveClan(Long id, CustomUserDetails userDetails) {
+        return null;
     }
 
 }

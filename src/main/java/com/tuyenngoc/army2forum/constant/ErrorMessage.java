@@ -115,6 +115,7 @@ public class ErrorMessage {
         public static final String ERR_NOT_FOUND_NAME = "exception.clan.not.found.name";
         public static final String ERR_DUPLICATE_NAME = "exception.clan.duplicate.name";
         public static final String ERR_DUPLICATE_EMAIL = "exception.clan.duplicate.email";
+        public static final String ERR_ALREADY_HAS_CLAN = "exception.clan.already.has.clan";
     }
 
 }

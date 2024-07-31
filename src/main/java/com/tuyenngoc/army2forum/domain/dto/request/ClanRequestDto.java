@@ -1,6 +1,5 @@
 package com.tuyenngoc.army2forum.domain.dto.request;
 
-
 import com.tuyenngoc.army2forum.constant.CommonConstant;
 import com.tuyenngoc.army2forum.constant.ErrorMessage;
 import jakarta.validation.constraints.*;

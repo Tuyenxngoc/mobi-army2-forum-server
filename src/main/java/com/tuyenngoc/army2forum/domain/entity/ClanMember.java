@@ -14,7 +14,9 @@ import java.time.LocalDateTime;
 @NoArgsConstructor
 @AllArgsConstructor
 @Entity
-@Table(name = "clan_members")
+@Table(name = "clan_members", uniqueConstraints = {
+        @UniqueConstraint(name = "UN_CLAN_PLAYER", columnNames = "player_id"),
+})
 public class ClanMember {
 
     @Id
@@ -40,7 +42,7 @@ public class ClanMember {
     @Column(name = "contribute_count", nullable = false)
     private Short contributeCount = 0;
 
-    @Column(name = "contribute_time", nullable = false)
+    @Column(name = "contribute_time")
     private LocalDateTime contributeTime;
 
     @Column(name = "join_time", nullable = false)
@@ -49,13 +51,13 @@ public class ClanMember {
     @Column(name = "contribute_text", length = 30, nullable = false)
     private String contributeText = "0 xu";
 
-    @OneToOne
-    @JoinColumn(name = "player_id", nullable = false)
+    @OneToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "player_id", foreignKey = @ForeignKey(name = "FK_CLAN_MEMBER_PLAYER_ID"), referencedColumnName = "player_id", nullable = false)
     @JsonIgnore
     private Player player;
 
     @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "clan_id", foreignKey = @ForeignKey(name = "FK_CLAN_MEMBER_CLAN_ID"), referencedColumnName = "clan_id", nullable = false )
+    @JoinColumn(name = "clan_id", foreignKey = @ForeignKey(name = "FK_CLAN_MEMBER_CLAN_ID"), referencedColumnName = "clan_id", nullable = false)
     @JsonIgnore
     private Clan clan;
 

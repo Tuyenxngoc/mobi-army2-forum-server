@@ -63,4 +63,27 @@ public class ClanController {
         return VsResponseUtil.success(clanService.getClanById(id));
     }
 
+    @Operation(summary = "API Get Clan Icons")
+    @GetMapping(UrlConstant.Clan.GET_ICONS)
+    public ResponseEntity<?> getClanIcons() {
+        return VsResponseUtil.success(clanService.getClanIcons());
+    }
+
+    @Operation(summary = "API Join Clan")
+    @PostMapping(UrlConstant.Clan.JOIN)
+    public ResponseEntity<?> joinClan(
+            @PathVariable Long id,
+            @CurrentUser CustomUserDetails userDetails
+    ) {
+        return VsResponseUtil.success(clanService.joinClan(id, userDetails));
+    }
+
+    @Operation(summary = "API Leave Clan")
+    @PostMapping(UrlConstant.Clan.LEAVE)
+    public ResponseEntity<?> leaveClan(
+            @PathVariable Long id,
+            @CurrentUser CustomUserDetails userDetails
+    ) {
+        return VsResponseUtil.success(clanService.leaveClan(id, userDetails));
+    }
 }

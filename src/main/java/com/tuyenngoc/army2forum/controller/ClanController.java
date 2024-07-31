@@ -59,8 +59,11 @@ public class ClanController {
 
     @Operation(summary = "API Get Clan By Id ")
     @GetMapping(UrlConstant.Clan.GET_BY_ID)
-    public ResponseEntity<?> getClanById(@PathVariable Long id) {
-        return VsResponseUtil.success(clanService.getClanById(id));
+    public ResponseEntity<?> getClanById(
+            @PathVariable Long id,
+            @CurrentUser CustomUserDetails userDetails
+    ) {
+        return VsResponseUtil.success(clanService.getClanDetailById(id, userDetails));
     }
 
     @Operation(summary = "API Get Clan Icons")
@@ -86,4 +89,14 @@ public class ClanController {
     ) {
         return VsResponseUtil.success(clanService.leaveClan(id, userDetails));
     }
+
+    @Operation(summary = "API Get Clan Members")
+    @GetMapping(UrlConstant.Clan.GET_MEMBERS)
+    public ResponseEntity<?> getClanMembers(
+            @PathVariable Long id,
+            @ParameterObject PaginationFullRequestDto requestDto
+    ) {
+        return VsResponseUtil.success(clanService.getClanMembers(id, requestDto));
+    }
+
 }

@@ -1,5 +1,6 @@
 package com.tuyenngoc.army2forum.domain.mapper;
 
+import com.tuyenngoc.army2forum.domain.dto.ClanDto;
 import com.tuyenngoc.army2forum.domain.dto.PlayerDto;
 import com.tuyenngoc.army2forum.domain.dto.UserDto;
 import com.tuyenngoc.army2forum.domain.dto.request.auth.RegisterRequestDto;
@@ -20,9 +21,19 @@ public interface UserMapper {
         return new PlayerDto(player);
     }
 
+    @Named("mapClan")
+    default ClanDto getClanDto(Player player) {
+        if (player.getClanMember() == null) {
+            return null;
+        }
+
+        return new ClanDto(player.getClanMember().getClan());
+    }
+
     @Mappings({
             @Mapping(target = "roleName", source = "role.name"),
             @Mapping(target = "player", source = "player", qualifiedByName = "mapPlayer"),
+            @Mapping(target = "clan", source = "player", qualifiedByName = "mapClan"),
     })
     UserDto toUserDto(User user);
 

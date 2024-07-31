@@ -64,11 +64,20 @@ public class Clan extends DateAuditing {
     @Column(name = "description", nullable = false)
     private String description;
 
+    @Column(name = "require_approval", nullable = false)
+    private Boolean requireApproval = false;
+
     @OneToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "master_id", foreignKey = @ForeignKey(name = "FK_CLAN_MASTER_ID"), referencedColumnName = "player_id", nullable = false)
+    @JsonIgnore
     private Player master;
 
     @OneToMany(mappedBy = "clan", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
     @JsonIgnore
     private List<ClanMember> members;
+
+    @OneToMany(mappedBy = "clan", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
+    @JsonIgnore
+    private List<ClanApproval> pendingApprovals = new ArrayList<>();
+
 }

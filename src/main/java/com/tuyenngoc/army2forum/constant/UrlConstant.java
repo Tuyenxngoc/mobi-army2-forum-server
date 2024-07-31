@@ -146,6 +146,7 @@ public class UrlConstant {
         public static final String GET_ICONS = PRE_FIX + "/icons";
         public static final String JOIN = PRE_FIX + "/{id}/join";
         public static final String LEAVE = PRE_FIX + "/{id}/leave";
+        public static final String GET_MEMBERS = PRE_FIX + "/{id}/members";
     }
 
 }

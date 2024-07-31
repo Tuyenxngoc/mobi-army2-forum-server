@@ -1,6 +1,7 @@
 package com.tuyenngoc.army2forum.domain.entity;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.tuyenngoc.army2forum.constant.ClanMemberRightsConstants;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
@@ -25,7 +26,7 @@ public class ClanMember {
     private Long id;
 
     @Column(name = "rights", nullable = false)
-    private Byte rights = 0;
+    private Byte rights = ClanMemberRightsConstants.CLAN_MEMBER;
 
     @Column(name = "xu", nullable = false)
     private Integer xu = 0;

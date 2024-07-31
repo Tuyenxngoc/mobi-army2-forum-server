@@ -34,4 +34,9 @@ public class SuccessMessage {
         public static final String LOGOUT = "success.user.logout";
     }
 
+    public static class Clan {
+        public static final String REQUEST_SUBMITTED = "success.clan.request.submitted";
+        public static final String JOINED_SUCCESSFULLY = "success.clan.joined.successfully";
+        public static final String LEAVE_SUCCESS = "success.clan.leave.successfully";
+    }
 }

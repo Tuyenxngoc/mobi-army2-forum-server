@@ -83,6 +83,10 @@ public class Player extends DateAuditing {
     @JsonIgnore
     private List<PlayerNotification> notifications = new ArrayList<>();
 
+    @OneToMany(mappedBy = "player", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
+    @JsonIgnore
+    private List<ClanApproval> pendingClanApprovals = new ArrayList<>();
+
     public Player(Long id) {
         this.id = id;
     }

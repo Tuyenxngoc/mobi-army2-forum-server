@@ -5,7 +5,9 @@ import com.tuyenngoc.army2forum.domain.dto.pagination.PaginationResponseDto;
 import com.tuyenngoc.army2forum.domain.dto.request.ClanRequestDto;
 import com.tuyenngoc.army2forum.domain.dto.response.CommonResponseDto;
 import com.tuyenngoc.army2forum.domain.dto.response.GetClanIconResponseDto;
+import com.tuyenngoc.army2forum.domain.dto.response.GetClanMemberResponseDto;
 import com.tuyenngoc.army2forum.domain.dto.response.GetClanResponseDto;
+import com.tuyenngoc.army2forum.domain.entity.Clan;
 import com.tuyenngoc.army2forum.security.CustomUserDetails;
 
 import java.util.List;
@@ -18,14 +20,18 @@ public interface ClanService {
 
     CommonResponseDto deleteClan(Long clanId, CustomUserDetails userDetails);
 
-    GetClanResponseDto getClanById(Long clanId);
+    Clan getClanById(Long clanId);
+
+    GetClanResponseDto getClanDetailById(Long clanId, CustomUserDetails userDetails);
 
     PaginationResponseDto<GetClanResponseDto> getClans(PaginationFullRequestDto requestDto);
 
     List<GetClanIconResponseDto> getClanIcons();
 
-    CommonResponseDto joinClan(Long id, CustomUserDetails userDetails);
+    CommonResponseDto joinClan(Long clanId, CustomUserDetails userDetails);
 
-    CommonResponseDto leaveClan(Long id, CustomUserDetails userDetails);
+    CommonResponseDto leaveClan(Long clanId, CustomUserDetails userDetails);
+
+    PaginationResponseDto<GetClanMemberResponseDto> getClanMembers(Long clanId, PaginationFullRequestDto requestDto);
 
 }

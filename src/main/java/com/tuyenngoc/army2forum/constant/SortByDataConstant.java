@@ -52,7 +52,8 @@ public enum SortByDataConstant implements SortByInterface {
                 case "id" -> "id";
                 case "name" -> "name";
                 case "lastModifiedDate" -> "lastModifiedDate";
-                default -> "createdDate";
+                case "createdDate" -> "createdDate";
+                default -> "xp";
             };
         }
     },

@@ -115,7 +115,11 @@ public class ErrorMessage {
         public static final String ERR_NOT_FOUND_NAME = "exception.clan.not.found.name";
         public static final String ERR_DUPLICATE_NAME = "exception.clan.duplicate.name";
         public static final String ERR_DUPLICATE_EMAIL = "exception.clan.duplicate.email";
-        public static final String ERR_ALREADY_HAS_CLAN = "exception.clan.already.has.clan";
+        public static final String ERR_ALREADY_JOINED_CLAN = "exception.clan.already.joined";
+        public static final String ERR_CLAN_IS_FULL = "exception.clan.is.full";
+        public static final String ERR_ALREADY_REQUESTED_JOIN = "exception.clan.already.requested.join";
+        public static final String ERR_NOT_JOINED_CLAN = "exception.clan.not.joined";
+        public static final String ERR_OWNER_CANNOT_LEAVE = "exception.clan.owner.cannot.leave";
     }
 
 }

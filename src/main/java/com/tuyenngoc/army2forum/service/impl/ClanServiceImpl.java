@@ -1,5 +1,6 @@
 package com.tuyenngoc.army2forum.service.impl;
 
+import com.tuyenngoc.army2forum.constant.ClanMemberRightsConstants;
 import com.tuyenngoc.army2forum.constant.ErrorMessage;
 import com.tuyenngoc.army2forum.constant.SortByDataConstant;
 import com.tuyenngoc.army2forum.constant.SuccessMessage;
@@ -9,8 +10,10 @@ import com.tuyenngoc.army2forum.domain.dto.pagination.PagingMeta;
 import com.tuyenngoc.army2forum.domain.dto.request.ClanRequestDto;
 import com.tuyenngoc.army2forum.domain.dto.response.CommonResponseDto;
 import com.tuyenngoc.army2forum.domain.dto.response.GetClanIconResponseDto;
+import com.tuyenngoc.army2forum.domain.dto.response.GetClanMemberResponseDto;
 import com.tuyenngoc.army2forum.domain.dto.response.GetClanResponseDto;
 import com.tuyenngoc.army2forum.domain.entity.Clan;
+import com.tuyenngoc.army2forum.domain.entity.ClanApproval;
 import com.tuyenngoc.army2forum.domain.entity.ClanMember;
 import com.tuyenngoc.army2forum.domain.entity.Player;
 import com.tuyenngoc.army2forum.domain.mapper.ClanMapper;
@@ -19,6 +22,7 @@ import com.tuyenngoc.army2forum.exception.BadRequestException;
 import com.tuyenngoc.army2forum.exception.ConflictException;
 import com.tuyenngoc.army2forum.exception.ForbiddenException;
 import com.tuyenngoc.army2forum.exception.NotFoundException;
+import com.tuyenngoc.army2forum.repository.ClanApprovalRepository;
 import com.tuyenngoc.army2forum.repository.ClanMemberRepository;
 import com.tuyenngoc.army2forum.repository.ClanRepository;
 import com.tuyenngoc.army2forum.repository.PlayerRepository;
@@ -65,6 +69,8 @@ public class ClanServiceImpl implements ClanService {
 
     private final ClanMemberRepository clanMemberRepository;
 
+    private final ClanApprovalRepository clanApprovalRepository;
+
     @Override
     @Transactional
     public CommonResponseDto createClan(ClanRequestDto requestDto, CustomUserDetails userDetails) {
@@ -74,7 +80,7 @@ public class ClanServiceImpl implements ClanService {
                 .orElseThrow(() -> new NotFoundException(ErrorMessage.Player.ERR_NOT_FOUND_ID, userDetails.getPlayerId()));
 
         if (player.getClanMember() != null) {
-            throw new BadRequestException(ErrorMessage.Clan.ERR_ALREADY_HAS_CLAN);
+            throw new BadRequestException(ErrorMessage.Clan.ERR_ALREADY_JOINED_CLAN);
         }
 
         if (player.getLuong() < clanCreationPrice) {
@@ -90,7 +96,7 @@ public class ClanServiceImpl implements ClanService {
         ClanMember clanMember = new ClanMember();
         clanMember.setClan(clan);
         clanMember.setPlayer(player);
-        clanMember.setRights((byte) 2);
+        clanMember.setRights(ClanMemberRightsConstants.CLAN_OWNER);
         clanMember.setJoinTime(LocalDateTime.now());
         clanMemberRepository.save(clanMember);
 
@@ -100,8 +106,7 @@ public class ClanServiceImpl implements ClanService {
 
     @Override
     public CommonResponseDto updateClan(Long clanId, ClanRequestDto requestDto, CustomUserDetails userDetails) {
-        Clan clan = clanRepository.findById(clanId)
-                .orElseThrow(() -> new NotFoundException(ErrorMessage.Clan.ERR_NOT_FOUND_ID, clanId));
+        Clan clan = getClanById(clanId);
 
         if (!Objects.equals(clan.getMaster().getId(), userDetails.getPlayerId())) {
             throw new ForbiddenException(ErrorMessage.ERR_FORBIDDEN_UPDATE_DELETE);
@@ -135,8 +140,7 @@ public class ClanServiceImpl implements ClanService {
 
     @Override
     public CommonResponseDto deleteClan(Long clanId, CustomUserDetails userDetails) {
-        Clan clan = clanRepository.findById(clanId)
-                .orElseThrow(() -> new NotFoundException(ErrorMessage.Clan.ERR_NOT_FOUND_ID, clanId));
+        Clan clan = getClanById(clanId);
 
         if (!Objects.equals(clan.getMaster().getId(), userDetails.getPlayerId())) {
             throw new ForbiddenException(ErrorMessage.ERR_FORBIDDEN_UPDATE_DELETE);
@@ -149,9 +153,15 @@ public class ClanServiceImpl implements ClanService {
     }
 
     @Override
-    public GetClanResponseDto getClanById(Long clanId) {
-        Clan clan = clanRepository.findById(clanId).
+    public Clan getClanById(Long clanId) {
+        return clanRepository.findById(clanId).
                 orElseThrow(() -> new NotFoundException(ErrorMessage.Clan.ERR_NOT_FOUND_ID, clanId));
+    }
+
+    @Override
+    public GetClanResponseDto getClanDetailById(Long clanId, CustomUserDetails userDetails) {
+        Clan clan = getClanById(clanId);
+
         return new GetClanResponseDto(clan);
     }
 
@@ -207,13 +217,83 @@ public class ClanServiceImpl implements ClanService {
     }
 
     @Override
-    public CommonResponseDto joinClan(Long id, CustomUserDetails userDetails) {
-        return null;
+    public CommonResponseDto joinClan(Long clanId, CustomUserDetails userDetails) {
+        Clan clan = getClanById(clanId);
+
+        if (clan.getMembers().size() >= clan.getMemMax()) {
+            throw new BadRequestException(ErrorMessage.Clan.ERR_CLAN_IS_FULL);
+        }
+
+        Player player = playerRepository.findById(userDetails.getPlayerId())
+                .orElseThrow(() -> new NotFoundException(ErrorMessage.Player.ERR_NOT_FOUND_ID, userDetails.getPlayerId()));
+
+        if (player.getClanMember() != null) {
+            throw new BadRequestException(ErrorMessage.Clan.ERR_ALREADY_JOINED_CLAN);
+        }
+
+        if (clan.getRequireApproval()) {
+            boolean exists = clanApprovalRepository.existsByClanIdAndPlayerId(clanId, userDetails.getPlayerId());
+            if (exists) {
+                throw new ConflictException(ErrorMessage.Clan.ERR_ALREADY_REQUESTED_JOIN);
+            }
+
+            ClanApproval clanApproval = new ClanApproval();
+            clanApproval.setClan(clan);
+            clanApproval.setPlayer(player);
+            clanApprovalRepository.save(clanApproval);
+
+            String message = messageSource.getMessage(SuccessMessage.Clan.REQUEST_SUBMITTED, null, LocaleContextHolder.getLocale());
+            return new CommonResponseDto(message);
+        } else {
+            clanApprovalRepository.removeByPlayerId(userDetails.getPlayerId());
+
+            ClanMember clanMember = new ClanMember();
+            clanMember.setClan(clan);
+            clanMember.setPlayer(player);
+            clanMember.setRights((byte) 0);
+            clanMember.setJoinTime(LocalDateTime.now());
+            clanMemberRepository.save(clanMember);
+
+            String message = messageSource.getMessage(SuccessMessage.Clan.JOINED_SUCCESSFULLY, null, LocaleContextHolder.getLocale());
+            return new CommonResponseDto(message);
+        }
     }
 
     @Override
-    public CommonResponseDto leaveClan(Long id, CustomUserDetails userDetails) {
-        return null;
+    public CommonResponseDto leaveClan(Long clanId, CustomUserDetails userDetails) {
+        ClanMember clanMember = clanMemberRepository.findByClanIdAndPlayerId(clanId, userDetails.getPlayerId())
+                .orElseThrow(() -> new NotFoundException(ErrorMessage.Clan.ERR_NOT_JOINED_CLAN));
+
+        if (clanMember.getRights() == 2) {//Owner clan
+            throw new BadRequestException(ErrorMessage.Clan.ERR_OWNER_CANNOT_LEAVE);
+        } else {
+            clanMemberRepository.delete(clanMember);
+        }
+
+        String message = messageSource.getMessage(SuccessMessage.Clan.LEAVE_SUCCESS, null, LocaleContextHolder.getLocale());
+        return new CommonResponseDto(message);
+    }
+
+    @Override
+    public PaginationResponseDto<GetClanMemberResponseDto> getClanMembers(Long clanId, PaginationFullRequestDto requestDto) {
+        Pageable pageable = PaginationUtil.buildPageable(requestDto, SortByDataConstant.CLAN);
+
+        Page<ClanMember> page = clanMemberRepository.findAll(
+                ClanSpecification.filterClanMembers(requestDto.getKeyword(), requestDto.getSearchBy()),
+                pageable
+        );
+
+        List<GetClanMemberResponseDto> items = page.getContent().stream()
+                .map(GetClanMemberResponseDto::new)
+                .collect(Collectors.toList());
+
+        PagingMeta pagingMeta = PaginationUtil.buildPagingMeta(requestDto, SortByDataConstant.CLAN, page);
+
+        PaginationResponseDto<GetClanMemberResponseDto> responseDto = new PaginationResponseDto<>();
+        responseDto.setItems(items);
+        responseDto.setMeta(pagingMeta);
+
+        return responseDto;
     }
 
 }

@@ -12,6 +12,7 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 
+import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -21,7 +22,11 @@ import java.util.List;
 @AllArgsConstructor
 @Entity
 @Table(name = "players",
-        uniqueConstraints = @UniqueConstraint(name = "UN_PLAYER_USER_ID", columnNames = "user_id"))
+        uniqueConstraints = {
+                @UniqueConstraint(name = "UN_PLAYER_USER_ID", columnNames = "user_id"),
+                @UniqueConstraint(name = "UN_PLAYER_ACTIVE_CHARACTER_ID", columnNames = "active_character_id")
+        }
+)
 public class Player extends DateAuditing {
 
     @Id
@@ -37,6 +42,9 @@ public class Player extends DateAuditing {
 
     @Column(name = "luong", nullable = false)
     private Integer luong = 0;
+
+    @Column(name = "x2_xp_time")
+    private LocalDateTime x2XpTime;
 
     @Column(name = "item_chest", columnDefinition = "varchar(1000) default '[]'")
     @Convert(converter = ItemChestConverter.class)
@@ -58,6 +66,11 @@ public class Player extends DateAuditing {
     @JoinColumn(name = "user_id", foreignKey = @ForeignKey(name = "FK_PLAYER_USER_ID"), referencedColumnName = "user_id", nullable = false)
     @JsonIgnore
     private User user;
+
+    @OneToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "active_character_id", foreignKey = @ForeignKey(name = "FK_PLAYER_ACTIVE_CHARACTER_ID"), referencedColumnName = "player_character_id", nullable = false)
+    @JsonIgnore
+    private PlayerCharacters activeCharacter;
 
     @OneToMany(mappedBy = "player", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
     @JsonIgnore

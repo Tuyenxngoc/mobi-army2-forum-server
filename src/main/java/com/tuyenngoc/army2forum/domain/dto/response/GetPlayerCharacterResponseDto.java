@@ -18,8 +18,6 @@ public class GetPlayerCharacterResponseDto {
 
     private String avatar;
 
-    private boolean isUsed = false;
-
     private int xp = 0;
 
     private int level = 1;
@@ -34,7 +32,6 @@ public class GetPlayerCharacterResponseDto {
         this.id = playerCharacters.getCharacter().getId();
         this.name = playerCharacters.getCharacter().getName();
         this.avatar = String.format("/avatar/%d.gif", this.id);
-        this.isUsed = playerCharacters.getIsUsed();
         this.xp = playerCharacters.getXp();
         this.level = playerCharacters.getLevel();
         this.points = playerCharacters.getPoints();

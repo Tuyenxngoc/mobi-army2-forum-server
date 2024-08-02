@@ -21,9 +21,6 @@ public class PlayerCharacters {
     @Column(name = "player_character_id")
     private Long id;
 
-    @Column(name = "is_used", nullable = false)
-    private Boolean isUsed = false;
-
     @Column(name = "xp", nullable = false)
     private Integer xp = 0;
 
@@ -40,6 +37,10 @@ public class PlayerCharacters {
     @Convert(converter = IntArrayJsonConverter.class)
     @Column(name = "data", nullable = false, columnDefinition = "varchar(1000) default '[]'")
     private int[] data;
+
+    @OneToOne(mappedBy = "activeCharacter", fetch = FetchType.LAZY, cascade = CascadeType.ALL)
+    @JsonIgnore
+    private Player activePlayer;
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "player_id", foreignKey = @ForeignKey(name = "FK_PLAYER_CHARACTERS_PLAYER_ID"), referencedColumnName = "player_id", nullable = false)

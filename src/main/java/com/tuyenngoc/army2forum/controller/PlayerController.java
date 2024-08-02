@@ -16,6 +16,7 @@ import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.PutMapping;
 
 @RestApiV1
 @RequiredArgsConstructor
@@ -50,6 +51,22 @@ public class PlayerController {
             @CurrentUser CustomUserDetails userDetails
     ) {
         return VsResponseUtil.success(playerService.getPlayerInfo(userDetails.getPlayerId()));
+    }
+
+    @Operation(summary = "Toggle Equipment Chest Lock")
+    @PutMapping(UrlConstant.Player.TOGGLE_CHEST_LOCK)
+    public ResponseEntity<?> toggleEquipmentChestLock(
+            @CurrentUser CustomUserDetails userDetails
+    ) {
+        return VsResponseUtil.success(playerService.toggleEquipmentChestLock(userDetails.getPlayerId()));
+    }
+
+    @Operation(summary = "Toggle Invitation Lock")
+    @PutMapping(UrlConstant.Player.TOGGLE_INVITATION_LOCK)
+    public ResponseEntity<?> toggleInvitationLock(
+            @CurrentUser CustomUserDetails userDetails
+    ) {
+        return VsResponseUtil.success(playerService.toggleInvitationLock(userDetails.getPlayerId()));
     }
 
 }

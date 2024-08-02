@@ -2,25 +2,27 @@ package com.tuyenngoc.army2forum.service.impl;
 
 import com.tuyenngoc.army2forum.constant.ErrorMessage;
 import com.tuyenngoc.army2forum.constant.SortByDataConstant;
+import com.tuyenngoc.army2forum.constant.SuccessMessage;
 import com.tuyenngoc.army2forum.domain.dto.pagination.PaginationResponseDto;
 import com.tuyenngoc.army2forum.domain.dto.pagination.PaginationSortRequestDto;
 import com.tuyenngoc.army2forum.domain.dto.pagination.PagingMeta;
+import com.tuyenngoc.army2forum.domain.dto.response.CommonResponseDto;
 import com.tuyenngoc.army2forum.domain.dto.response.GetPlayerInfoResponseDto;
 import com.tuyenngoc.army2forum.domain.dto.response.post.GetPostResponseDto;
 import com.tuyenngoc.army2forum.domain.entity.Player;
 import com.tuyenngoc.army2forum.domain.entity.Role;
 import com.tuyenngoc.army2forum.exception.ForbiddenException;
 import com.tuyenngoc.army2forum.exception.NotFoundException;
-import com.tuyenngoc.army2forum.repository.EquipRepository;
 import com.tuyenngoc.army2forum.repository.PlayerRepository;
 import com.tuyenngoc.army2forum.repository.PostRepository;
-import com.tuyenngoc.army2forum.repository.SpecialItemRepository;
 import com.tuyenngoc.army2forum.security.CustomUserDetails;
 import com.tuyenngoc.army2forum.service.PlayerService;
 import com.tuyenngoc.army2forum.service.RoleService;
 import com.tuyenngoc.army2forum.util.PaginationUtil;
 import com.tuyenngoc.army2forum.util.SecurityUtils;
 import lombok.RequiredArgsConstructor;
+import org.springframework.context.MessageSource;
+import org.springframework.context.i18n.LocaleContextHolder;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
@@ -35,9 +37,7 @@ public class PlayerServiceImpl implements PlayerService {
 
     private final RoleService roleService;
 
-    private final SpecialItemRepository specialItemRepository;
-
-    private final EquipRepository equipRepository;
+    private final MessageSource messageSource;
 
     @Override
     public Player getPlayerById(Long playerId) {
@@ -77,9 +77,37 @@ public class PlayerServiceImpl implements PlayerService {
     public GetPlayerInfoResponseDto getPlayerInfo(Long playerId) {
         Player player = getPlayerById(playerId);
 
-        GetPlayerInfoResponseDto responseDto = new GetPlayerInfoResponseDto(player);
+        return new GetPlayerInfoResponseDto(player);
+    }
 
-        return responseDto;
+    @Override
+    public CommonResponseDto toggleEquipmentChestLock(Long playerId) {
+        Player player = getPlayerById(playerId);
+        player.setIsChestLocked(!player.getIsChestLocked());
+        playerRepository.save(player);
+
+        String message;
+        if (player.getIsChestLocked()) {
+            message = messageSource.getMessage(SuccessMessage.Player.CHEST_LOCKED, null, LocaleContextHolder.getLocale());
+        } else {
+            message = messageSource.getMessage(SuccessMessage.Player.CHEST_UNLOCKED, null, LocaleContextHolder.getLocale());
+        }
+        return new CommonResponseDto(message, player.getIsChestLocked());
+    }
+
+    @Override
+    public CommonResponseDto toggleInvitationLock(Long playerId) {
+        Player player = getPlayerById(playerId);
+        player.setIsInvitationLocked(!player.getIsInvitationLocked());
+        playerRepository.save(player);
+
+        String message;
+        if (player.getIsInvitationLocked()) {
+            message = messageSource.getMessage(SuccessMessage.Player.INVITATION_LOCKED, null, LocaleContextHolder.getLocale());
+        } else {
+            message = messageSource.getMessage(SuccessMessage.Player.INVITATION_UNLOCKED, null, LocaleContextHolder.getLocale());
+        }
+        return new CommonResponseDto(message, player.getIsInvitationLocked());
     }
 
 }

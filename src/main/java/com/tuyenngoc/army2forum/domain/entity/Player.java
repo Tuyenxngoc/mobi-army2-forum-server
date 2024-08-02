@@ -46,6 +46,12 @@ public class Player extends DateAuditing {
     @Column(name = "x2_xp_time")
     private LocalDateTime x2XpTime;
 
+    @Column(name = "is_chest_locked", nullable = false)
+    private Boolean isChestLocked = false;
+
+    @Column(name = "is_invitation_locked", nullable = false)
+    private Boolean isInvitationLocked = false;
+
     @Column(name = "item_chest", columnDefinition = "varchar(1000) default '[]'")
     @Convert(converter = ItemChestConverter.class)
     private List<SpecialItemChest> itemChest = new ArrayList<>();

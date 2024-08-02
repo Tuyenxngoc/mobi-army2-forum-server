@@ -17,8 +17,17 @@ public class CommonResponseDto {
 
     private String message;
 
+    private Object data;
+
     public CommonResponseDto(String message) {
         this.status = null;
         this.message = message;
     }
+
+    public CommonResponseDto(String message, Object data) {
+        this.status = null;
+        this.message = message;
+        this.data = data;
+    }
+
 }

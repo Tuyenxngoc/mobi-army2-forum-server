@@ -39,4 +39,11 @@ public class SuccessMessage {
         public static final String JOINED_SUCCESSFULLY = "success.clan.joined.successfully";
         public static final String LEAVE_SUCCESS = "success.clan.leave.successfully";
     }
+
+    public static class Player {
+        public static final String CHEST_LOCKED = "success.player.chest.locked";
+        public static final String CHEST_UNLOCKED = "success.player.chest.unlocked";
+        public static final String INVITATION_LOCKED = "success.player.invitation.locked";
+        public static final String INVITATION_UNLOCKED = "success.player.invitation.unlocked";
+    }
 }

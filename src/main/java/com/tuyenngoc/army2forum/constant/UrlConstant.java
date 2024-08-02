@@ -95,6 +95,9 @@ public class UrlConstant {
         public static final String GET_FOLLOWING = PRE_FIX + "/following-post";
 
         public static final String GET_PLAYER_INFO = PRE_FIX + "/info";
+
+        public static final String TOGGLE_CHEST_LOCK = PRE_FIX + "/toggle-chest-lock";
+        public static final String TOGGLE_INVITATION_LOCK = PRE_FIX + "/toggle-invitation-lock";
     }
 
     public static class PlayerNotification {

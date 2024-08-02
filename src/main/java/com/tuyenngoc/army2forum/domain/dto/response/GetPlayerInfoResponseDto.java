@@ -34,6 +34,10 @@ public class GetPlayerInfoResponseDto {
 
     private String phoneNumber;
 
+    private boolean isChestLocked;
+
+    private boolean isInvitationLocked;
+
     private List<GetPlayerCharacterResponseDto> characters;
 
     public GetPlayerInfoResponseDto(Player player) {
@@ -44,6 +48,8 @@ public class GetPlayerInfoResponseDto {
         this.x2XpTime = player.getX2XpTime();
         this.email = MaskingUtils.maskEmail(player.getUser().getEmail());
         this.phoneNumber = MaskingUtils.maskPhoneNumber(player.getUser().getPhoneNumber());
+        this.isChestLocked = player.getIsChestLocked();
+        this.isInvitationLocked = player.getIsInvitationLocked();
         this.characters = player.getPlayerCharacters().stream()
                 .map(GetPlayerCharacterResponseDto::new)
                 .collect(Collectors.toList());

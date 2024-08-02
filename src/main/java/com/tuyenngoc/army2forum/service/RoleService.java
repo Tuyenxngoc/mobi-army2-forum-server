@@ -4,7 +4,7 @@ import com.tuyenngoc.army2forum.domain.entity.Role;
 
 public interface RoleService {
 
-    Role getRole(long roleId);
+    Role getRole(byte roleId);
 
     Role getRole(String name);
 

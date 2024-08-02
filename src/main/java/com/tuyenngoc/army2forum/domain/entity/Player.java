@@ -29,22 +29,22 @@ public class Player extends DateAuditing {
     @Column(name = "player_id")
     private Long id;
 
-    private Integer xu;
+    @Column(name = "is_online", nullable = false)
+    private Boolean isOnline = false;
 
-    private Integer luong;
+    @Column(name = "xu", nullable = false)
+    private Integer xu = 1000;
 
-    @Column(name = "ruong_item", columnDefinition = "varchar(1000) default '[]'")
+    @Column(name = "luong", nullable = false)
+    private Integer luong = 0;
+
+    @Column(name = "item_chest", columnDefinition = "varchar(1000) default '[]'")
     @Convert(converter = ItemChestConverter.class)
-    private List<SpecialItemChest> itemChest;
+    private List<SpecialItemChest> itemChest = new ArrayList<>();
 
-    @Column(name = "ruong_trang_bi", columnDefinition = "varchar(1000) default '[]'")
+    @Column(name = "equipment_chest", columnDefinition = "varchar(1000) default '[]'")
     @Convert(converter = EquipmentChestConverter.class)
-    private List<EquipChest> equipmentChest;
-
-    private Boolean online;
-
-    @Column(name = "nv_used", columnDefinition = "tinyint default 0")
-    private Byte nvUsed;
+    private List<EquipChest> equipmentChest = new ArrayList<>();
 
     @OneToOne(mappedBy = "master", fetch = FetchType.LAZY, cascade = CascadeType.ALL)
     @JsonIgnore
@@ -86,6 +86,10 @@ public class Player extends DateAuditing {
     @OneToMany(mappedBy = "player", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
     @JsonIgnore
     private List<ClanApproval> pendingClanApprovals = new ArrayList<>();
+
+    @OneToMany(mappedBy = "player", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
+    @JsonIgnore
+    private List<PlayerCharacters> playerCharacters = new ArrayList<>();
 
     public Player(Long id) {
         this.id = id;

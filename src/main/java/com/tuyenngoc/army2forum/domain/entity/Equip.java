@@ -18,7 +18,7 @@ public class Equip {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "equip_id", nullable = false)
-    private Long id;
+    private Short id;
 
     @Column(name = "character_id", nullable = false)
     private Byte characterId;
@@ -44,8 +44,9 @@ public class Equip {
     @Column(name = "is_disguise", nullable = false, columnDefinition = "tinyint default 0")
     private Byte isDisguise = 0;
 
+    @Convert(converter = IntArrayJsonConverter.class)
     @Column(name = "disguise_equipped_indexes", length = 30)
-    private String disguiseEquippedIndexes;
+    private int[] disguiseEquippedIndexes;
 
     @Column(name = "expiration_days", nullable = false, columnDefinition = "tinyint default 0")
     private Byte expirationDays = 0;

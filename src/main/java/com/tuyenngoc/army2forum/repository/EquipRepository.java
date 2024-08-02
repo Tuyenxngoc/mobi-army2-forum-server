@@ -9,7 +9,7 @@ import org.springframework.stereotype.Repository;
 import java.util.Optional;
 
 @Repository
-public interface EquipRepository extends JpaRepository<Equip, Long> {
+public interface EquipRepository extends JpaRepository<Equip, Short> {
 
     @Query("SELECT e FROM " +
             "Equip e WHERE " +

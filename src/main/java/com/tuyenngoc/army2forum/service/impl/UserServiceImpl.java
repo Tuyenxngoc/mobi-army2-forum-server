@@ -17,6 +17,7 @@ import com.tuyenngoc.army2forum.domain.mapper.UserMapper;
 import com.tuyenngoc.army2forum.exception.NotFoundException;
 import com.tuyenngoc.army2forum.repository.PlayerRepository;
 import com.tuyenngoc.army2forum.repository.UserRepository;
+import com.tuyenngoc.army2forum.service.PlayerCharactersService;
 import com.tuyenngoc.army2forum.service.RoleService;
 import com.tuyenngoc.army2forum.service.UserService;
 import com.tuyenngoc.army2forum.util.PaginationUtil;
@@ -46,6 +47,8 @@ public class UserServiceImpl implements UserService {
 
     private final PasswordEncoder passwordEncoder;
 
+    private final PlayerCharactersService playerCharactersService;
+
     @Override
     public void initAdmin(AdminInfo adminInfo) {
         if (userRepository.count() == 0) {
@@ -63,6 +66,8 @@ public class UserServiceImpl implements UserService {
                 Player player = new Player();
                 player.setUser(user);
                 playerRepository.save(player);
+
+                playerCharactersService.initiatePlayerCharacterDefaults(player);
 
                 log.info("Create admin user successfully.");
             } catch (Exception e) {

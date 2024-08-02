@@ -23,7 +23,7 @@ public class Role extends DateAuditing {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "role_id")
-    private Long id;
+    private Byte id;
 
     @Column(nullable = false)
     private String name;

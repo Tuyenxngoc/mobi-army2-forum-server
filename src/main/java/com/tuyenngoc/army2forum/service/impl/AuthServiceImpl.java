@@ -19,10 +19,7 @@ import com.tuyenngoc.army2forum.repository.PlayerRepository;
 import com.tuyenngoc.army2forum.repository.UserRepository;
 import com.tuyenngoc.army2forum.security.CustomUserDetails;
 import com.tuyenngoc.army2forum.security.jwt.JwtTokenProvider;
-import com.tuyenngoc.army2forum.service.AuthService;
-import com.tuyenngoc.army2forum.service.EmailRateLimiterService;
-import com.tuyenngoc.army2forum.service.JwtTokenService;
-import com.tuyenngoc.army2forum.service.RoleService;
+import com.tuyenngoc.army2forum.service.*;
 import com.tuyenngoc.army2forum.util.RandomPasswordUtil;
 import com.tuyenngoc.army2forum.util.SendMailUtil;
 import jakarta.mail.MessagingException;
@@ -71,6 +68,8 @@ public class AuthServiceImpl implements AuthService {
     private final SendMailUtil sendMailUtil;
 
     private final PlayerRepository playerRepository;
+
+    private final PlayerCharactersService playerCharactersService;
 
     @Override
     public LoginResponseDto login(LoginRequestDto request) {
@@ -247,6 +246,8 @@ public class AuthServiceImpl implements AuthService {
             Player player = new Player();
             player.setUser(user);
             playerRepository.save(player);
+
+            playerCharactersService.initiatePlayerCharacterDefaults(player);
 
             String message = messageSource.getMessage(SuccessMessage.User.VERIFIED_SUCCESS, null, LocaleContextHolder.getLocale());
             return new CommonResponseDto(message);

@@ -45,7 +45,6 @@ public class ClanSpecification {
                     case ClanMember_.ID -> predicate = builder.and(predicate, builder.equal(root.get(ClanMember_.id),
                             SpecificationsUtil.castToRequiredType(root.get(ClanMember_.id).getJavaType(), keyword)));
 
-
                 }
             }
             return predicate;

@@ -46,7 +46,7 @@ public class PlayerServiceImpl implements PlayerService {
     }
 
     @Override
-    public Player updatePlayerRoles(Long playerId, Long roleId, CustomUserDetails userDetails) {
+    public Player updatePlayerRoles(Long playerId, Byte roleId, CustomUserDetails userDetails) {
         Player player = getPlayerById(playerId);
         Role newRole = roleService.getRole(roleId);
 

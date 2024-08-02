@@ -54,18 +54,21 @@ public class Clan extends DateAuditing {
     @Column(name = "cup", nullable = false)
     private Integer cup = 0;
 
-    @Column(name = "item", length = 1024, nullable = false)
-    @Convert(converter = ClanItemConverter.class)
-    private List<ClanItem> item = new ArrayList<>();
-
     @Column(name = "mem_max", nullable = false)
     private Byte memMax = 10;
 
     @Column(name = "description", nullable = false)
     private String description;
 
+    @Column(name = "notification", length = 500)
+    private String notification;
+
     @Column(name = "require_approval", nullable = false)
     private Boolean requireApproval = false;
+
+    @Column(name = "item", length = 1024, nullable = false)
+    @Convert(converter = ClanItemConverter.class)
+    private List<ClanItem> item = new ArrayList<>();
 
     @OneToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "master_id", foreignKey = @ForeignKey(name = "FK_CLAN_MASTER_ID"), referencedColumnName = "player_id", nullable = false)

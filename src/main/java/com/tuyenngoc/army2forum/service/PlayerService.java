@@ -11,7 +11,7 @@ public interface PlayerService {
 
     Player getPlayerById(Long playerId);
 
-    Player updatePlayerRoles(Long playerId, Long roleId, CustomUserDetails userDetails);
+    Player updatePlayerRoles(Long playerId, Byte roleId, CustomUserDetails userDetails);
 
     PaginationResponseDto<GetPostResponseDto> getFollowingPosts(Long playerId, PaginationSortRequestDto requestDto);
 

@@ -17,7 +17,7 @@ public class SpecialItem {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "special_item_id")
-    private Long id;
+    private Byte id;
 
     @Column(name = "name", nullable = false, length = 100)
     private String name;

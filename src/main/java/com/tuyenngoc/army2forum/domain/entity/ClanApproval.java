@@ -1,6 +1,7 @@
 package com.tuyenngoc.army2forum.domain.entity;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.tuyenngoc.army2forum.domain.entity.common.DateAuditing;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
@@ -13,7 +14,7 @@ import lombok.Setter;
 @AllArgsConstructor
 @Entity
 @Table(name = "clan_approvals")
-public class ClanApproval {
+public class ClanApproval extends DateAuditing {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -29,4 +30,5 @@ public class ClanApproval {
     @JoinColumn(name = "player_id", foreignKey = @ForeignKey(name = "FK_CLAN_APPROVAL_PLAYER_ID"), referencedColumnName = "player_id", nullable = false)
     @JsonIgnore
     private Player player;
+
 }

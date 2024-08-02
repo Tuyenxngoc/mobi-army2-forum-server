@@ -29,7 +29,7 @@ public class PlayerController {
     @PostMapping(UrlConstant.Player.UPDATE_ROLE)
     public ResponseEntity<?> updatePlayerRoles(
             @PathVariable Long id,
-            @PathVariable Long roleId,
+            @PathVariable Byte roleId,
             @CurrentUser CustomUserDetails userDetails
     ) {
         return VsResponseUtil.success(playerService.updatePlayerRoles(id, roleId, userDetails));

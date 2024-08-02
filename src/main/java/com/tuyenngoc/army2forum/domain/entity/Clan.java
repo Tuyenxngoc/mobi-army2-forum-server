@@ -51,6 +51,9 @@ public class Clan extends DateAuditing {
     @Column(name = "xp", nullable = false)
     private Integer xp = 0;
 
+    @Column(name = "level", nullable = false)
+    private Short level = 1;
+
     @Column(name = "cup", nullable = false)
     private Integer cup = 0;
 

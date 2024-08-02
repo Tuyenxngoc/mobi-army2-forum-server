@@ -1,5 +1,6 @@
 package com.tuyenngoc.army2forum.domain.entity;
 
+import com.tuyenngoc.army2forum.converter.IntArrayJsonConverter;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
@@ -38,15 +39,16 @@ public class SpecialItem {
     private Short expirationDays = 0;
 
     @Column(name = "show_selection", nullable = false, columnDefinition = "tinyint default 1")
-    private Byte showSelection = 1;
+    private Byte showSelection = 0;
 
     @Column(name = "is_on_sale", nullable = false, columnDefinition = "tinyint default 1")
-    private Byte isOnSale = 1;
+    private Byte isOnSale = 0;
 
     @Column(name = "type", nullable = false)
     private Byte type;
 
+    @Convert(converter = IntArrayJsonConverter.class)
     @Column(name = "ability", nullable = false, length = 50, columnDefinition = "varchar(50) default '[0,0,0,0,0]'")
-    private String ability = "[0,0,0,0,0]";
+    private int[] ability;
 
 }

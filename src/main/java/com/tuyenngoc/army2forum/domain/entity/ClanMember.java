@@ -46,7 +46,7 @@ public class ClanMember {
     @Column(name = "contribute_time")
     private LocalDateTime contributeTime;
 
-    @Column(name = "join_time", nullable = false)
+    @Column(name = "join_time", nullable = false, updatable = false)
     private LocalDateTime joinTime;
 
     @Column(name = "contribute_text", length = 30, nullable = false)

@@ -28,25 +28,25 @@ public class Character {
     private String name;
 
     @Column(name = "xu", nullable = false)
-    private Integer xu = 0;
+    private Integer xu;
 
     @Column(name = "luong", nullable = false)
-    private Short luong = 0;
+    private Short luong;
 
     @Column(name = "wind_resistance", nullable = false)
-    private Short windResistance = 0;
+    private Short windResistance;
 
     @Column(name = "min_angle", nullable = false)
-    private Short minAngle = 0;
+    private Short minAngle;
 
     @Column(name = "damage", nullable = false)
-    private Short damage = 0;
+    private Short damage;
 
     @Column(name = "bullet_damage", nullable = false)
-    private Short bulletDamage = 0;
+    private Short bulletDamage;
 
     @Column(name = "bullet_count", nullable = false)
-    private Short bulletCount = 0;
+    private Short bulletCount;
 
     @OneToMany(mappedBy = "character", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
     @JsonIgnore

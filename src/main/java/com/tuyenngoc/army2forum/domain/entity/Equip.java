@@ -32,39 +32,39 @@ public class Equip {
     @Column(name = "name", nullable = false, length = 20)
     private String name;
 
-    @Column(name = "price_xu", nullable = false)
+    @Column(name = "price_xu", nullable = false, columnDefinition = "int default -1")
     private Integer priceXu;
 
     @Column(name = "price_luong", nullable = false, columnDefinition = "smallint default -1")
-    private Short priceLuong = -1;
+    private Short priceLuong;
 
     @Column(name = "sale_price_xu", nullable = false, columnDefinition = "int default -1")
-    private Integer salePriceXu = -1;
+    private Integer salePriceXu;
 
     @Column(name = "is_disguise", nullable = false, columnDefinition = "tinyint default 0")
-    private Byte isDisguise = 0;
+    private Byte isDisguise;
+
+    @Column(name = "expiration_days", nullable = false, columnDefinition = "tinyint default 0")
+    private Byte expirationDays;
+
+    @Column(name = "level_requirement", nullable = false, columnDefinition = "smallint default 0")
+    private Short levelRequirement;
+
+    @Column(name = "frame_count", nullable = false, columnDefinition = "int default 0")
+    private Integer frameCount;
+
+    @Column(name = "bullet_id", nullable = false, columnDefinition = "smallint default 0")
+    private Short bulletId;
+
+    @Column(name = "on_sale", nullable = false, columnDefinition = "tinyint default 1")
+    private Byte onSale;
+
+    @Column(name = "is_default", nullable = false, columnDefinition = "tinyint(1) default 0")
+    private Boolean isDefault = false;
 
     @Convert(converter = IntArrayJsonConverter.class)
     @Column(name = "disguise_equipped_indexes", length = 30)
     private int[] disguiseEquippedIndexes;
-
-    @Column(name = "expiration_days", nullable = false, columnDefinition = "tinyint default 0")
-    private Byte expirationDays = 0;
-
-    @Column(name = "level_requirement", nullable = false, columnDefinition = "smallint default 0")
-    private Short levelRequirement = 0;
-
-    @Column(name = "frame_count", nullable = false, columnDefinition = "int default 0")
-    private Integer frameCount = 0;
-
-    @Column(name = "bullet_id", nullable = false, columnDefinition = "smallint default 0")
-    private Short bulletId = 0;
-
-    @Column(name = "on_sale", nullable = false, columnDefinition = "tinyint default 1")
-    private Byte onSale = 1;
-
-    @Column(name = "is_default", nullable = false, columnDefinition = "tinyint(1) default 0")
-    private Boolean isDefault = false;
 
     @Convert(converter = IntArrayJsonConverter.class)
     @Column(name = "big_image_cut_x", nullable = false, length = 50)

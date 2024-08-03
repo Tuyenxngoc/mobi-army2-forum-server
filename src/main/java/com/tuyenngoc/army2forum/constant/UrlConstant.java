@@ -28,6 +28,8 @@ public class UrlConstant {
         public static final String GET_BY_ID = PRE_FIX + "/{id}";
         public static final String UPDATE = PRE_FIX + "/{id}";
         public static final String DELETE = PRE_FIX + "/{id}";
+
+        public static final String CHANGE_USERNAME = PRE_FIX + "/change-username";
     }
 
     public static class Category {

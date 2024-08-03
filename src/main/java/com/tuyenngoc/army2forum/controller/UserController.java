@@ -5,6 +5,7 @@ import com.tuyenngoc.army2forum.annotation.RestApiV1;
 import com.tuyenngoc.army2forum.base.VsResponseUtil;
 import com.tuyenngoc.army2forum.constant.UrlConstant;
 import com.tuyenngoc.army2forum.domain.dto.pagination.PaginationFullRequestDto;
+import com.tuyenngoc.army2forum.domain.dto.request.ChangeUsernameRequestDto;
 import com.tuyenngoc.army2forum.domain.dto.request.UpdateUserRequestDto;
 import com.tuyenngoc.army2forum.security.CustomUserDetails;
 import com.tuyenngoc.army2forum.service.UserService;
@@ -62,5 +63,14 @@ public class UserController {
     @GetMapping(UrlConstant.User.GET_ALL)
     public ResponseEntity<?> getAllUsers(@ParameterObject PaginationFullRequestDto requestDto) {
         return VsResponseUtil.success(userService.getUsers(requestDto));
+    }
+
+    @Operation(summary = "API Change Username")
+    @PutMapping(UrlConstant.User.CHANGE_USERNAME)
+    public ResponseEntity<?> changeUsername(
+            @Valid @RequestBody ChangeUsernameRequestDto requestDto,
+            @CurrentUser CustomUserDetails userDetails
+    ) {
+        return VsResponseUtil.success(userService.changeUsername(userDetails, requestDto));
     }
 }

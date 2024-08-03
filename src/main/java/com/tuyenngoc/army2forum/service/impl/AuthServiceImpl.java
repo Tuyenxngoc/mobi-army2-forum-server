@@ -83,8 +83,8 @@ public class AuthServiceImpl implements AuthService {
             String accessToken = jwtTokenProvider.generateToken(customUserDetails, Boolean.FALSE);
             String refreshToken = jwtTokenProvider.generateToken(customUserDetails, Boolean.TRUE);
 
-            jwtTokenService.saveAccessToken(accessToken, customUserDetails.getUsername());
-            jwtTokenService.saveRefreshToken(refreshToken, customUserDetails.getUsername());
+            jwtTokenService.saveAccessToken(accessToken, customUserDetails.getUserId());
+            jwtTokenService.saveRefreshToken(refreshToken, customUserDetails.getUserId());
 
             return new LoginResponseDto(
                     accessToken,
@@ -130,8 +130,8 @@ public class AuthServiceImpl implements AuthService {
                 String newAccessToken = jwtTokenProvider.generateToken(userDetails, Boolean.FALSE);
                 String newRefreshToken = jwtTokenProvider.generateToken(userDetails, Boolean.TRUE);
 
-                jwtTokenService.saveAccessToken(newAccessToken, user.getUsername());
-                jwtTokenService.saveRefreshToken(newRefreshToken, user.getUsername());
+                jwtTokenService.saveAccessToken(newAccessToken, user.getId());
+                jwtTokenService.saveRefreshToken(newRefreshToken, user.getId());
 
                 return new TokenRefreshResponseDto(newAccessToken, newRefreshToken);
             } else {

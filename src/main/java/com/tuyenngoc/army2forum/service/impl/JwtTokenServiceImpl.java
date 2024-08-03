@@ -23,39 +23,39 @@ public class JwtTokenServiceImpl implements JwtTokenService {
 
     private final RedisTemplate<String, Object> redisTemplate;
 
-    private String getAccessTokenKey(String username) {
-        return ACCESS_TOKEN_KEY + username.toUpperCase();
+    private String getAccessTokenKey(String userId) {
+        return ACCESS_TOKEN_KEY + userId.toUpperCase();
     }
 
-    private String getRefreshTokenKey(String username) {
-        return REFRESH_TOKEN_KEY + username.toUpperCase();
-    }
-
-    @Override
-    public void saveAccessToken(String accessToken, String username) {
-        redisTemplate.opsForValue().set(getAccessTokenKey(username), accessToken, EXPIRATION_TIME_ACCESS_TOKEN, TimeUnit.MINUTES);
+    private String getRefreshTokenKey(String userId) {
+        return REFRESH_TOKEN_KEY + userId.toUpperCase();
     }
 
     @Override
-    public void saveRefreshToken(String refreshToken, String username) {
-        redisTemplate.opsForValue().set(getRefreshTokenKey(username), refreshToken, EXPIRATION_TIME_REFRESH_TOKEN, TimeUnit.MINUTES);
+    public void saveAccessToken(String accessToken, String userId) {
+        redisTemplate.opsForValue().set(getAccessTokenKey(userId), accessToken, EXPIRATION_TIME_ACCESS_TOKEN, TimeUnit.MINUTES);
     }
 
     @Override
-    public boolean isAccessTokenExists(String accessToken, String username) {
-        return Boolean.TRUE.equals(redisTemplate.hasKey(getAccessTokenKey(username))) &&
-                accessToken.equals(redisTemplate.opsForValue().get(getAccessTokenKey(username)));
+    public void saveRefreshToken(String refreshToken, String userId) {
+        redisTemplate.opsForValue().set(getRefreshTokenKey(userId), refreshToken, EXPIRATION_TIME_REFRESH_TOKEN, TimeUnit.MINUTES);
     }
 
     @Override
-    public boolean isRefreshTokenExists(String refreshToken, String username) {
-        return Boolean.TRUE.equals(redisTemplate.hasKey(getRefreshTokenKey(username))) &&
-                refreshToken.equals(redisTemplate.opsForValue().get(getRefreshTokenKey(username)));
+    public boolean isAccessTokenExists(String accessToken, String userId) {
+        return Boolean.TRUE.equals(redisTemplate.hasKey(getAccessTokenKey(userId))) &&
+                accessToken.equals(redisTemplate.opsForValue().get(getAccessTokenKey(userId)));
     }
 
     @Override
-    public void deleteTokens(String username) {
-        redisTemplate.delete(getAccessTokenKey(username));
-        redisTemplate.delete(getRefreshTokenKey(username));
+    public boolean isRefreshTokenExists(String refreshToken, String userId) {
+        return Boolean.TRUE.equals(redisTemplate.hasKey(getRefreshTokenKey(userId))) &&
+                refreshToken.equals(redisTemplate.opsForValue().get(getRefreshTokenKey(userId)));
+    }
+
+    @Override
+    public void deleteTokens(String userId) {
+        redisTemplate.delete(getAccessTokenKey(userId));
+        redisTemplate.delete(getRefreshTokenKey(userId));
     }
 }

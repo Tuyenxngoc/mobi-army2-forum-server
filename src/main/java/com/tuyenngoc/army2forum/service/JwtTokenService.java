@@ -2,14 +2,14 @@ package com.tuyenngoc.army2forum.service;
 
 public interface JwtTokenService {
 
-    void saveAccessToken(String accessToken, String username);
+    void saveAccessToken(String accessToken, String userId);
 
-    void saveRefreshToken(String refreshToken, String username);
+    void saveRefreshToken(String refreshToken, String userId);
 
-    boolean isAccessTokenExists(String accessToken, String username);
+    boolean isAccessTokenExists(String accessToken, String userId);
 
-    boolean isRefreshTokenExists(String refreshToken, String username);
+    boolean isRefreshTokenExists(String refreshToken, String userId);
 
-    void deleteTokens(String username);
+    void deleteTokens(String userId);
 
 }

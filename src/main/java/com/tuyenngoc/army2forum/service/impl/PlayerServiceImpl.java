@@ -7,7 +7,9 @@ import com.tuyenngoc.army2forum.domain.dto.pagination.PaginationResponseDto;
 import com.tuyenngoc.army2forum.domain.dto.pagination.PaginationSortRequestDto;
 import com.tuyenngoc.army2forum.domain.dto.pagination.PagingMeta;
 import com.tuyenngoc.army2forum.domain.dto.response.CommonResponseDto;
-import com.tuyenngoc.army2forum.domain.dto.response.GetPlayerInfoResponseDto;
+import com.tuyenngoc.army2forum.domain.dto.response.player.GetInventoryResponseDto;
+import com.tuyenngoc.army2forum.domain.dto.response.player.GetPlayerInfoResponseDto;
+import com.tuyenngoc.army2forum.domain.dto.response.player.GetSpecialItemResponseDto;
 import com.tuyenngoc.army2forum.domain.dto.response.post.GetPostResponseDto;
 import com.tuyenngoc.army2forum.domain.entity.Player;
 import com.tuyenngoc.army2forum.domain.entity.Role;
@@ -15,6 +17,7 @@ import com.tuyenngoc.army2forum.exception.ForbiddenException;
 import com.tuyenngoc.army2forum.exception.NotFoundException;
 import com.tuyenngoc.army2forum.repository.PlayerRepository;
 import com.tuyenngoc.army2forum.repository.PostRepository;
+import com.tuyenngoc.army2forum.repository.SpecialItemRepository;
 import com.tuyenngoc.army2forum.security.CustomUserDetails;
 import com.tuyenngoc.army2forum.service.PlayerService;
 import com.tuyenngoc.army2forum.service.RoleService;
@@ -27,6 +30,10 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
+import java.util.List;
+import java.util.Objects;
+import java.util.stream.Collectors;
+
 @Service
 @RequiredArgsConstructor
 public class PlayerServiceImpl implements PlayerService {
@@ -38,6 +45,8 @@ public class PlayerServiceImpl implements PlayerService {
     private final RoleService roleService;
 
     private final MessageSource messageSource;
+
+    private final SpecialItemRepository specialItemRepository;
 
     @Override
     public Player getPlayerById(Long playerId) {
@@ -108,6 +117,26 @@ public class PlayerServiceImpl implements PlayerService {
             message = messageSource.getMessage(SuccessMessage.Player.INVITATION_UNLOCKED, null, LocaleContextHolder.getLocale());
         }
         return new CommonResponseDto(message, player.getIsInvitationLocked());
+    }
+
+    @Override
+    public GetInventoryResponseDto getPlayerInventory(Long playerId) {
+        Player player = getPlayerById(playerId);
+
+        List<GetSpecialItemResponseDto> specialItemDtos = player.getItemChest().stream()
+                .map(specialItemChest -> specialItemRepository.findById(specialItemChest.getId())
+                        .map(specialItem -> {
+                            GetSpecialItemResponseDto itemResponseDto = new GetSpecialItemResponseDto(specialItem);
+                            itemResponseDto.setQuantity(specialItemChest.getQuantity());
+                            return itemResponseDto;
+                        }).orElse(null))
+                .filter(Objects::nonNull)
+                .collect(Collectors.toList());
+
+        GetInventoryResponseDto responseDto = new GetInventoryResponseDto();
+        responseDto.setItems(specialItemDtos);
+
+        return responseDto;
     }
 
 }

@@ -1,4 +1,4 @@
-package com.tuyenngoc.army2forum.domain.dto.response;
+package com.tuyenngoc.army2forum.domain.dto.response.player;
 
 import com.fasterxml.jackson.annotation.JsonFormat;
 import com.tuyenngoc.army2forum.constant.CommonConstant;

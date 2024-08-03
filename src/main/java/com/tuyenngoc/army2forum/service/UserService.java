@@ -24,6 +24,6 @@ public interface UserService {
 
     PaginationResponseDto<User> getUsers(PaginationFullRequestDto requestDto);
 
-    Boolean changeUsername(CustomUserDetails userDetails, ChangeUsernameRequestDto requestDto);
+    CommonResponseDto changeUsername(CustomUserDetails userDetails, ChangeUsernameRequestDto requestDto);
 
 }

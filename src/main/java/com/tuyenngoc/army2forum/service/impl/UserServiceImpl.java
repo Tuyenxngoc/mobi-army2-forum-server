@@ -134,7 +134,7 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
-    public Boolean changeUsername(CustomUserDetails userDetails, ChangeUsernameRequestDto requestDto) {
+    public CommonResponseDto changeUsername(CustomUserDetails userDetails, ChangeUsernameRequestDto requestDto) {
         User user = getUserById(userDetails.getUserId());
 
         if (userRepository.existsByUsername(requestDto.getNewUsername())) {
@@ -151,7 +151,8 @@ public class UserServiceImpl implements UserService {
         user.setUsername(requestDto.getNewUsername());
         userRepository.save(user);
 
-        return Boolean.TRUE;
+        String message = messageSource.getMessage(SuccessMessage.User.CHANGE_USERNAME, null, LocaleContextHolder.getLocale());
+        return new CommonResponseDto(message, true);
     }
 
 }

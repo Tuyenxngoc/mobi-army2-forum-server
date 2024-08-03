@@ -69,4 +69,12 @@ public class PlayerController {
         return VsResponseUtil.success(playerService.toggleInvitationLock(userDetails.getPlayerId()));
     }
 
+    @Operation(summary = "Get player inventory items")
+    @GetMapping(UrlConstant.Player.GET_PLAYER_INVENTORY)
+    public ResponseEntity<?> getPlayerInventory(
+            @CurrentUser CustomUserDetails userDetails
+    ) {
+        return VsResponseUtil.success(playerService.getPlayerInventory(userDetails.getPlayerId()));
+    }
+
 }

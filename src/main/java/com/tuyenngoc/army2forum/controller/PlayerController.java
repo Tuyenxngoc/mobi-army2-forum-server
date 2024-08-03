@@ -5,18 +5,17 @@ import com.tuyenngoc.army2forum.annotation.RestApiV1;
 import com.tuyenngoc.army2forum.base.VsResponseUtil;
 import com.tuyenngoc.army2forum.constant.UrlConstant;
 import com.tuyenngoc.army2forum.domain.dto.pagination.PaginationSortRequestDto;
+import com.tuyenngoc.army2forum.domain.dto.request.UpdatePointsRequestDto;
 import com.tuyenngoc.army2forum.security.CustomUserDetails;
 import com.tuyenngoc.army2forum.service.PlayerService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
+import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springdoc.core.annotations.ParameterObject;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.PutMapping;
+import org.springframework.web.bind.annotation.*;
 
 @RestApiV1
 @RequiredArgsConstructor
@@ -75,6 +74,15 @@ public class PlayerController {
             @CurrentUser CustomUserDetails userDetails
     ) {
         return VsResponseUtil.success(playerService.getPlayerInventory(userDetails.getPlayerId()));
+    }
+
+    @Operation(summary = "Update additional points")
+    @PutMapping(UrlConstant.Player.UPDATE_ADDITIONAL_POINTS)
+    public ResponseEntity<?> updateAdditionalPoints(
+            @Valid @RequestBody UpdatePointsRequestDto requestDto,
+            @CurrentUser CustomUserDetails userDetails
+    ) {
+        return VsResponseUtil.success(playerService.updateAdditionalPoints(requestDto, userDetails));
     }
 
 }

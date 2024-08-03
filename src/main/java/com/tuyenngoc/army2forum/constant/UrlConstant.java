@@ -99,6 +99,7 @@ public class UrlConstant {
         public static final String TOGGLE_CHEST_LOCK = PRE_FIX + "/toggle-chest-lock";
         public static final String TOGGLE_INVITATION_LOCK = PRE_FIX + "/toggle-invitation-lock";
         public static final String GET_PLAYER_INVENTORY = PRE_FIX + "/inventory";
+        public static final String UPDATE_ADDITIONAL_POINTS = PRE_FIX + "/additional-points";
     }
 
     public static class PlayerNotification {

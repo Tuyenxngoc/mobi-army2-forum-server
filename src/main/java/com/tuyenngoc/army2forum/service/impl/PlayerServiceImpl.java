@@ -6,6 +6,7 @@ import com.tuyenngoc.army2forum.constant.SuccessMessage;
 import com.tuyenngoc.army2forum.domain.dto.pagination.PaginationResponseDto;
 import com.tuyenngoc.army2forum.domain.dto.pagination.PaginationSortRequestDto;
 import com.tuyenngoc.army2forum.domain.dto.pagination.PagingMeta;
+import com.tuyenngoc.army2forum.domain.dto.request.UpdatePointsRequestDto;
 import com.tuyenngoc.army2forum.domain.dto.response.CommonResponseDto;
 import com.tuyenngoc.army2forum.domain.dto.response.player.GetInventoryResponseDto;
 import com.tuyenngoc.army2forum.domain.dto.response.player.GetPlayerInfoResponseDto;
@@ -137,6 +138,11 @@ public class PlayerServiceImpl implements PlayerService {
         responseDto.setItems(specialItemDtos);
 
         return responseDto;
+    }
+
+    @Override
+    public Byte updateAdditionalPoints(UpdatePointsRequestDto requestDto, CustomUserDetails userDetails) {
+        return null;
     }
 
 }

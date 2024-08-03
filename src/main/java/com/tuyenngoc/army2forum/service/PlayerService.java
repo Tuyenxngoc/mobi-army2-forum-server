@@ -2,6 +2,7 @@ package com.tuyenngoc.army2forum.service;
 
 import com.tuyenngoc.army2forum.domain.dto.pagination.PaginationResponseDto;
 import com.tuyenngoc.army2forum.domain.dto.pagination.PaginationSortRequestDto;
+import com.tuyenngoc.army2forum.domain.dto.request.UpdatePointsRequestDto;
 import com.tuyenngoc.army2forum.domain.dto.response.CommonResponseDto;
 import com.tuyenngoc.army2forum.domain.dto.response.player.GetInventoryResponseDto;
 import com.tuyenngoc.army2forum.domain.dto.response.player.GetPlayerInfoResponseDto;
@@ -24,5 +25,7 @@ public interface PlayerService {
     CommonResponseDto toggleInvitationLock(Long playerId);
 
     GetInventoryResponseDto getPlayerInventory(Long playerId);
+
+    Byte updateAdditionalPoints(UpdatePointsRequestDto requestDto, CustomUserDetails userDetails);
 
 }

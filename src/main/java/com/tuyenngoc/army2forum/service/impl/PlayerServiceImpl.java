@@ -8,14 +8,15 @@ import com.tuyenngoc.army2forum.domain.dto.pagination.PaginationSortRequestDto;
 import com.tuyenngoc.army2forum.domain.dto.pagination.PagingMeta;
 import com.tuyenngoc.army2forum.domain.dto.request.UpdatePointsRequestDto;
 import com.tuyenngoc.army2forum.domain.dto.response.CommonResponseDto;
-import com.tuyenngoc.army2forum.domain.dto.response.player.GetInventoryResponseDto;
-import com.tuyenngoc.army2forum.domain.dto.response.player.GetPlayerInfoResponseDto;
-import com.tuyenngoc.army2forum.domain.dto.response.player.GetSpecialItemResponseDto;
+import com.tuyenngoc.army2forum.domain.dto.response.player.*;
 import com.tuyenngoc.army2forum.domain.dto.response.post.GetPostResponseDto;
 import com.tuyenngoc.army2forum.domain.entity.Player;
+import com.tuyenngoc.army2forum.domain.entity.PlayerCharacters;
 import com.tuyenngoc.army2forum.domain.entity.Role;
+import com.tuyenngoc.army2forum.exception.BadRequestException;
 import com.tuyenngoc.army2forum.exception.ForbiddenException;
 import com.tuyenngoc.army2forum.exception.NotFoundException;
+import com.tuyenngoc.army2forum.repository.PlayerCharacterRepository;
 import com.tuyenngoc.army2forum.repository.PlayerRepository;
 import com.tuyenngoc.army2forum.repository.PostRepository;
 import com.tuyenngoc.army2forum.repository.SpecialItemRepository;
@@ -48,6 +49,8 @@ public class PlayerServiceImpl implements PlayerService {
     private final MessageSource messageSource;
 
     private final SpecialItemRepository specialItemRepository;
+
+    private final PlayerCharacterRepository playerCharacterRepository;
 
     @Override
     public Player getPlayerById(Long playerId) {
@@ -141,8 +144,39 @@ public class PlayerServiceImpl implements PlayerService {
     }
 
     @Override
-    public Byte updateAdditionalPoints(UpdatePointsRequestDto requestDto, CustomUserDetails userDetails) {
-        return null;
+    public GetPointsResponseDto updateAdditionalPoints(UpdatePointsRequestDto requestDto, CustomUserDetails userDetails) {
+        PlayerCharacters playerCharacters = playerCharacterRepository.findByIdAndPlayerId(requestDto.getPlayerCharacterId(), userDetails.getPlayerId())
+                .orElseThrow(() -> new NotFoundException(ErrorMessage.Player.ERR_NOT_FOUND_CHARACTER_ID, requestDto.getPlayerCharacterId()));
+
+        int totalPoints = requestDto.getHealth()
+                + requestDto.getDamage()
+                + requestDto.getDefense()
+                + requestDto.getLuck()
+                + requestDto.getTeammates();
+
+        if (totalPoints > playerCharacters.getPoints()) {
+            throw new BadRequestException(ErrorMessage.Player.ERR_POINTS_EXCEEDED, playerCharacters.getPoints());
+        }
+
+        playerCharacters.setPoints(playerCharacters.getPoints() - totalPoints);
+
+        int[] additionalPoints = playerCharacters.getAdditionalPoints();
+        additionalPoints[0] += requestDto.getHealth();
+        additionalPoints[1] += requestDto.getDamage();
+        additionalPoints[2] += requestDto.getDefense();
+        additionalPoints[3] += requestDto.getLuck();
+        additionalPoints[4] += requestDto.getTeammates();
+
+        playerCharacters.setAdditionalPoints(additionalPoints);
+
+        playerCharacterRepository.save(playerCharacters);
+
+        return new GetPointsResponseDto(additionalPoints);
+    }
+
+    @Override
+    public List<GetCharacterResponseDto> getPlayerCharacter(Long playerId) {
+        return playerCharacterRepository.getByPlayerId(playerId);
     }
 
 }

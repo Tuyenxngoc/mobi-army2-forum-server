@@ -85,4 +85,11 @@ public class PlayerController {
         return VsResponseUtil.success(playerService.updateAdditionalPoints(requestDto, userDetails));
     }
 
+    @Operation(summary = "Get player character")
+    @GetMapping(UrlConstant.Player.GET_PLAYER_CHARACTER)
+    public ResponseEntity<?> getPlayerCharacter(
+            @CurrentUser CustomUserDetails userDetails
+    ) {
+        return VsResponseUtil.success(playerService.getPlayerCharacter(userDetails.getPlayerId()));
+    }
 }

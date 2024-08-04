@@ -4,11 +4,15 @@ import com.tuyenngoc.army2forum.domain.dto.pagination.PaginationResponseDto;
 import com.tuyenngoc.army2forum.domain.dto.pagination.PaginationSortRequestDto;
 import com.tuyenngoc.army2forum.domain.dto.request.UpdatePointsRequestDto;
 import com.tuyenngoc.army2forum.domain.dto.response.CommonResponseDto;
+import com.tuyenngoc.army2forum.domain.dto.response.player.GetCharacterResponseDto;
 import com.tuyenngoc.army2forum.domain.dto.response.player.GetInventoryResponseDto;
 import com.tuyenngoc.army2forum.domain.dto.response.player.GetPlayerInfoResponseDto;
+import com.tuyenngoc.army2forum.domain.dto.response.player.GetPointsResponseDto;
 import com.tuyenngoc.army2forum.domain.dto.response.post.GetPostResponseDto;
 import com.tuyenngoc.army2forum.domain.entity.Player;
 import com.tuyenngoc.army2forum.security.CustomUserDetails;
+
+import java.util.List;
 
 public interface PlayerService {
 
@@ -26,6 +30,8 @@ public interface PlayerService {
 
     GetInventoryResponseDto getPlayerInventory(Long playerId);
 
-    Byte updateAdditionalPoints(UpdatePointsRequestDto requestDto, CustomUserDetails userDetails);
+    GetPointsResponseDto updateAdditionalPoints(UpdatePointsRequestDto requestDto, CustomUserDetails userDetails);
+
+    List<GetCharacterResponseDto> getPlayerCharacter(Long playerId);
 
 }

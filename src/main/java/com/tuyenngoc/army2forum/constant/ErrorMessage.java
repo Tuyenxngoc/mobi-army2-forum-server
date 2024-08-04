@@ -90,6 +90,8 @@ public class ErrorMessage {
     public static class Player {
         public static final String ERR_NOT_FOUND_ID = "exception.player.not.found.id";
         public static final String ERR_NOT_ENOUGH_MONEY = "exception.player.not.enough.money";
+        public static final String ERR_POINTS_EXCEEDED = "exception.player.points.exceeded";
+        public static final String ERR_NOT_FOUND_CHARACTER_ID = "exception.player.not.found.character.id";
     }
 
     public static class Post {

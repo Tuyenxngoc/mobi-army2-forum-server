@@ -163,7 +163,7 @@ public class AuthServiceImpl implements AuthService {
         user.setPassword(passwordEncoder.encode(requestDto.getPassword()));
         user.setRole(roleService.getRole(RoleConstant.ROLE_USER.name()));
         user.setVerificationCode(code);
-        user.setEnabled(false);
+        user.setIsEnabled(false);
         userRepository.save(user);
 
         Map<String, Object> properties = new HashMap<>();
@@ -233,13 +233,13 @@ public class AuthServiceImpl implements AuthService {
         if (optionalUser.isPresent()) {
             User user = optionalUser.get();
 
-            if (user.isEnabled()) {
+            if (user.getIsEnabled()) {
                 String message = messageSource.getMessage(ErrorMessage.User.ALREADY_VERIFIED, null, LocaleContextHolder.getLocale());
                 return new CommonResponseDto(message);
             }
 
             user.setVerificationCode(null);
-            user.setEnabled(true);
+            user.setIsEnabled(true);
             userRepository.save(user);
 
             //Create new Player
@@ -263,7 +263,7 @@ public class AuthServiceImpl implements AuthService {
         if (optionalUser.isPresent()) {
             User user = optionalUser.get();
 
-            if (user.isEnabled()) {
+            if (user.getIsEnabled()) {
                 String message = messageSource.getMessage(ErrorMessage.User.ALREADY_VERIFIED, null, LocaleContextHolder.getLocale());
                 return new CommonResponseDto(message);
             }
@@ -294,7 +294,7 @@ public class AuthServiceImpl implements AuthService {
 
     @Override
     public boolean isEmailConfirmed(String email) {
-        return userRepository.existsByEmailAndEnabledTrue(email);
+        return userRepository.existsByEmailAndIsEnabledTrue(email);
     }
 
     private void sendEmail(String to, String subject, Map<String, Object> properties, String templateName) {

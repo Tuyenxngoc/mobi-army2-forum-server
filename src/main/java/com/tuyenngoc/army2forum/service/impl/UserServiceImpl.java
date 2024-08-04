@@ -67,7 +67,7 @@ public class UserServiceImpl implements UserService {
                 user.setFullName(adminInfo.getName());
                 user.setPassword(passwordEncoder.encode(adminInfo.getPassword()));
                 user.setRole(roleService.getRole(RoleConstant.ROLE_ADMIN.name()));
-                user.setEnabled(true);
+                user.setIsEnabled(true);
                 userRepository.save(user);
 
                 Player player = new Player();

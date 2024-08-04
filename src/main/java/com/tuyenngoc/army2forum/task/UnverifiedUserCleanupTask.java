@@ -15,7 +15,7 @@ public class UnverifiedUserCleanupTask {
 
     @Scheduled(fixedRate = 86400000) // 24 hours in milliseconds
     public void cleanupUnverifiedUsers() {
-        userRepository.deleteAllByEnabledFalseAndCreatedDateBefore(LocalDateTime.now().minusHours(24));
+        userRepository.deleteAllByIsEnabledFalseAndCreatedDateBefore(LocalDateTime.now().minusHours(24));
     }
 
 }

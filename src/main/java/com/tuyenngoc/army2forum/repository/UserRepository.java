@@ -12,7 +12,7 @@ import java.util.Optional;
 @Repository
 public interface UserRepository extends JpaRepository<User, String> {
 
-    boolean existsByEmailAndEnabledTrue(String email);
+    boolean existsByEmailAndIsEnabledTrue(String email);
 
     boolean existsByUsername(String username);
 
@@ -30,6 +30,6 @@ public interface UserRepository extends JpaRepository<User, String> {
 
     @Modifying
     @Transactional
-    void deleteAllByEnabledFalseAndCreatedDateBefore(LocalDateTime dateTime);
+    void deleteAllByIsEnabledFalseAndCreatedDateBefore(LocalDateTime dateTime);
 
 }

@@ -145,14 +145,18 @@ public class PlayerServiceImpl implements PlayerService {
 
     @Override
     public GetPointsResponseDto updateAdditionalPoints(UpdatePointsRequestDto requestDto, CustomUserDetails userDetails) {
-        PlayerCharacters playerCharacters = playerCharacterRepository.findByIdAndPlayerId(requestDto.getPlayerCharacterId(), userDetails.getPlayerId())
-                .orElseThrow(() -> new NotFoundException(ErrorMessage.Player.ERR_NOT_FOUND_CHARACTER_ID, requestDto.getPlayerCharacterId()));
-
         int totalPoints = requestDto.getHealth()
                 + requestDto.getDamage()
                 + requestDto.getDefense()
                 + requestDto.getLuck()
                 + requestDto.getTeammates();
+
+        if (totalPoints == 0) {
+            throw new BadRequestException(ErrorMessage.Player.ERR_POINTS_INVALID);
+        }
+
+        PlayerCharacters playerCharacters = playerCharacterRepository.findByIdAndPlayerId(requestDto.getPlayerCharacterId(), userDetails.getPlayerId())
+                .orElseThrow(() -> new NotFoundException(ErrorMessage.Player.ERR_NOT_FOUND_CHARACTER_ID, requestDto.getPlayerCharacterId()));
 
         if (totalPoints > playerCharacters.getPoints()) {
             throw new BadRequestException(ErrorMessage.Player.ERR_POINTS_EXCEEDED, playerCharacters.getPoints());
@@ -171,12 +175,20 @@ public class PlayerServiceImpl implements PlayerService {
 
         playerCharacterRepository.save(playerCharacters);
 
-        return new GetPointsResponseDto(additionalPoints);
+        return new GetPointsResponseDto(additionalPoints, playerCharacters.getPoints());
     }
 
     @Override
     public List<GetCharacterResponseDto> getPlayerCharacter(Long playerId) {
         return playerCharacterRepository.getByPlayerId(playerId);
+    }
+
+    @Override
+    public GetPointsResponseDto getPlayerPoints(Long playerId, Long id) {
+        PlayerCharacters playerCharacters = playerCharacterRepository.findByIdAndPlayerId(id, playerId)
+                .orElseThrow(() -> new NotFoundException(ErrorMessage.Player.ERR_NOT_FOUND_CHARACTER_ID, id));
+
+        return new GetPointsResponseDto(playerCharacters.getAdditionalPoints(), playerCharacters.getPoints());
     }
 
 }

@@ -18,23 +18,23 @@ public class UpdatePointsRequestDto {
     private Long playerCharacterId;
 
     @NotNull(message = ErrorMessage.INVALID_SOME_THING_FIELD_IS_REQUIRED)
-    @Min(value = 1, message = ErrorMessage.INVALID_MINIMUM_ONE)
+    @Min(value = 0, message = ErrorMessage.INVALID_MINIMUM_ZERO)
     private Integer health;
 
     @NotNull(message = ErrorMessage.INVALID_SOME_THING_FIELD_IS_REQUIRED)
-    @Min(value = 1, message = ErrorMessage.INVALID_MINIMUM_ONE)
+    @Min(value = 0, message = ErrorMessage.INVALID_MINIMUM_ZERO)
     private Integer damage;
 
     @NotNull(message = ErrorMessage.INVALID_SOME_THING_FIELD_IS_REQUIRED)
-    @Min(value = 1, message = ErrorMessage.INVALID_MINIMUM_ONE)
+    @Min(value = 0, message = ErrorMessage.INVALID_MINIMUM_ZERO)
     private Integer defense;
 
     @NotNull(message = ErrorMessage.INVALID_SOME_THING_FIELD_IS_REQUIRED)
-    @Min(value = 1, message = ErrorMessage.INVALID_MINIMUM_ONE)
+    @Min(value = 0, message = ErrorMessage.INVALID_MINIMUM_ZERO)
     private Integer luck;
 
     @NotNull(message = ErrorMessage.INVALID_SOME_THING_FIELD_IS_REQUIRED)
-    @Min(value = 1, message = ErrorMessage.INVALID_MINIMUM_ONE)
+    @Min(value = 0, message = ErrorMessage.INVALID_MINIMUM_ZERO)
     private Integer teammates;
 
 }

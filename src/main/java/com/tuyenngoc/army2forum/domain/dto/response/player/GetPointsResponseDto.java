@@ -21,12 +21,15 @@ public class GetPointsResponseDto {
 
     private int teammates;
 
-    public GetPointsResponseDto(int[] points) {
+    private int totalPoints;
+
+    public GetPointsResponseDto(int[] points, int totalPoints) {
         this.health = points[0];
         this.damage = points[1];
         this.defense = points[2];
         this.luck = points[3];
         this.teammates = points[4];
+        this.totalPoints = totalPoints;
     }
 
 }

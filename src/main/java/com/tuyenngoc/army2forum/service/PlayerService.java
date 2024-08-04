@@ -34,4 +34,6 @@ public interface PlayerService {
 
     List<GetCharacterResponseDto> getPlayerCharacter(Long playerId);
 
+    GetPointsResponseDto getPlayerPoints(Long playerId, Long id);
+
 }

@@ -4,10 +4,12 @@ import com.tuyenngoc.army2forum.domain.entity.Character;
 import com.tuyenngoc.army2forum.repository.CharacterRepository;
 import com.tuyenngoc.army2forum.service.CharacterService;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
 
+@Slf4j
 @Service
 @RequiredArgsConstructor
 public class CharacterServiceImpl implements CharacterService {
@@ -34,6 +36,7 @@ public class CharacterServiceImpl implements CharacterService {
         );
 
         characterRepository.saveAll(characters);
+        log.info("Saved character size: " + characters.size());
     }
 
 }

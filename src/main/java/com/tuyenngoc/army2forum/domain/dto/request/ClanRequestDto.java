@@ -15,7 +15,7 @@ import lombok.Setter;
 public class ClanRequestDto {
 
     @NotBlank(message = ErrorMessage.INVALID_NOT_BLANK_FIELD)
-    @Size(max = 50, message = ErrorMessage.INVALID_TEXT_LENGTH)
+    @Size(max = 30, message = ErrorMessage.INVALID_TEXT_LENGTH)
     private String name;
 
     @NotBlank(message = ErrorMessage.INVALID_NOT_BLANK_FIELD)

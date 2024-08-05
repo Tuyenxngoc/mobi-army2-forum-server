@@ -37,10 +37,10 @@ public class Player extends DateAuditing {
     @Column(name = "is_online", nullable = false)
     private Boolean isOnline = false;
 
-    @Column(name = "xu", nullable = false)
+    @Column(name = "xu", nullable = false, columnDefinition = "int default 1000")
     private Integer xu = 1000;
 
-    @Column(name = "luong", nullable = false)
+    @Column(name = "luong", nullable = false, columnDefinition = "int default 0")
     private Integer luong = 0;
 
     @Column(name = "x2_xp_time")
@@ -52,11 +52,11 @@ public class Player extends DateAuditing {
     @Column(name = "is_invitation_locked", nullable = false)
     private Boolean isInvitationLocked = false;
 
-    @Column(name = "item_chest", columnDefinition = "varchar(1000) default '[]'")
+    @Column(name = "item_chest", columnDefinition = "varchar(5000) default '[]'")
     @Convert(converter = ItemChestConverter.class)
     private List<SpecialItemChest> itemChest = new ArrayList<>();
 
-    @Column(name = "equipment_chest", columnDefinition = "varchar(1000) default '[]'")
+    @Column(name = "equipment_chest", columnDefinition = "json")
     @Convert(converter = EquipmentChestConverter.class)
     private List<EquipChest> equipmentChest = new ArrayList<>();
 
@@ -74,7 +74,7 @@ public class Player extends DateAuditing {
     private User user;
 
     @OneToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "active_character_id", foreignKey = @ForeignKey(name = "FK_PLAYER_ACTIVE_CHARACTER_ID"), referencedColumnName = "player_character_id", nullable = false)
+    @JoinColumn(name = "active_character_id", foreignKey = @ForeignKey(name = "FK_PLAYER_ACTIVE_CHARACTER_ID"), referencedColumnName = "player_character_id")
     @JsonIgnore
     private PlayerCharacters activeCharacter;
 

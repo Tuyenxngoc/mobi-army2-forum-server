@@ -93,6 +93,7 @@ public class ErrorMessage {
         public static final String ERR_POINTS_EXCEEDED = "exception.player.points.exceeded";
         public static final String ERR_NOT_FOUND_CHARACTER_ID = "exception.player.not.found.character.id";
         public static final String ERR_POINTS_INVALID = "exception.player.points.invalid";
+        public static final String ERR_PLAYER_IS_ONLINE = "exception.player.is.online";
     }
 
     public static class Post {

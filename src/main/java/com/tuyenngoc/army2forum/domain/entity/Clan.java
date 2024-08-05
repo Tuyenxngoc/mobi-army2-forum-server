@@ -39,22 +39,22 @@ public class Clan extends DateAuditing {
     @Column(name = "email", length = 100, nullable = false)
     private String email;
 
-    @Column(name = "icon", nullable = false)
+    @Column(name = "icon", nullable = false, columnDefinition = "smallint default 1")
     private Short icon = 1;
 
-    @Column(name = "xu", nullable = false)
+    @Column(name = "xu", nullable = false, columnDefinition = "int default 0")
     private Integer xu = 0;
 
-    @Column(name = "luong", nullable = false)
+    @Column(name = "luong", nullable = false, columnDefinition = "int default 0")
     private Integer luong = 0;
 
-    @Column(name = "xp", nullable = false)
+    @Column(name = "xp", nullable = false, columnDefinition = "int default 0")
     private Integer xp = 0;
 
-    @Column(name = "level", nullable = false)
+    @Column(name = "level", nullable = false, columnDefinition = "int default 1")
     private Short level = 1;
 
-    @Column(name = "cup", nullable = false)
+    @Column(name = "cup", nullable = false, columnDefinition = "int default 0")
     private Integer cup = 0;
 
     @Column(name = "mem_max", nullable = false)

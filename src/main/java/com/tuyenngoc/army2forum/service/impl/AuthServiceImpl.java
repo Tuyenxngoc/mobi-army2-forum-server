@@ -164,6 +164,7 @@ public class AuthServiceImpl implements AuthService {
         user.setRole(roleService.getRole(RoleConstant.ROLE_USER.name()));
         user.setVerificationCode(code);
         user.setIsEnabled(false);
+        user.setIsLocked(false);
         userRepository.save(user);
 
         Map<String, Object> properties = new HashMap<>();

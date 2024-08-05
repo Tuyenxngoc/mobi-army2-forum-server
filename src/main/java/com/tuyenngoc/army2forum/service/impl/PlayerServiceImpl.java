@@ -16,10 +16,7 @@ import com.tuyenngoc.army2forum.domain.entity.Role;
 import com.tuyenngoc.army2forum.exception.BadRequestException;
 import com.tuyenngoc.army2forum.exception.ForbiddenException;
 import com.tuyenngoc.army2forum.exception.NotFoundException;
-import com.tuyenngoc.army2forum.repository.PlayerCharacterRepository;
-import com.tuyenngoc.army2forum.repository.PlayerRepository;
-import com.tuyenngoc.army2forum.repository.PostRepository;
-import com.tuyenngoc.army2forum.repository.SpecialItemRepository;
+import com.tuyenngoc.army2forum.repository.*;
 import com.tuyenngoc.army2forum.security.CustomUserDetails;
 import com.tuyenngoc.army2forum.service.PlayerService;
 import com.tuyenngoc.army2forum.service.RoleService;
@@ -32,6 +29,10 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
+import javax.imageio.ImageIO;
+import java.awt.image.BufferedImage;
+import java.io.File;
+import java.io.IOException;
 import java.util.List;
 import java.util.Objects;
 import java.util.stream.Collectors;
@@ -49,6 +50,8 @@ public class PlayerServiceImpl implements PlayerService {
     private final MessageSource messageSource;
 
     private final SpecialItemRepository specialItemRepository;
+
+    private final EquipRepository equipRepository;
 
     private final PlayerCharacterRepository playerCharacterRepository;
 
@@ -137,7 +140,53 @@ public class PlayerServiceImpl implements PlayerService {
                 .filter(Objects::nonNull)
                 .collect(Collectors.toList());
 
+        List<GetEquipmentResponseDto> equipmentDtos = player.getEquipmentChest().stream()
+                .map(equipChest -> equipRepository.getEquip(equipChest.getCharacterId(), equipChest.getEquipType(), equipChest.getEquipIndex())
+                        .map(equip -> {
+                            GetEquipmentResponseDto equipResponseDto = new GetEquipmentResponseDto(equip, equipChest);
+
+                            // Đường dẫn đến thư mục tmp và ảnh gốc
+                            String tmpDirPath = "src/main/resources/static/tmp";
+                            String originalImagePath = "src/main/resources/static/res/itemSpecial.png";
+
+                            // Kiểm tra và tạo thư mục tmp nếu chưa tồn tại
+                            File tmpDir = new File(tmpDirPath);
+                            if (!tmpDir.exists()) {
+                                tmpDir.mkdirs();
+                            }
+
+                            // Tên ảnh được lưu trong thư mục tmp
+                            String frameCountImageName = equip.getFrameCount() + ".png";
+                            File frameCountImageFile = new File(tmpDir, frameCountImageName);
+
+                            // Kiểm tra xem ảnh đã tồn tại trong thư mục tmp chưa
+                            if (!frameCountImageFile.exists()) {
+                                try {
+                                    // Đọc ảnh gốc
+                                    BufferedImage originalImage = ImageIO.read(new File(originalImagePath));
+
+                                    // Cắt ảnh từ ảnh gốc
+                                    int y = equip.getFrameCount() * 16;
+                                    BufferedImage subImage = originalImage.getSubimage(0, y, 16, 16);
+
+                                    // Lưu ảnh đã cắt vào thư mục tmp
+                                    ImageIO.write(subImage, "png", frameCountImageFile);
+                                } catch (IOException e) {
+                                    e.printStackTrace();
+                                    return null;
+                                }
+                            }
+
+                            // Tạo link ảnh
+                            equipResponseDto.setImageUrl("/tmp/" + frameCountImageName);
+
+                            return equipResponseDto;
+                        }).orElse(null))
+                .filter(Objects::nonNull)
+                .collect(Collectors.toList());
+
         GetInventoryResponseDto responseDto = new GetInventoryResponseDto();
+        responseDto.setEquipments(equipmentDtos);
         responseDto.setItems(specialItemDtos);
 
         return responseDto;
@@ -157,6 +206,10 @@ public class PlayerServiceImpl implements PlayerService {
 
         PlayerCharacters playerCharacters = playerCharacterRepository.findByIdAndPlayerId(requestDto.getPlayerCharacterId(), userDetails.getPlayerId())
                 .orElseThrow(() -> new NotFoundException(ErrorMessage.Player.ERR_NOT_FOUND_CHARACTER_ID, requestDto.getPlayerCharacterId()));
+
+        if (playerCharacters.getPlayer().getIsOnline()) {
+            throw new BadRequestException(ErrorMessage.Player.ERR_PLAYER_IS_ONLINE);
+        }
 
         if (totalPoints > playerCharacters.getPoints()) {
             throw new BadRequestException(ErrorMessage.Player.ERR_POINTS_EXCEEDED, playerCharacters.getPoints());

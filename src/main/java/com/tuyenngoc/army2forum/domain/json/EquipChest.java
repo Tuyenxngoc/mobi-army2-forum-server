@@ -14,34 +14,34 @@ import java.time.LocalDateTime;
 @AllArgsConstructor
 public class EquipChest {
 
-    @JsonProperty("key")
+    @JsonProperty("k")
     private int key;
 
-    @JsonProperty("equipIndex")
+    @JsonProperty("ei")
     private short equipIndex;
 
-    @JsonProperty("equipType")
+    @JsonProperty("et")
     private byte equipType;
 
-    @JsonProperty("vipLevel")
+    @JsonProperty("vl")
     private byte vipLevel;
 
-    @JsonProperty("purchaseDate")
+    @JsonProperty("pd")
     private LocalDateTime purchaseDate;
 
-    @JsonProperty("characterId")
+    @JsonProperty("cid")
     private byte characterId;
 
-    @JsonProperty("inUse")
+    @JsonProperty("iu")
     private byte inUse;
 
-    @JsonProperty("slots")
-    private byte[] slots;
+    @JsonProperty("s")
+    private int[] slots;
 
-    @JsonProperty("additionalPoints")
-    private byte[] addPoints;
+    @JsonProperty("ap")
+    private int[] addPoints;
 
-    @JsonProperty("additionalPercent")
-    private byte[] addPercents;
+    @JsonProperty("apc")
+    private int[] addPercents;
 
 }

@@ -51,6 +51,7 @@ public class SecurityConfig {
             // static resources
             "/res/**",
             "/avatar/**",
+            "/tmp/**",
     };
 
     private final UserDetailsService userDetailsService;

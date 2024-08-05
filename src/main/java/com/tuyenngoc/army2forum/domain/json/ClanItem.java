@@ -14,10 +14,10 @@ import java.time.LocalDateTime;
 @AllArgsConstructor
 public class ClanItem {
 
-    @JsonProperty("id")
+    @JsonProperty("i")
     private byte id;
 
-    @JsonProperty("time")
+    @JsonProperty("t")
     private LocalDateTime time;
 
 }

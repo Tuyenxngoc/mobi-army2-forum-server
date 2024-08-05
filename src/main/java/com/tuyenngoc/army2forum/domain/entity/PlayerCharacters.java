@@ -21,22 +21,22 @@ public class PlayerCharacters {
     @Column(name = "player_character_id")
     private Long id;
 
-    @Column(name = "xp", nullable = false)
+    @Column(name = "xp", nullable = false, columnDefinition = "int default 0")
     private Integer xp = 0;
 
-    @Column(name = "level", nullable = false)
+    @Column(name = "level", nullable = false, columnDefinition = "int default 1")
     private Integer level = 1;
 
-    @Column(name = "points", nullable = false)
+    @Column(name = "points", nullable = false, columnDefinition = "int default 0")
     private Integer points = 0;
 
     @Convert(converter = IntArrayJsonConverter.class)
-    @Column(name = "additional_points", nullable = false, columnDefinition = "varchar(1000) default '[]'")
-    private int[] additionalPoints;
+    @Column(name = "additional_points", nullable = false, columnDefinition = "varchar(100) default '[0,0,10,10,10]'")
+    private int[] additionalPoints = new int[]{0, 0, 10, 10, 10};
 
     @Convert(converter = IntArrayJsonConverter.class)
-    @Column(name = "data", nullable = false, columnDefinition = "varchar(1000) default '[]'")
-    private int[] data;
+    @Column(name = "data", nullable = false, columnDefinition = "varchar(100) default '[-1,-1,-1,-1,-1,-1]'")
+    private int[] data = new int[]{-1, -1, -1, -1, -1, -1};
 
     @OneToOne(mappedBy = "activeCharacter", fetch = FetchType.LAZY, cascade = CascadeType.ALL)
     @JsonIgnore

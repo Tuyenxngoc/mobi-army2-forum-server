@@ -28,19 +28,19 @@ public class ClanMember {
     @Column(name = "rights", nullable = false)
     private Byte rights = ClanMemberRightsConstants.CLAN_MEMBER;
 
-    @Column(name = "xu", nullable = false)
+    @Column(name = "xu", nullable = false, columnDefinition = "int default 0")
     private Integer xu = 0;
 
-    @Column(name = "luong", nullable = false)
+    @Column(name = "luong", nullable = false, columnDefinition = "int default 0")
     private Integer luong = 0;
 
-    @Column(name = "xp", nullable = false)
+    @Column(name = "xp", nullable = false, columnDefinition = "int default 0")
     private Integer xp = 0;
 
-    @Column(name = "clan_point", nullable = false)
+    @Column(name = "clan_point", nullable = false, columnDefinition = "int default 0")
     private Integer clanPoint = 0;
 
-    @Column(name = "contribute_count", nullable = false)
+    @Column(name = "contribute_count", nullable = false, columnDefinition = "smallint default 0")
     private Short contributeCount = 0;
 
     @Column(name = "contribute_time")
@@ -49,7 +49,7 @@ public class ClanMember {
     @Column(name = "join_time", nullable = false, updatable = false)
     private LocalDateTime joinTime;
 
-    @Column(name = "contribute_text", length = 30, nullable = false)
+    @Column(name = "contribute_text", length = 30, nullable = false, columnDefinition = "varchar(30) default '0 xu'")
     private String contributeText = "0 xu";
 
     @OneToOne(fetch = FetchType.LAZY)

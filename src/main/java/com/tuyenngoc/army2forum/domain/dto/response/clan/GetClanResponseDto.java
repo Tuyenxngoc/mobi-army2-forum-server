@@ -1,4 +1,4 @@
-package com.tuyenngoc.army2forum.domain.dto.response;
+package com.tuyenngoc.army2forum.domain.dto.response.clan;
 
 import com.tuyenngoc.army2forum.domain.dto.common.DateAuditingDto;
 import com.tuyenngoc.army2forum.domain.entity.Clan;
@@ -6,6 +6,8 @@ import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
+
+import java.util.List;
 
 @Setter
 @Getter
@@ -25,6 +27,14 @@ public class GetClanResponseDto extends DateAuditingDto {
 
     private int memberMax;
 
+    private int cup;
+
+    private int xp;
+
+    private String notification;
+
+    private List<GetClanItemResponseDto> items;
+
     public GetClanResponseDto(Clan clan) {
         this.setCreatedDate(clan.getCreatedDate());
         this.setLastModifiedDate(clan.getLastModifiedDate());
@@ -35,6 +45,9 @@ public class GetClanResponseDto extends DateAuditingDto {
         this.masterName = clan.getMaster().getUser().getUsername();
         this.memberCount = clan.getMembers().size();
         this.memberMax = clan.getMemMax();
+        this.cup = clan.getCup();
+        this.xp = clan.getXp();
+        this.notification = clan.getNotification();
     }
 
 }

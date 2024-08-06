@@ -9,9 +9,10 @@ import com.tuyenngoc.army2forum.domain.dto.pagination.PaginationResponseDto;
 import com.tuyenngoc.army2forum.domain.dto.pagination.PagingMeta;
 import com.tuyenngoc.army2forum.domain.dto.request.ClanRequestDto;
 import com.tuyenngoc.army2forum.domain.dto.response.CommonResponseDto;
-import com.tuyenngoc.army2forum.domain.dto.response.GetClanIconResponseDto;
-import com.tuyenngoc.army2forum.domain.dto.response.GetClanMemberResponseDto;
-import com.tuyenngoc.army2forum.domain.dto.response.GetClanResponseDto;
+import com.tuyenngoc.army2forum.domain.dto.response.clan.GetClanIconResponseDto;
+import com.tuyenngoc.army2forum.domain.dto.response.clan.GetClanItemResponseDto;
+import com.tuyenngoc.army2forum.domain.dto.response.clan.GetClanMemberResponseDto;
+import com.tuyenngoc.army2forum.domain.dto.response.clan.GetClanResponseDto;
 import com.tuyenngoc.army2forum.domain.entity.Clan;
 import com.tuyenngoc.army2forum.domain.entity.ClanApproval;
 import com.tuyenngoc.army2forum.domain.entity.ClanMember;
@@ -22,10 +23,7 @@ import com.tuyenngoc.army2forum.exception.BadRequestException;
 import com.tuyenngoc.army2forum.exception.ConflictException;
 import com.tuyenngoc.army2forum.exception.ForbiddenException;
 import com.tuyenngoc.army2forum.exception.NotFoundException;
-import com.tuyenngoc.army2forum.repository.ClanApprovalRepository;
-import com.tuyenngoc.army2forum.repository.ClanMemberRepository;
-import com.tuyenngoc.army2forum.repository.ClanRepository;
-import com.tuyenngoc.army2forum.repository.PlayerRepository;
+import com.tuyenngoc.army2forum.repository.*;
 import com.tuyenngoc.army2forum.security.CustomUserDetails;
 import com.tuyenngoc.army2forum.service.ClanService;
 import com.tuyenngoc.army2forum.util.PaginationUtil;
@@ -44,6 +42,7 @@ import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
+import java.time.Duration;
 import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Objects;
@@ -70,6 +69,8 @@ public class ClanServiceImpl implements ClanService {
     private final ClanMemberRepository clanMemberRepository;
 
     private final ClanApprovalRepository clanApprovalRepository;
+
+    private final ClanShopRepository clanShopRepository;
 
     @Override
     @Transactional
@@ -161,8 +162,26 @@ public class ClanServiceImpl implements ClanService {
     @Override
     public GetClanResponseDto getClanDetailById(Long clanId, CustomUserDetails userDetails) {
         Clan clan = getClanById(clanId);
+        GetClanResponseDto responseDto = new GetClanResponseDto(clan);
 
-        return new GetClanResponseDto(clan);
+        LocalDateTime currentTime = LocalDateTime.now();
+
+        List<GetClanItemResponseDto> items = clan.getItems().stream()
+                .map(clanItem -> clanShopRepository.findById(clanItem.getId())
+                        .map(clanShop -> {
+                            GetClanItemResponseDto dto = new GetClanItemResponseDto();
+                            Duration duration = Duration.between(currentTime, clanItem.getTime());
+                            dto.setTime(duration.getSeconds());
+                            dto.setName(clanShop.getName());
+                            return dto;
+                        }).orElse(null)
+                )
+                .filter(Objects::nonNull)
+                .collect(Collectors.toList());
+
+        responseDto.setItems(items);
+
+        return responseDto;
     }
 
     @Override

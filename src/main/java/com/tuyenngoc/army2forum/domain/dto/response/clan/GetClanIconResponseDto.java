@@ -1,4 +1,4 @@
-package com.tuyenngoc.army2forum.domain.dto.response;
+package com.tuyenngoc.army2forum.domain.dto.response.clan;
 
 import lombok.AllArgsConstructor;
 import lombok.Getter;

@@ -4,9 +4,9 @@ import com.tuyenngoc.army2forum.domain.dto.pagination.PaginationFullRequestDto;
 import com.tuyenngoc.army2forum.domain.dto.pagination.PaginationResponseDto;
 import com.tuyenngoc.army2forum.domain.dto.request.ClanRequestDto;
 import com.tuyenngoc.army2forum.domain.dto.response.CommonResponseDto;
-import com.tuyenngoc.army2forum.domain.dto.response.GetClanIconResponseDto;
-import com.tuyenngoc.army2forum.domain.dto.response.GetClanMemberResponseDto;
-import com.tuyenngoc.army2forum.domain.dto.response.GetClanResponseDto;
+import com.tuyenngoc.army2forum.domain.dto.response.clan.GetClanIconResponseDto;
+import com.tuyenngoc.army2forum.domain.dto.response.clan.GetClanMemberResponseDto;
+import com.tuyenngoc.army2forum.domain.dto.response.clan.GetClanResponseDto;
 import com.tuyenngoc.army2forum.domain.entity.Clan;
 import com.tuyenngoc.army2forum.security.CustomUserDetails;
 

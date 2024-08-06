@@ -71,7 +71,7 @@ public class Clan extends DateAuditing {
 
     @Column(name = "item", length = 1024, nullable = false)
     @Convert(converter = ClanItemConverter.class)
-    private List<ClanItem> item = new ArrayList<>();
+    private List<ClanItem> items = new ArrayList<>();
 
     @OneToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "master_id", foreignKey = @ForeignKey(name = "FK_CLAN_MASTER_ID"), referencedColumnName = "player_id", nullable = false)

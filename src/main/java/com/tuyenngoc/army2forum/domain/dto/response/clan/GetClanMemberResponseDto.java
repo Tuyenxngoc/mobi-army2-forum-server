@@ -1,9 +1,7 @@
-package com.tuyenngoc.army2forum.domain.dto.response;
+package com.tuyenngoc.army2forum.domain.dto.response.clan;
 
 import com.fasterxml.jackson.annotation.JsonFormat;
 import com.tuyenngoc.army2forum.constant.CommonConstant;
-import com.tuyenngoc.army2forum.domain.dto.PlayerDto;
-import com.tuyenngoc.army2forum.domain.dto.common.DateAuditingDto;
 import com.tuyenngoc.army2forum.domain.entity.ClanMember;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
@@ -16,9 +14,9 @@ import java.time.LocalDateTime;
 @Getter
 @NoArgsConstructor
 @AllArgsConstructor
-public class GetClanMemberResponseDto extends DateAuditingDto {
+public class GetClanMemberResponseDto {
 
-    private PlayerDto player;
+    private String name;
 
     @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = CommonConstant.PATTERN_DATE_TIME)
     private LocalDateTime joinTime;
@@ -26,7 +24,7 @@ public class GetClanMemberResponseDto extends DateAuditingDto {
     private String rights;
 
     public GetClanMemberResponseDto(ClanMember clanMember) {
-        this.player = new PlayerDto(clanMember.getPlayer());
+        this.name = clanMember.getPlayer().getUser().getUsername();
         this.joinTime = clanMember.getJoinTime();
         this.rights = getRightsName(clanMember.getRights());
     }

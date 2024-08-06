@@ -32,7 +32,7 @@ public class UserController {
             @Parameter(name = "userDetails", hidden = true)
             @CurrentUser CustomUserDetails userDetails
     ) {
-        return VsResponseUtil.success(userService.getCurrentUser(userDetails.getUsername()));
+        return VsResponseUtil.success(userService.getCurrentUser(userDetails.getUserId()));
     }
 
     @PreAuthorize("hasAnyRole('SUPER_ADMIN', 'ADMIN')")

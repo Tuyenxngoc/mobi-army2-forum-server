@@ -5,6 +5,9 @@ import com.tuyenngoc.army2forum.constant.ErrorMessage;
 import com.tuyenngoc.army2forum.constant.RoleConstant;
 import com.tuyenngoc.army2forum.constant.SortByDataConstant;
 import com.tuyenngoc.army2forum.constant.SuccessMessage;
+import com.tuyenngoc.army2forum.domain.dto.ClanDto;
+import com.tuyenngoc.army2forum.domain.dto.ClanMemberDto;
+import com.tuyenngoc.army2forum.domain.dto.PlayerDto;
 import com.tuyenngoc.army2forum.domain.dto.UserDto;
 import com.tuyenngoc.army2forum.domain.dto.pagination.PaginationFullRequestDto;
 import com.tuyenngoc.army2forum.domain.dto.pagination.PaginationResponseDto;
@@ -12,6 +15,7 @@ import com.tuyenngoc.army2forum.domain.dto.pagination.PagingMeta;
 import com.tuyenngoc.army2forum.domain.dto.request.ChangeUsernameRequestDto;
 import com.tuyenngoc.army2forum.domain.dto.request.UpdateUserRequestDto;
 import com.tuyenngoc.army2forum.domain.dto.response.CommonResponseDto;
+import com.tuyenngoc.army2forum.domain.entity.ClanMember;
 import com.tuyenngoc.army2forum.domain.entity.Player;
 import com.tuyenngoc.army2forum.domain.entity.User;
 import com.tuyenngoc.army2forum.domain.mapper.UserMapper;
@@ -48,8 +52,6 @@ public class UserServiceImpl implements UserService {
 
     private final PlayerRepository playerRepository;
 
-    private final UserMapper userMapper;
-
     private final RoleService roleService;
 
     private final PasswordEncoder passwordEncoder;
@@ -85,10 +87,29 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
-    public UserDto getCurrentUser(String username) {
-        User user = userRepository.findByUsername(username)
-                .orElseThrow(() -> new NotFoundException(ErrorMessage.User.ERR_NOT_FOUND_USERNAME, username));
-        return userMapper.toUserDto(user);
+    public UserDto getCurrentUser(String userId) {
+        User user = userRepository.findById(userId)
+                .orElseThrow(() -> new NotFoundException(ErrorMessage.User.ERR_NOT_FOUND_ID, userId));
+        Player player = user.getPlayer();
+
+        UserDto responseDto = new UserDto();
+        responseDto.setFullName(user.getFullName());
+        responseDto.setRoleName(user.getRole().getName());
+
+        PlayerDto playerDto = new PlayerDto(player);
+        ClanMember clanMember = player.getClanMember();
+        if (clanMember != null) {
+            ClanDto clanDto = new ClanDto(clanMember.getClan());
+
+            ClanMemberDto clanMemberDto = new ClanMemberDto();
+            clanMemberDto.setRights(clanMember.getRights());
+            clanMemberDto.setClan(clanDto);
+
+            playerDto.setClanMember(clanMemberDto);
+        }
+        responseDto.setPlayer(playerDto);
+
+        return responseDto;
     }
 
     @Override

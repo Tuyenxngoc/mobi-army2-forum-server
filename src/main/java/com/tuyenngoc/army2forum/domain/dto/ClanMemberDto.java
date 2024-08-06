@@ -1,5 +1,6 @@
 package com.tuyenngoc.army2forum.domain.dto;
 
+import com.fasterxml.jackson.annotation.JsonInclude;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -9,12 +10,11 @@ import lombok.Setter;
 @Setter
 @NoArgsConstructor
 @AllArgsConstructor
-public class UserDto {
+public class ClanMemberDto {
 
-    private String fullName;
+    private int rights;
 
-    private String roleName;
-
-    private PlayerDto player;
+    @JsonInclude(JsonInclude.Include.NON_NULL)
+    private ClanDto clan;
 
 }

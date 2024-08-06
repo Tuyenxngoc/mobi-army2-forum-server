@@ -67,7 +67,7 @@ public class Clan extends DateAuditing {
     private String notification;
 
     @Column(name = "require_approval", nullable = false)
-    private Boolean requireApproval = false;
+    private Boolean requireApproval = true;
 
     @Column(name = "item", length = 1024, nullable = false)
     @Convert(converter = ClanItemConverter.class)

@@ -14,7 +14,7 @@ public interface UserService {
 
     void initAdmin(AdminInfo adminInfo);
 
-    UserDto getCurrentUser(String username);
+    UserDto getCurrentUser(String userId);
 
     User updateUser(String userId, UpdateUserRequestDto requestDto);
 

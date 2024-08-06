@@ -34,6 +34,14 @@ public class ClanSpecification {
         };
     }
 
+    public static Specification<ClanMember> getClanMembersByClanId(Long clanId) {
+        return (root, query, builder) -> {
+            Join<ClanMember, Clan> clanJoin = root.join(ClanMember_.clan);
+
+            return builder.equal(clanJoin.get(Clan_.id), clanId);
+        };
+    }
+
     public static Specification<ClanMember> filterClanMembers(String keyword, String searchBy) {
         return (root, query, builder) -> {
             query.distinct(true);
@@ -45,6 +53,8 @@ public class ClanSpecification {
                     case ClanMember_.ID -> predicate = builder.and(predicate, builder.equal(root.get(ClanMember_.id),
                             SpecificationsUtil.castToRequiredType(root.get(ClanMember_.id).getJavaType(), keyword)));
 
+                    case ClanMember_.CLAN_POINT -> predicate = builder.and(predicate, builder.equal(root.get(ClanMember_.clanPoint),
+                            SpecificationsUtil.castToRequiredType(root.get(ClanMember_.clanPoint).getJavaType(), keyword)));
                 }
             }
             return predicate;

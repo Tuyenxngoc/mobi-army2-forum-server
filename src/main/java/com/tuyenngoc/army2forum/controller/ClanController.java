@@ -14,6 +14,7 @@ import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springdoc.core.annotations.ParameterObject;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 
 @RestApiV1
@@ -42,13 +43,11 @@ public class ClanController {
         return VsResponseUtil.success(clanService.updateClan(id, requestDto, userDetails));
     }
 
+    @PreAuthorize("hasRole('SUPER_ADMIN')")
     @Operation(summary = "API Delete Clan")
     @DeleteMapping(UrlConstant.Clan.DELETE)
-    public ResponseEntity<?> deleteClan(
-            @PathVariable Long id,
-            @CurrentUser CustomUserDetails userDetails
-    ) {
-        return VsResponseUtil.success(clanService.deleteClan(id, userDetails));
+    public ResponseEntity<?> deleteClan(@PathVariable Long id) {
+        return VsResponseUtil.success(clanService.deleteClan(id));
     }
 
     @Operation(summary = "API Get Clans")

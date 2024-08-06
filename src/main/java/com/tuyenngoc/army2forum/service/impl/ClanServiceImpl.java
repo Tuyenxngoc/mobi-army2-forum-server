@@ -58,6 +58,9 @@ public class ClanServiceImpl implements ClanService {
     @Value("${clan.creation.price}")
     private int clanCreationPrice;
 
+    @Value("${clan.leave.price}")
+    private int clanLeavePrice;
+
     private final PlayerRepository playerRepository;
 
     private final ClanRepository clanRepository;
@@ -92,6 +95,7 @@ public class ClanServiceImpl implements ClanService {
 
         Clan clan = clanMapper.toClan(requestDto);
         clan.setMaster(player);
+        clan.setRequireApproval(true);
         clanRepository.save(clan);
 
         ClanMember clanMember = new ClanMember();
@@ -140,14 +144,8 @@ public class ClanServiceImpl implements ClanService {
     }
 
     @Override
-    public CommonResponseDto deleteClan(Long clanId, CustomUserDetails userDetails) {
-        Clan clan = getClanById(clanId);
-
-        if (!Objects.equals(clan.getMaster().getId(), userDetails.getPlayerId())) {
-            throw new ForbiddenException(ErrorMessage.ERR_FORBIDDEN_UPDATE_DELETE);
-        }
-
-        clanRepository.delete(clan);
+    public CommonResponseDto deleteClan(Long clanId) {
+        clanRepository.deleteById(clanId);
 
         String message = messageSource.getMessage(SuccessMessage.DELETE, null, LocaleContextHolder.getLocale());
         return new CommonResponseDto(message);
@@ -264,12 +262,12 @@ public class ClanServiceImpl implements ClanService {
             String message = messageSource.getMessage(SuccessMessage.Clan.REQUEST_SUBMITTED, null, LocaleContextHolder.getLocale());
             return new CommonResponseDto(message);
         } else {
-            clanApprovalRepository.removeByPlayerId(userDetails.getPlayerId());
+            clanApprovalRepository.removeAllByPlayerId(userDetails.getPlayerId());
 
             ClanMember clanMember = new ClanMember();
             clanMember.setClan(clan);
             clanMember.setPlayer(player);
-            clanMember.setRights((byte) 0);
+            clanMember.setRights(ClanMemberRightsConstants.CLAN_MEMBER);
             clanMember.setJoinTime(LocalDateTime.now());
             clanMemberRepository.save(clanMember);
 
@@ -286,6 +284,13 @@ public class ClanServiceImpl implements ClanService {
         if (clanMember.getRights() == 2) {//Owner clan
             throw new BadRequestException(ErrorMessage.Clan.ERR_OWNER_CANNOT_LEAVE);
         } else {
+            Player player = clanMember.getPlayer();
+            if (player.getXu() < clanLeavePrice) {
+                throw new BadRequestException(ErrorMessage.Player.ERR_NOT_ENOUGH_MONEY);
+            }
+            player.setXu(player.getXu() - clanLeavePrice);
+            playerRepository.save(player);
+
             clanMemberRepository.delete(clanMember);
         }
 
@@ -298,7 +303,8 @@ public class ClanServiceImpl implements ClanService {
         Pageable pageable = PaginationUtil.buildPageable(requestDto, SortByDataConstant.CLAN);
 
         Page<ClanMember> page = clanMemberRepository.findAll(
-                ClanSpecification.filterClanMembers(requestDto.getKeyword(), requestDto.getSearchBy()),
+                ClanSpecification.getClanMembersByClanId(clanId).and(
+                        ClanSpecification.filterClanMembers(requestDto.getKeyword(), requestDto.getSearchBy())),
                 pageable
         );
 

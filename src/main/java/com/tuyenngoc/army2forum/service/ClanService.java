@@ -18,7 +18,7 @@ public interface ClanService {
 
     CommonResponseDto updateClan(Long clanId, ClanRequestDto requestDto, CustomUserDetails userDetails);
 
-    CommonResponseDto deleteClan(Long clanId, CustomUserDetails userDetails);
+    CommonResponseDto deleteClan(Long clanId);
 
     Clan getClanById(Long clanId);
 

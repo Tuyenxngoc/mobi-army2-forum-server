@@ -58,9 +58,6 @@ public class ClanServiceImpl implements ClanService {
     @Value("${clan.creation.price}")
     private int clanCreationPrice;
 
-    @Value("${clan.leave.price}")
-    private int clanLeavePrice;
-
     private final PlayerRepository playerRepository;
 
     private final ClanRepository clanRepository;
@@ -284,13 +281,6 @@ public class ClanServiceImpl implements ClanService {
         if (clanMember.getRights() == 2) {//Owner clan
             throw new BadRequestException(ErrorMessage.Clan.ERR_OWNER_CANNOT_LEAVE);
         } else {
-            Player player = clanMember.getPlayer();
-            if (player.getXu() < clanLeavePrice) {
-                throw new BadRequestException(ErrorMessage.Player.ERR_NOT_ENOUGH_MONEY);
-            }
-            player.setXu(player.getXu() - clanLeavePrice);
-            playerRepository.save(player);
-
             clanMemberRepository.delete(clanMember);
         }
 

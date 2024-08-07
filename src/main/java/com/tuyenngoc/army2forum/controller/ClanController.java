@@ -99,4 +99,14 @@ public class ClanController {
         return VsResponseUtil.success(clanService.getClanMembers(id, requestDto));
     }
 
+    @Operation(summary = "API Get Clan Members For Owner")
+    @GetMapping(UrlConstant.Clan.ADMIN_GET_MEMBERS)
+    public ResponseEntity<?> getClanMembersForOwner(
+            @PathVariable Long id,
+            @CurrentUser CustomUserDetails userDetails,
+            @ParameterObject PaginationFullRequestDto requestDto
+    ) {
+        return VsResponseUtil.success(clanService.getClanMembersForOwner(id, userDetails.getPlayerId(), requestDto));
+    }
+
 }

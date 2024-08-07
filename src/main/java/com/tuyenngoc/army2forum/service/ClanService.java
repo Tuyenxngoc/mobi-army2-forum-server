@@ -9,6 +9,7 @@ import com.tuyenngoc.army2forum.domain.dto.response.clan.GetClanIconResponseDto;
 import com.tuyenngoc.army2forum.domain.dto.response.clan.GetClanMemberResponseDto;
 import com.tuyenngoc.army2forum.domain.dto.response.clan.GetClanResponseDto;
 import com.tuyenngoc.army2forum.domain.entity.Clan;
+import com.tuyenngoc.army2forum.domain.entity.ClanMember;
 import com.tuyenngoc.army2forum.security.CustomUserDetails;
 
 import java.util.List;
@@ -34,5 +35,7 @@ public interface ClanService {
     CommonResponseDto leaveClan(Long clanId, CustomUserDetails userDetails);
 
     PaginationResponseDto<GetClanMemberResponseDto> getClanMembers(Long clanId, PaginationFullRequestDto requestDto);
+
+    PaginationResponseDto<ClanMember> getClanMembersForOwner(Long clanId, Long playerId, PaginationFullRequestDto requestDto);
 
 }

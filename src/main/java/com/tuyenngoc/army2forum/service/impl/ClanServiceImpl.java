@@ -288,7 +288,7 @@ public class ClanServiceImpl implements ClanService {
 
     @Override
     public PaginationResponseDto<GetClanMemberResponseDto> getClanMembers(Long clanId, PaginationFullRequestDto requestDto) {
-        Pageable pageable = PaginationUtil.buildPageable(requestDto, SortByDataConstant.CLAN);
+        Pageable pageable = PaginationUtil.buildPageable(requestDto, SortByDataConstant.CLAN_MEMBER);
 
         Page<ClanMember> page = clanMemberRepository.findAll(
                 ClanSpecification.getClanMembersByClanId(clanId).and(
@@ -300,10 +300,34 @@ public class ClanServiceImpl implements ClanService {
                 .map(GetClanMemberResponseDto::new)
                 .collect(Collectors.toList());
 
-        PagingMeta pagingMeta = PaginationUtil.buildPagingMeta(requestDto, SortByDataConstant.CLAN, page);
+        PagingMeta pagingMeta = PaginationUtil.buildPagingMeta(requestDto, SortByDataConstant.CLAN_MEMBER, page);
 
         PaginationResponseDto<GetClanMemberResponseDto> responseDto = new PaginationResponseDto<>();
         responseDto.setItems(items);
+        responseDto.setMeta(pagingMeta);
+
+        return responseDto;
+    }
+
+    @Override
+    public PaginationResponseDto<ClanMember> getClanMembersForOwner(Long clanId, Long playerId, PaginationFullRequestDto requestDto) {
+        Clan clan = getClanById(clanId);
+        if (!Objects.equals(clan.getMaster().getId(), playerId)) {
+            throw new ForbiddenException(ErrorMessage.ERR_FORBIDDEN);
+        }
+
+        Pageable pageable = PaginationUtil.buildPageable(requestDto, SortByDataConstant.CLAN_MEMBER);
+
+        Page<ClanMember> page = clanMemberRepository.findAll(
+                ClanSpecification.getClanMembersByClanId(clanId).and(
+                        ClanSpecification.filterClanMembers(requestDto.getKeyword(), requestDto.getSearchBy())),
+                pageable
+        );
+
+        PagingMeta pagingMeta = PaginationUtil.buildPagingMeta(requestDto, SortByDataConstant.CLAN_MEMBER, page);
+
+        PaginationResponseDto<ClanMember> responseDto = new PaginationResponseDto<>();
+        responseDto.setItems(page.getContent());
         responseDto.setMeta(pagingMeta);
 
         return responseDto;

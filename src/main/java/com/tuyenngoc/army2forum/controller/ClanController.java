@@ -15,7 +15,6 @@ import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springdoc.core.annotations.ParameterObject;
 import org.springframework.http.ResponseEntity;
-import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 
 @RestApiV1
@@ -37,18 +36,11 @@ public class ClanController {
     @Operation(summary = "API Update Clan")
     @PutMapping(UrlConstant.Clan.UPDATE)
     public ResponseEntity<?> updateClan(
-            @PathVariable Long id,
+            @PathVariable Long clanId,
             @Valid @RequestBody UpdateClanRequestDto requestDto,
             @CurrentUser CustomUserDetails userDetails
     ) {
-        return VsResponseUtil.success(clanService.updateClan(id, requestDto, userDetails));
-    }
-
-    @PreAuthorize("hasRole('SUPER_ADMIN')")
-    @Operation(summary = "API Delete Clan")
-    @DeleteMapping(UrlConstant.Clan.DELETE)
-    public ResponseEntity<?> deleteClan(@PathVariable Long id) {
-        return VsResponseUtil.success(clanService.deleteClan(id));
+        return VsResponseUtil.success(clanService.updateClan(clanId, requestDto, userDetails));
     }
 
     @Operation(summary = "API Get Clans")
@@ -59,54 +51,14 @@ public class ClanController {
 
     @Operation(summary = "API Get Clan By Id ")
     @GetMapping(UrlConstant.Clan.GET_BY_ID)
-    public ResponseEntity<?> getClanById(
-            @PathVariable Long id,
-            @CurrentUser CustomUserDetails userDetails
-    ) {
-        return VsResponseUtil.success(clanService.getClanDetailById(id, userDetails));
+    public ResponseEntity<?> getClanById(@PathVariable Long clanId) {
+        return VsResponseUtil.success(clanService.getClanDetailById(clanId));
     }
 
     @Operation(summary = "API Get Clan Icons")
     @GetMapping(UrlConstant.Clan.GET_ICONS)
     public ResponseEntity<?> getClanIcons() {
         return VsResponseUtil.success(clanService.getClanIcons());
-    }
-
-    @Operation(summary = "API Join Clan")
-    @PostMapping(UrlConstant.Clan.JOIN)
-    public ResponseEntity<?> joinClan(
-            @PathVariable Long id,
-            @CurrentUser CustomUserDetails userDetails
-    ) {
-        return VsResponseUtil.success(clanService.joinClan(id, userDetails));
-    }
-
-    @Operation(summary = "API Leave Clan")
-    @PostMapping(UrlConstant.Clan.LEAVE)
-    public ResponseEntity<?> leaveClan(
-            @PathVariable Long id,
-            @CurrentUser CustomUserDetails userDetails
-    ) {
-        return VsResponseUtil.success(clanService.leaveClan(id, userDetails));
-    }
-
-    @Operation(summary = "API Get Clan Members")
-    @GetMapping(UrlConstant.Clan.GET_MEMBERS)
-    public ResponseEntity<?> getClanMembers(
-            @PathVariable Long id,
-            @ParameterObject PaginationFullRequestDto requestDto
-    ) {
-        return VsResponseUtil.success(clanService.getClanMembers(id, requestDto));
-    }
-
-    @Operation(summary = "API Get Clan Members For Owner")
-    @GetMapping(UrlConstant.Clan.ADMIN_GET_MEMBERS)
-    public ResponseEntity<?> getClanMembersForOwner(
-            @PathVariable Long id,
-            @CurrentUser CustomUserDetails userDetails,
-            @ParameterObject PaginationFullRequestDto requestDto
-    ) {
-        return VsResponseUtil.success(clanService.getClanMembersForOwner(id, userDetails.getPlayerId(), requestDto));
     }
 
 }

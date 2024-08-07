@@ -147,14 +147,30 @@ public class UrlConstant {
 
         public static final String CREATE = PRE_FIX;
         public static final String GET_ALL = PRE_FIX;
-        public static final String GET_BY_ID = PRE_FIX + "/{id}";
-        public static final String UPDATE = PRE_FIX + "/{id}";
-        public static final String DELETE = PRE_FIX + "/{id}";
+        public static final String GET_BY_ID = PRE_FIX + "/{clanId}";
+        public static final String UPDATE = PRE_FIX + "/{clanId}";
+        public static final String DELETE = PRE_FIX + "/{clanId}";
         public static final String GET_ICONS = PRE_FIX + "/icons";
-        public static final String JOIN = PRE_FIX + "/{id}/join";
-        public static final String LEAVE = PRE_FIX + "/{id}/leave";
-        public static final String GET_MEMBERS = PRE_FIX + "/{id}/members";
-        public static final String ADMIN_GET_MEMBERS = ADMIN_URL + PRE_FIX + "/{id}/members";
+    }
+
+    public static class ClanMember {
+        private static final String PRE_FIX = "/clans";
+
+        public static final String JOIN = PRE_FIX + "/{clanId}/members/join";
+        public static final String LEAVE = PRE_FIX + "/{clanId}/members/leave";
+        public static final String GET_MEMBERS = PRE_FIX + "/{clanId}/members";
+        public static final String ADMIN_GET_MEMBERS = ADMIN_URL + PRE_FIX + "/{clanId}/members";
+        public static final String REMOVE_MEMBER = PRE_FIX + "/{clanId}/members/{memberId}";
+        public static final String PROMOTE_MEMBER = PRE_FIX + "/{clanId}/members/{memberId}/promote";
+    }
+
+    public static class ClanApproval {
+        private static final String PRE_FIX = "/clans/{clanId}/approvals";
+
+        public static final String GET_PENDING_APPROVALS = PRE_FIX;
+
+        public static final String APPROVE_MEMBER = PRE_FIX + "/{approvalId}/approve";
+        public static final String REJECT_MEMBER = PRE_FIX + "/{approvalId}/reject";
     }
 
 }

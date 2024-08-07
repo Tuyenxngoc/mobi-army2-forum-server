@@ -126,4 +126,8 @@ public class ErrorMessage {
         public static final String ERR_OWNER_CANNOT_LEAVE = "exception.clan.owner.cannot.leave";
     }
 
+    public static class ClanMember {
+        public static final String ERR_NOT_FOUND_ID = "exception.clan.member.not.found.id";
+    }
+
 }

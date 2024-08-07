@@ -12,4 +12,6 @@ public interface ClanMemberRepository extends JpaRepository<ClanMember, Long>, J
 
     Optional<ClanMember> findByClanIdAndPlayerId(Long clanId, Long playerId);
 
+    Optional<ClanMember> findByIdAndClanId(Long id, Long clanId);
+
 }

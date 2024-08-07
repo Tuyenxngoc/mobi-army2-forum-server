@@ -7,7 +7,8 @@ import com.tuyenngoc.army2forum.constant.SuccessMessage;
 import com.tuyenngoc.army2forum.domain.dto.pagination.PaginationFullRequestDto;
 import com.tuyenngoc.army2forum.domain.dto.pagination.PaginationResponseDto;
 import com.tuyenngoc.army2forum.domain.dto.pagination.PagingMeta;
-import com.tuyenngoc.army2forum.domain.dto.request.ClanRequestDto;
+import com.tuyenngoc.army2forum.domain.dto.request.CreateClanRequestDto;
+import com.tuyenngoc.army2forum.domain.dto.request.UpdateClanRequestDto;
 import com.tuyenngoc.army2forum.domain.dto.response.CommonResponseDto;
 import com.tuyenngoc.army2forum.domain.dto.response.clan.GetClanIconResponseDto;
 import com.tuyenngoc.army2forum.domain.dto.response.clan.GetClanItemResponseDto;
@@ -74,8 +75,8 @@ public class ClanServiceImpl implements ClanService {
 
     @Override
     @Transactional
-    public CommonResponseDto createClan(ClanRequestDto requestDto, CustomUserDetails userDetails) {
-        checkDuplicateClan(requestDto);
+    public CommonResponseDto createClan(CreateClanRequestDto requestDto, CustomUserDetails userDetails) {
+        checkDuplicateClan(requestDto.getName(), requestDto.getEmail());
 
         Player player = playerRepository.findById(userDetails.getPlayerId())
                 .orElseThrow(() -> new NotFoundException(ErrorMessage.Player.ERR_NOT_FOUND_ID, userDetails.getPlayerId()));
@@ -107,19 +108,16 @@ public class ClanServiceImpl implements ClanService {
     }
 
     @Override
-    public CommonResponseDto updateClan(Long clanId, ClanRequestDto requestDto, CustomUserDetails userDetails) {
+    public CommonResponseDto updateClan(Long clanId, UpdateClanRequestDto requestDto, CustomUserDetails userDetails) {
         Clan clan = getClanById(clanId);
 
         if (!Objects.equals(clan.getMaster().getId(), userDetails.getPlayerId())) {
             throw new ForbiddenException(ErrorMessage.ERR_FORBIDDEN_UPDATE_DELETE);
         }
 
-        checkDuplicateClan(requestDto);
-
-        clan.setName(requestDto.getName());
         clan.setDescription(requestDto.getDescription());
-        clan.setEmail(requestDto.getEmail());
-        clan.setPhoneNumber(requestDto.getPhoneNumber());
+        clan.setNotification(requestDto.getNotification());
+        clan.setRequireApproval(requestDto.getRequireApproval());
         clan.setIcon(requestDto.getIcon());
 
         clanRepository.save(clan);
@@ -128,15 +126,15 @@ public class ClanServiceImpl implements ClanService {
         return new CommonResponseDto(message);
     }
 
-    private void checkDuplicateClan(ClanRequestDto requestDto) {
-        boolean existsByName = clanRepository.existsByName(requestDto.getName());
+    private void checkDuplicateClan(String name, String email) {
+        boolean existsByName = clanRepository.existsByName(name);
         if (existsByName) {
-            throw new ConflictException(ErrorMessage.Clan.ERR_DUPLICATE_NAME, requestDto.getName());
+            throw new ConflictException(ErrorMessage.Clan.ERR_DUPLICATE_NAME, name);
         }
 
-        boolean existsByEmail = clanRepository.existsByEmail(requestDto.getEmail());
+        boolean existsByEmail = clanRepository.existsByEmail(email);
         if (existsByEmail) {
-            throw new ConflictException(ErrorMessage.Clan.ERR_DUPLICATE_EMAIL, requestDto.getEmail());
+            throw new ConflictException(ErrorMessage.Clan.ERR_DUPLICATE_EMAIL, email);
         }
     }
 

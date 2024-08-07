@@ -103,6 +103,13 @@ public class GlobalExceptionHandle {
         return VsResponseUtil.error(HttpStatus.UNAUTHORIZED, errorMessage);
     }
 
+    @ExceptionHandler(ForbiddenException.class)
+    @ResponseStatus(HttpStatus.FORBIDDEN)
+    public ResponseEntity<RestData<?>> handleForbiddenException(ForbiddenException ex) {
+        String errorMessage = messageSource.getMessage(ex.getMessage(), ex.getParams(), LocaleContextHolder.getLocale());
+        return VsResponseUtil.error(HttpStatus.FORBIDDEN, errorMessage);
+    }
+
     @ExceptionHandler(AccessDeniedException.class)
     @ResponseStatus(HttpStatus.FORBIDDEN)
     public ResponseEntity<RestData<?>> handleAccessDeniedException() {

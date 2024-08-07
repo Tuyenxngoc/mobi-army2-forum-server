@@ -2,7 +2,8 @@ package com.tuyenngoc.army2forum.service;
 
 import com.tuyenngoc.army2forum.domain.dto.pagination.PaginationFullRequestDto;
 import com.tuyenngoc.army2forum.domain.dto.pagination.PaginationResponseDto;
-import com.tuyenngoc.army2forum.domain.dto.request.ClanRequestDto;
+import com.tuyenngoc.army2forum.domain.dto.request.CreateClanRequestDto;
+import com.tuyenngoc.army2forum.domain.dto.request.UpdateClanRequestDto;
 import com.tuyenngoc.army2forum.domain.dto.response.CommonResponseDto;
 import com.tuyenngoc.army2forum.domain.dto.response.clan.GetClanIconResponseDto;
 import com.tuyenngoc.army2forum.domain.dto.response.clan.GetClanMemberResponseDto;
@@ -14,9 +15,9 @@ import java.util.List;
 
 public interface ClanService {
 
-    CommonResponseDto createClan(ClanRequestDto requestDto, CustomUserDetails userDetails);
+    CommonResponseDto createClan(CreateClanRequestDto requestDto, CustomUserDetails userDetails);
 
-    CommonResponseDto updateClan(Long clanId, ClanRequestDto requestDto, CustomUserDetails userDetails);
+    CommonResponseDto updateClan(Long clanId, UpdateClanRequestDto requestDto, CustomUserDetails userDetails);
 
     CommonResponseDto deleteClan(Long clanId);
 

@@ -5,7 +5,8 @@ import com.tuyenngoc.army2forum.annotation.RestApiV1;
 import com.tuyenngoc.army2forum.base.VsResponseUtil;
 import com.tuyenngoc.army2forum.constant.UrlConstant;
 import com.tuyenngoc.army2forum.domain.dto.pagination.PaginationFullRequestDto;
-import com.tuyenngoc.army2forum.domain.dto.request.ClanRequestDto;
+import com.tuyenngoc.army2forum.domain.dto.request.CreateClanRequestDto;
+import com.tuyenngoc.army2forum.domain.dto.request.UpdateClanRequestDto;
 import com.tuyenngoc.army2forum.security.CustomUserDetails;
 import com.tuyenngoc.army2forum.service.ClanService;
 import io.swagger.v3.oas.annotations.Operation;
@@ -27,7 +28,7 @@ public class ClanController {
     @Operation(summary = "API Create Clan")
     @PostMapping(UrlConstant.Clan.CREATE)
     public ResponseEntity<?> createClan(
-            @Valid @RequestBody ClanRequestDto requestDto,
+            @Valid @RequestBody CreateClanRequestDto requestDto,
             @CurrentUser CustomUserDetails userDetails
     ) {
         return VsResponseUtil.success(clanService.createClan(requestDto, userDetails));
@@ -37,7 +38,7 @@ public class ClanController {
     @PutMapping(UrlConstant.Clan.UPDATE)
     public ResponseEntity<?> updateClan(
             @PathVariable Long id,
-            @Valid @RequestBody ClanRequestDto requestDto,
+            @Valid @RequestBody UpdateClanRequestDto requestDto,
             @CurrentUser CustomUserDetails userDetails
     ) {
         return VsResponseUtil.success(clanService.updateClan(id, requestDto, userDetails));

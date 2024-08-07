@@ -130,4 +130,9 @@ public class ErrorMessage {
         public static final String ERR_NOT_FOUND_ID = "exception.clan.member.not.found.id";
     }
 
+    public static class ClanApproval {
+        public static final String ERR_NOT_FOUND_ID = "exception.clan-approval.not.found.id";
+        public static final String ERR_ALREADY_MEMBER = "exception.clan-approval.already.member";
+    }
+
 }

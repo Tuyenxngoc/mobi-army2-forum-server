@@ -41,6 +41,14 @@ public class SuccessMessage {
         public static final String LEAVE_SUCCESS = "success.clan.leave.successfully";
     }
 
+    public static class ClanMember {
+    }
+
+    public static class ClanApproval {
+        public static final String APPROVAL_SUCCESS = "success.clan-approval.approval.success";
+        public static final String REJECTION_SUCCESS = "success.clan-approval.rejection.success";
+    }
+
     public static class Player {
         public static final String CHEST_LOCKED = "success.player.chest.locked";
         public static final String CHEST_UNLOCKED = "success.player.chest.unlocked";

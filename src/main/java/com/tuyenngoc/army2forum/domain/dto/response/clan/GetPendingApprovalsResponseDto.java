@@ -12,8 +12,13 @@ import lombok.Setter;
 @AllArgsConstructor
 public class GetPendingApprovalsResponseDto {
 
-    public GetPendingApprovalsResponseDto(ClanApproval clanApproval) {
+    private long id;
 
+    private String username;
+
+    public GetPendingApprovalsResponseDto(ClanApproval clanApproval) {
+        this.id = clanApproval.getId();
+        this.username = clanApproval.getPlayer().getUser().getUsername();
     }
 
 }

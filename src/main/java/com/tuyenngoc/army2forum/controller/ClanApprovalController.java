@@ -4,7 +4,7 @@ import com.tuyenngoc.army2forum.annotation.CurrentUser;
 import com.tuyenngoc.army2forum.annotation.RestApiV1;
 import com.tuyenngoc.army2forum.base.VsResponseUtil;
 import com.tuyenngoc.army2forum.constant.UrlConstant;
-import com.tuyenngoc.army2forum.domain.dto.pagination.PaginationFullRequestDto;
+import com.tuyenngoc.army2forum.domain.dto.pagination.PaginationRequestDto;
 import com.tuyenngoc.army2forum.security.CustomUserDetails;
 import com.tuyenngoc.army2forum.service.ClanApprovalService;
 import io.swagger.v3.oas.annotations.Operation;
@@ -28,9 +28,9 @@ public class ClanApprovalController {
     public ResponseEntity<?> getPendingApprovals(
             @PathVariable Long clanId,
             @CurrentUser CustomUserDetails userDetails,
-            @ParameterObject PaginationFullRequestDto requestDto
+            @ParameterObject PaginationRequestDto requestDto
     ) {
-        return VsResponseUtil.success(clanApprovalService.getPendingApprovals(clanId, userDetails, requestDto));
+        return VsResponseUtil.success(clanApprovalService.getPendingApprovals(clanId, userDetails.getPlayerId(), requestDto));
     }
 
     @Operation(summary = "API Approve Member")

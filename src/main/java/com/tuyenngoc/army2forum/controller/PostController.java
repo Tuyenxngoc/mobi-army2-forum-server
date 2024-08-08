@@ -110,4 +110,14 @@ public class PostController {
     public ResponseEntity<?> getPostByIdForAdmin(@PathVariable Long id) {
         return VsResponseUtil.success(postService.getPostByIdForAdmin(id));
     }
+
+    @Operation(summary = "API get posts by user")
+    @GetMapping(UrlConstant.Post.GET_BY_PLAYER_ID)
+    public ResponseEntity<?> getPostsByPlayerId(
+            @ParameterObject PaginationRequestDto requestDto,
+            @CurrentUser CustomUserDetails userDetails
+    ) {
+        return VsResponseUtil.success(postService.getPostsByPlayerId(userDetails.getPlayerId(), requestDto));
+    }
+
 }

@@ -286,4 +286,25 @@ public class PostServiceImpl implements PostService {
 
         return new GetPostDetailForAdminResponseDto(post);
     }
+
+    @Override
+    public PaginationResponseDto<GetPostResponseDto> getPostsByPlayerId(Long playerId, PaginationRequestDto requestDto) {
+        Pageable pageable = PaginationUtil.buildPageable(requestDto);
+
+        Page<Post> page = postRepository.findAll(
+                PostSpecification.filterPostsByPlayerId(playerId),
+                pageable);
+
+        List<GetPostResponseDto> items = page.getContent().stream()
+                .map(GetPostResponseDto::new)
+                .collect(Collectors.toList());
+
+        PagingMeta pagingMeta = PaginationUtil.buildPagingMeta(requestDto, page);
+
+        PaginationResponseDto<GetPostResponseDto> responseDto = new PaginationResponseDto<>();
+        responseDto.setItems(items);
+        responseDto.setMeta(pagingMeta);
+
+        return responseDto;
+    }
 }

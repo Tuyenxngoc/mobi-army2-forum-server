@@ -36,4 +36,6 @@ public interface PostService {
 
     GetPostDetailForAdminResponseDto getPostByIdForAdmin(Long id);
 
+    PaginationResponseDto<GetPostResponseDto> getPostsByPlayerId(Long playerId, PaginationRequestDto requestDto);
+
 }

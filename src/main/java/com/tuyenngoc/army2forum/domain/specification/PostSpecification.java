@@ -19,6 +19,13 @@ public class PostSpecification {
                 criteriaBuilder.isTrue(root.get(Post_.isApproved));
     }
 
+    public static Specification<Post> filterPostsByPlayerId(Long playerId) {
+        return (root, query, builder) -> {
+            Join<Post, Player> postPlayerJoin = root.join(Post_.player);
+            return builder.equal(postPlayerJoin.get(Player_.id), playerId);
+        };
+    }
+
     public static Specification<Post> filterPosts(String keyword, String searchBy) {
         return (root, query, builder) -> {
             query.distinct(true);

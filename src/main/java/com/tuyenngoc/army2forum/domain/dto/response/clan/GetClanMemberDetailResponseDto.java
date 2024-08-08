@@ -18,6 +18,8 @@ public class GetClanMemberDetailResponseDto {
 
     private long id;
 
+    private String name;
+
     private byte rights;
 
     private int xu;
@@ -40,6 +42,7 @@ public class GetClanMemberDetailResponseDto {
 
     public GetClanMemberDetailResponseDto(ClanMember clanMember) {
         this.id = clanMember.getId();
+        this.name = clanMember.getPlayer().getUser().getUsername();
         this.rights = clanMember.getRights();
         this.xu = clanMember.getXu();
         this.luong = clanMember.getLuong();

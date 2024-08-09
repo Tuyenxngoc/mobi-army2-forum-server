@@ -122,8 +122,7 @@ public class UrlConstant {
         public static final String GET_BY_ID = PRE_FIX + "/{id}";
         public static final String UPDATE = PRE_FIX + "/{id}";
         public static final String DELETE = PRE_FIX + "/{id}";
-        public static final String GET_BY_PLAYER_ID = PRE_FIX + "/my-posts";;
-
+        public static final String GET_BY_PLAYER_ID = PRE_FIX + "/player/{playerId}";
         public static final String APPROVE = PRE_FIX + "/{id}/approve";
         public static final String LOCK = PRE_FIX + "/{id}/lock";
         public static final String FOLLOW = PRE_FIX + "/{id}/follow";

@@ -115,9 +115,9 @@ public class PostController {
     @GetMapping(UrlConstant.Post.GET_BY_PLAYER_ID)
     public ResponseEntity<?> getPostsByPlayerId(
             @ParameterObject PaginationRequestDto requestDto,
-            @CurrentUser CustomUserDetails userDetails
+            @PathVariable Long playerId
     ) {
-        return VsResponseUtil.success(postService.getPostsByPlayerId(userDetails.getPlayerId(), requestDto));
+        return VsResponseUtil.success(postService.getPostsByPlayerId(playerId, requestDto));
     }
 
 }

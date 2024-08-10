@@ -42,23 +42,23 @@ import org.springframework.stereotype.Service;
 @Slf4j
 @Service
 @RequiredArgsConstructor
-@FieldDefaults(level = AccessLevel.PRIVATE, makeFinal = true)
+@FieldDefaults(level = AccessLevel.PRIVATE)
 public class UserServiceImpl implements UserService {
 
     @Value("${user.change-username.price}")
-    private int changeUsernamePrice;
+    int changeUsernamePrice;
 
-    MessageSource messageSource;
+    final MessageSource messageSource;
 
-    UserRepository userRepository;
+    final UserRepository userRepository;
 
-    PlayerRepository playerRepository;
+    final PlayerRepository playerRepository;
 
-    RoleService roleService;
+    final RoleService roleService;
 
-    PasswordEncoder passwordEncoder;
+    final PasswordEncoder passwordEncoder;
 
-    PlayerCharactersService playerCharactersService;
+    final PlayerCharactersService playerCharactersService;
 
     @Override
     public void initAdmin(AdminInfo adminInfo) {

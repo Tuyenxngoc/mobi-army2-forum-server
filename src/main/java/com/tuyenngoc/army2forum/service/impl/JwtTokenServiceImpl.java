@@ -12,7 +12,7 @@ import java.util.concurrent.TimeUnit;
 
 @Service
 @RequiredArgsConstructor
-@FieldDefaults(level = AccessLevel.PRIVATE, makeFinal = true)
+@FieldDefaults(level = AccessLevel.PRIVATE)
 public class JwtTokenServiceImpl implements JwtTokenService {
 
     private static final String ACCESS_TOKEN_KEY = "ACCESS_TOKEN_";
@@ -24,7 +24,7 @@ public class JwtTokenServiceImpl implements JwtTokenService {
     @Value("${jwt.refresh.expiration_time}")
     private Integer EXPIRATION_TIME_REFRESH_TOKEN;
 
-    RedisTemplate<String, Object> redisTemplate;
+    final RedisTemplate<String, Object> redisTemplate;
 
     private String getAccessTokenKey(String userId) {
         return ACCESS_TOKEN_KEY + userId.toUpperCase();

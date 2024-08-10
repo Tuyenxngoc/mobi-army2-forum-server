@@ -55,26 +55,26 @@ import java.util.stream.Collectors;
 
 @Service
 @RequiredArgsConstructor
-@FieldDefaults(level = AccessLevel.PRIVATE, makeFinal = true)
+@FieldDefaults(level = AccessLevel.PRIVATE)
 public class ClanServiceImpl implements ClanService {
 
     @Value("${app.icons-directory}")
-    private String iconsDirectory;
+    String iconsDirectory;
 
     @Value("${clan.creation.price}")
-    private int clanCreationPrice;
+    int clanCreationPrice;
 
-    PlayerRepository playerRepository;
+    final PlayerRepository playerRepository;
 
-    ClanRepository clanRepository;
+    final ClanRepository clanRepository;
 
-    ClanMapper clanMapper;
+    final ClanMapper clanMapper;
 
-    MessageSource messageSource;
+    final MessageSource messageSource;
 
-    ClanMemberRepository clanMemberRepository;
+    final ClanMemberRepository clanMemberRepository;
 
-    ClanShopRepository clanShopRepository;
+    final ClanShopRepository clanShopRepository;
 
     private Clan getClanById(Long clanId) {
         return clanRepository.findById(clanId).

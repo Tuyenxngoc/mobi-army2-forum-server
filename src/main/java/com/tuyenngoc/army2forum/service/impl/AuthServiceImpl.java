@@ -25,7 +25,9 @@ import com.tuyenngoc.army2forum.util.SendMailUtil;
 import jakarta.mail.MessagingException;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
+import lombok.AccessLevel;
 import lombok.RequiredArgsConstructor;
+import lombok.experimental.FieldDefaults;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.context.MessageSource;
 import org.springframework.context.i18n.LocaleContextHolder;
@@ -45,31 +47,32 @@ import java.util.concurrent.TimeUnit;
 @Slf4j
 @Service
 @RequiredArgsConstructor
+@FieldDefaults(level = AccessLevel.PRIVATE, makeFinal = true)
 public class AuthServiceImpl implements AuthService {
 
-    private final AuthenticationManager authenticationManager;
+    AuthenticationManager authenticationManager;
 
-    private final JwtTokenProvider jwtTokenProvider;
+    JwtTokenProvider jwtTokenProvider;
 
-    private final JwtTokenService jwtTokenService;
+    JwtTokenService jwtTokenService;
 
-    private final EmailRateLimiterService emailRateLimiterService;
+    EmailRateLimiterService emailRateLimiterService;
 
-    private final MessageSource messageSource;
+    MessageSource messageSource;
 
-    private final UserRepository userRepository;
+    UserRepository userRepository;
 
-    private final UserMapper userMapper;
+    UserMapper userMapper;
 
-    private final PasswordEncoder passwordEncoder;
+    PasswordEncoder passwordEncoder;
 
-    private final RoleService roleService;
+    RoleService roleService;
 
-    private final SendMailUtil sendMailUtil;
+    SendMailUtil sendMailUtil;
 
-    private final PlayerRepository playerRepository;
+    PlayerRepository playerRepository;
 
-    private final PlayerCharactersService playerCharactersService;
+    PlayerCharactersService playerCharactersService;
 
     @Override
     public LoginResponseDto login(LoginRequestDto request) {

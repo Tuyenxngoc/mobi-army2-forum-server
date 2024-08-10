@@ -9,20 +9,23 @@ import com.tuyenngoc.army2forum.repository.LikeRepository;
 import com.tuyenngoc.army2forum.repository.PlayerRepository;
 import com.tuyenngoc.army2forum.repository.PostRepository;
 import com.tuyenngoc.army2forum.service.LikeService;
+import lombok.AccessLevel;
 import lombok.RequiredArgsConstructor;
+import lombok.experimental.FieldDefaults;
 import org.springframework.stereotype.Service;
 
 import java.util.Optional;
 
 @Service
 @RequiredArgsConstructor
+@FieldDefaults(level = AccessLevel.PRIVATE, makeFinal = true)
 public class LikeServiceImpl implements LikeService {
 
-    private final LikeRepository likeRepository;
+    LikeRepository likeRepository;
 
-    private final PostRepository postRepository;
+    PostRepository postRepository;
 
-    private final PlayerRepository playerRepository;
+    PlayerRepository playerRepository;
 
     @Override
     public Like toggleLike(Long postId, Long playerId) {

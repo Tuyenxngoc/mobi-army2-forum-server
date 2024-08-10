@@ -6,16 +6,19 @@ import com.tuyenngoc.army2forum.domain.entity.Role;
 import com.tuyenngoc.army2forum.exception.NotFoundException;
 import com.tuyenngoc.army2forum.repository.RoleRepository;
 import com.tuyenngoc.army2forum.service.RoleService;
+import lombok.AccessLevel;
 import lombok.RequiredArgsConstructor;
+import lombok.experimental.FieldDefaults;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 
 @Slf4j
 @Service
 @RequiredArgsConstructor
+@FieldDefaults(level = AccessLevel.PRIVATE, makeFinal = true)
 public class RoleServiceImpl implements RoleService {
 
-    private final RoleRepository roleRepository;
+    RoleRepository roleRepository;
 
     @Override
     public Role getRole(byte roleId) {

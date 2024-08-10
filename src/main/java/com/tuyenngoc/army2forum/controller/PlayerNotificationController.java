@@ -11,17 +11,20 @@ import com.tuyenngoc.army2forum.service.PlayerNotificationService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.Valid;
+import lombok.AccessLevel;
 import lombok.RequiredArgsConstructor;
+import lombok.experimental.FieldDefaults;
 import org.springdoc.core.annotations.ParameterObject;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 @RestApiV1
 @RequiredArgsConstructor
+@FieldDefaults(level = AccessLevel.PRIVATE, makeFinal = true)
 @Tag(name = "Player Notification")
 public class PlayerNotificationController {
 
-    private final PlayerNotificationService playerNotificationService;
+    PlayerNotificationService playerNotificationService;
 
     @Operation(summary = "API get player notifications")
     @GetMapping(UrlConstant.PlayerNotification.GET_ALL)

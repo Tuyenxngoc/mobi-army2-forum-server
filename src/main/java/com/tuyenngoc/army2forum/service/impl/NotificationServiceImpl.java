@@ -9,7 +9,9 @@ import com.tuyenngoc.army2forum.domain.mapper.NotificationMapper;
 import com.tuyenngoc.army2forum.exception.NotFoundException;
 import com.tuyenngoc.army2forum.repository.NotificationRepository;
 import com.tuyenngoc.army2forum.service.NotificationService;
+import lombok.AccessLevel;
 import lombok.RequiredArgsConstructor;
+import lombok.experimental.FieldDefaults;
 import org.springframework.context.MessageSource;
 import org.springframework.context.i18n.LocaleContextHolder;
 import org.springframework.stereotype.Service;
@@ -18,13 +20,14 @@ import java.util.List;
 
 @Service
 @RequiredArgsConstructor
+@FieldDefaults(level = AccessLevel.PRIVATE, makeFinal = true)
 public class NotificationServiceImpl implements NotificationService {
 
-    private final NotificationRepository notificationRepository;
+    NotificationRepository notificationRepository;
 
-    private final MessageSource messageSource;
+    MessageSource messageSource;
 
-    private final NotificationMapper notificationMapper;
+    NotificationMapper notificationMapper;
 
     @Override
     public Notification createNotification(NotificationRequestDto requestDto) {

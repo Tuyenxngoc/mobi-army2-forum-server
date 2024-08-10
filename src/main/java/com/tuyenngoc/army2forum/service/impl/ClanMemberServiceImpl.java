@@ -26,7 +26,9 @@ import com.tuyenngoc.army2forum.repository.PlayerRepository;
 import com.tuyenngoc.army2forum.security.CustomUserDetails;
 import com.tuyenngoc.army2forum.service.ClanMemberService;
 import com.tuyenngoc.army2forum.util.PaginationUtil;
+import lombok.AccessLevel;
 import lombok.RequiredArgsConstructor;
+import lombok.experimental.FieldDefaults;
 import org.springframework.context.MessageSource;
 import org.springframework.context.i18n.LocaleContextHolder;
 import org.springframework.data.domain.Page;
@@ -40,17 +42,18 @@ import java.util.stream.Collectors;
 
 @Service
 @RequiredArgsConstructor
+@FieldDefaults(level = AccessLevel.PRIVATE, makeFinal = true)
 public class ClanMemberServiceImpl implements ClanMemberService {
 
-    private final PlayerRepository playerRepository;
+    PlayerRepository playerRepository;
 
-    private final ClanRepository clanRepository;
+    ClanRepository clanRepository;
 
-    private final MessageSource messageSource;
+    MessageSource messageSource;
 
-    private final ClanMemberRepository clanMemberRepository;
+    ClanMemberRepository clanMemberRepository;
 
-    private final ClanApprovalRepository clanApprovalRepository;
+    ClanApprovalRepository clanApprovalRepository;
 
     @Override
     public CommonResponseDto joinClan(Long clanId, CustomUserDetails userDetails) {

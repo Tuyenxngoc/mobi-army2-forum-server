@@ -2,7 +2,9 @@ package com.tuyenngoc.army2forum.security;
 
 import com.tuyenngoc.army2forum.security.jwt.JwtAuthenticationEntryPoint;
 import com.tuyenngoc.army2forum.security.jwt.JwtAuthenticationFilter;
+import lombok.AccessLevel;
 import lombok.RequiredArgsConstructor;
+import lombok.experimental.FieldDefaults;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.http.HttpMethod;
@@ -31,6 +33,7 @@ import java.util.List;
 @Configuration
 @EnableWebSecurity
 @RequiredArgsConstructor
+@FieldDefaults(level = AccessLevel.PRIVATE, makeFinal = true)
 @EnableMethodSecurity
 public class SecurityConfig {
 
@@ -54,9 +57,9 @@ public class SecurityConfig {
             "/tmp/**",
     };
 
-    private final UserDetailsService userDetailsService;
+    UserDetailsService userDetailsService;
 
-    private final JwtAuthenticationFilter jwtAuthenticationFilter;
+    JwtAuthenticationFilter jwtAuthenticationFilter;
 
     @Bean
     public PasswordEncoder passwordEncoder() {

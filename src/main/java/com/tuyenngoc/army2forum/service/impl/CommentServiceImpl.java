@@ -18,7 +18,9 @@ import com.tuyenngoc.army2forum.repository.PlayerRepository;
 import com.tuyenngoc.army2forum.repository.PostRepository;
 import com.tuyenngoc.army2forum.service.CommentService;
 import com.tuyenngoc.army2forum.util.PaginationUtil;
+import lombok.AccessLevel;
 import lombok.RequiredArgsConstructor;
+import lombok.experimental.FieldDefaults;
 import org.springframework.context.MessageSource;
 import org.springframework.context.i18n.LocaleContextHolder;
 import org.springframework.data.domain.Page;
@@ -27,17 +29,18 @@ import org.springframework.stereotype.Service;
 
 @Service
 @RequiredArgsConstructor
+@FieldDefaults(level = AccessLevel.PRIVATE, makeFinal = true)
 public class CommentServiceImpl implements CommentService {
 
-    private final PlayerRepository playerRepository;
+    PlayerRepository playerRepository;
 
-    private final PostRepository postRepository;
+    PostRepository postRepository;
 
-    private final CommentRepository commentRepository;
+    CommentRepository commentRepository;
 
-    private final CommentMapper commentMapper;
+    CommentMapper commentMapper;
 
-    private final MessageSource messageSource;
+    MessageSource messageSource;
 
     @Override
     public Comment getCommentById(Long commentId) {

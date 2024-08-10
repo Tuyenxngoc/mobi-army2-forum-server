@@ -25,7 +25,9 @@ import com.tuyenngoc.army2forum.service.PlayerNotificationService;
 import com.tuyenngoc.army2forum.service.PostService;
 import com.tuyenngoc.army2forum.util.PaginationUtil;
 import com.tuyenngoc.army2forum.util.SecurityUtils;
+import lombok.AccessLevel;
 import lombok.RequiredArgsConstructor;
+import lombok.experimental.FieldDefaults;
 import org.springframework.context.MessageSource;
 import org.springframework.context.i18n.LocaleContextHolder;
 import org.springframework.data.domain.Page;
@@ -40,25 +42,26 @@ import java.util.stream.Collectors;
 
 @Service
 @RequiredArgsConstructor
+@FieldDefaults(level = AccessLevel.PRIVATE, makeFinal = true)
 public class PostServiceImpl implements PostService {
 
     private static final byte MAX_PENDING_POSTS = 10;
 
-    private final PostRepository postRepository;
+    PostRepository postRepository;
 
-    private final PlayerRepository playerRepository;
+    PlayerRepository playerRepository;
 
-    private final CategoryRepository categoryRepository;
+    CategoryRepository categoryRepository;
 
-    private final PostMapper postMapper;
+    PostMapper postMapper;
 
-    private final MessageSource messageSource;
+    MessageSource messageSource;
 
-    private final PostFollowRepository postFollowRepository;
+    PostFollowRepository postFollowRepository;
 
-    private final LikeRepository likeRepository;
+    LikeRepository likeRepository;
 
-    private final PlayerNotificationService playerNotificationService;
+    PlayerNotificationService playerNotificationService;
 
     @Override
     public Post getPostById(Long postId) {

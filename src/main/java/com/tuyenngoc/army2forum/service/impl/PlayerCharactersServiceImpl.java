@@ -6,18 +6,21 @@ import com.tuyenngoc.army2forum.repository.CharacterRepository;
 import com.tuyenngoc.army2forum.repository.PlayerCharacterRepository;
 import com.tuyenngoc.army2forum.repository.PlayerRepository;
 import com.tuyenngoc.army2forum.service.PlayerCharactersService;
+import lombok.AccessLevel;
 import lombok.RequiredArgsConstructor;
+import lombok.experimental.FieldDefaults;
 import org.springframework.stereotype.Service;
 
 @Service
 @RequiredArgsConstructor
+@FieldDefaults(level = AccessLevel.PRIVATE, makeFinal = true)
 public class PlayerCharactersServiceImpl implements PlayerCharactersService {
 
-    private final CharacterRepository characterRepository;
+    CharacterRepository characterRepository;
 
-    private final PlayerRepository playerRepository;
+    PlayerRepository playerRepository;
 
-    private final PlayerCharacterRepository playerCharacterRepository;
+    PlayerCharacterRepository playerCharacterRepository;
 
     @Override
     public void initiatePlayerCharacterDefaults(Player player) {

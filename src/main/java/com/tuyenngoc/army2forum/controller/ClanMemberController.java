@@ -9,7 +9,9 @@ import com.tuyenngoc.army2forum.security.CustomUserDetails;
 import com.tuyenngoc.army2forum.service.ClanMemberService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
+import lombok.AccessLevel;
 import lombok.RequiredArgsConstructor;
+import lombok.experimental.FieldDefaults;
 import org.springdoc.core.annotations.ParameterObject;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.DeleteMapping;
@@ -19,10 +21,11 @@ import org.springframework.web.bind.annotation.PostMapping;
 
 @RestApiV1
 @RequiredArgsConstructor
+@FieldDefaults(level = AccessLevel.PRIVATE, makeFinal = true)
 @Tag(name = "Clan Member")
 public class ClanMemberController {
 
-    private final ClanMemberService clanMemberService;
+    ClanMemberService clanMemberService;
 
     @Operation(summary = "API Join Clan")
     @PostMapping(UrlConstant.ClanMember.JOIN)

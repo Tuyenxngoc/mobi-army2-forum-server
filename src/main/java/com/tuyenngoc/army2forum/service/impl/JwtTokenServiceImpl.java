@@ -1,7 +1,9 @@
 package com.tuyenngoc.army2forum.service.impl;
 
 import com.tuyenngoc.army2forum.service.JwtTokenService;
+import lombok.AccessLevel;
 import lombok.RequiredArgsConstructor;
+import lombok.experimental.FieldDefaults;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.stereotype.Service;
@@ -10,6 +12,7 @@ import java.util.concurrent.TimeUnit;
 
 @Service
 @RequiredArgsConstructor
+@FieldDefaults(level = AccessLevel.PRIVATE, makeFinal = true)
 public class JwtTokenServiceImpl implements JwtTokenService {
 
     private static final String ACCESS_TOKEN_KEY = "ACCESS_TOKEN_";
@@ -21,7 +24,7 @@ public class JwtTokenServiceImpl implements JwtTokenService {
     @Value("${jwt.refresh.expiration_time}")
     private Integer EXPIRATION_TIME_REFRESH_TOKEN;
 
-    private final RedisTemplate<String, Object> redisTemplate;
+    RedisTemplate<String, Object> redisTemplate;
 
     private String getAccessTokenKey(String userId) {
         return ACCESS_TOKEN_KEY + userId.toUpperCase();

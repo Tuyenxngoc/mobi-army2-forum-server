@@ -7,7 +7,9 @@ import com.tuyenngoc.army2forum.service.CategoryService;
 import com.tuyenngoc.army2forum.service.CharacterService;
 import com.tuyenngoc.army2forum.service.RoleService;
 import com.tuyenngoc.army2forum.service.UserService;
+import lombok.AccessLevel;
 import lombok.RequiredArgsConstructor;
+import lombok.experimental.FieldDefaults;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.boot.CommandLineRunner;
 import org.springframework.boot.SpringApplication;
@@ -19,6 +21,7 @@ import org.springframework.scheduling.annotation.EnableScheduling;
 
 @Slf4j
 @RequiredArgsConstructor
+@FieldDefaults(level = AccessLevel.PRIVATE, makeFinal = true)
 @SpringBootApplication
 @EnableConfigurationProperties({
         AdminInfo.class,
@@ -28,13 +31,13 @@ import org.springframework.scheduling.annotation.EnableScheduling;
 @EnableScheduling
 public class MobiArmy2ForumApplication {
 
-    private final RoleService roleService;
+    RoleService roleService;
 
-    private final UserService userService;
+    UserService userService;
 
-    private final CategoryService categoryService;
+    CategoryService categoryService;
 
-    private final CharacterService characterService;
+    CharacterService characterService;
 
     public static void main(String[] args) {
         Environment env = SpringApplication.run(MobiArmy2ForumApplication.class, args).getEnvironment();

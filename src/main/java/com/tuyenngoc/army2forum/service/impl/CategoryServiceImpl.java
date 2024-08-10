@@ -20,7 +20,9 @@ import com.tuyenngoc.army2forum.exception.NotFoundException;
 import com.tuyenngoc.army2forum.repository.CategoryRepository;
 import com.tuyenngoc.army2forum.service.CategoryService;
 import com.tuyenngoc.army2forum.util.PaginationUtil;
+import lombok.AccessLevel;
 import lombok.RequiredArgsConstructor;
+import lombok.experimental.FieldDefaults;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.context.MessageSource;
 import org.springframework.context.i18n.LocaleContextHolder;
@@ -34,13 +36,14 @@ import java.util.stream.Collectors;
 @Slf4j
 @Service
 @RequiredArgsConstructor
+@FieldDefaults(level = AccessLevel.PRIVATE, makeFinal = true)
 public class CategoryServiceImpl implements CategoryService {
 
-    private final MessageSource messageSource;
+    MessageSource messageSource;
 
-    private final CategoryMapper categoryMapper;
+    CategoryMapper categoryMapper;
 
-    private final CategoryRepository categoryRepository;
+    CategoryRepository categoryRepository;
 
     @Override
     public void initCategories(AdminInfo adminInfo) {

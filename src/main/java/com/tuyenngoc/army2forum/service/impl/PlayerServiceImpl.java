@@ -22,7 +22,9 @@ import com.tuyenngoc.army2forum.service.PlayerService;
 import com.tuyenngoc.army2forum.service.RoleService;
 import com.tuyenngoc.army2forum.util.PaginationUtil;
 import com.tuyenngoc.army2forum.util.SecurityUtils;
+import lombok.AccessLevel;
 import lombok.RequiredArgsConstructor;
+import lombok.experimental.FieldDefaults;
 import org.springframework.context.MessageSource;
 import org.springframework.context.i18n.LocaleContextHolder;
 import org.springframework.data.domain.Page;
@@ -39,21 +41,22 @@ import java.util.stream.Collectors;
 
 @Service
 @RequiredArgsConstructor
+@FieldDefaults(level = AccessLevel.PRIVATE, makeFinal = true)
 public class PlayerServiceImpl implements PlayerService {
 
-    private final PlayerRepository playerRepository;
+    PlayerRepository playerRepository;
 
-    private final PostRepository postRepository;
+    PostRepository postRepository;
 
-    private final RoleService roleService;
+    RoleService roleService;
 
-    private final MessageSource messageSource;
+    MessageSource messageSource;
 
-    private final SpecialItemRepository specialItemRepository;
+    SpecialItemRepository specialItemRepository;
 
-    private final EquipRepository equipRepository;
+    EquipRepository equipRepository;
 
-    private final PlayerCharacterRepository playerCharacterRepository;
+    PlayerCharacterRepository playerCharacterRepository;
 
     @Override
     public Player getPlayerById(Long playerId) {

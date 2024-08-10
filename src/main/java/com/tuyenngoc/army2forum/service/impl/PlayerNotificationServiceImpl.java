@@ -17,7 +17,9 @@ import com.tuyenngoc.army2forum.repository.PlayerNotificationRepository;
 import com.tuyenngoc.army2forum.repository.PlayerRepository;
 import com.tuyenngoc.army2forum.service.PlayerNotificationService;
 import com.tuyenngoc.army2forum.util.PaginationUtil;
+import lombok.AccessLevel;
 import lombok.RequiredArgsConstructor;
+import lombok.experimental.FieldDefaults;
 import org.springframework.context.MessageSource;
 import org.springframework.context.i18n.LocaleContextHolder;
 import org.springframework.data.domain.Page;
@@ -29,15 +31,16 @@ import java.util.List;
 
 @Service
 @RequiredArgsConstructor
+@FieldDefaults(level = AccessLevel.PRIVATE, makeFinal = true)
 public class PlayerNotificationServiceImpl implements PlayerNotificationService {
 
-    private final PlayerNotificationRepository playerNotificationRepository;
+    PlayerNotificationRepository playerNotificationRepository;
 
-    private final PlayerRepository playerRepository;
+    PlayerRepository playerRepository;
 
-    private final MessageSource messageSource;
+    MessageSource messageSource;
 
-    private final PlayerNotificationMapper playerNotificationMapper;
+    PlayerNotificationMapper playerNotificationMapper;
 
     @Override
     public void createNotification(Long playerId, String title, String message) {

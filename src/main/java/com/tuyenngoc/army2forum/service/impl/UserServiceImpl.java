@@ -27,7 +27,9 @@ import com.tuyenngoc.army2forum.service.PlayerCharactersService;
 import com.tuyenngoc.army2forum.service.RoleService;
 import com.tuyenngoc.army2forum.service.UserService;
 import com.tuyenngoc.army2forum.util.PaginationUtil;
+import lombok.AccessLevel;
 import lombok.RequiredArgsConstructor;
+import lombok.experimental.FieldDefaults;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.MessageSource;
@@ -40,22 +42,23 @@ import org.springframework.stereotype.Service;
 @Slf4j
 @Service
 @RequiredArgsConstructor
+@FieldDefaults(level = AccessLevel.PRIVATE, makeFinal = true)
 public class UserServiceImpl implements UserService {
 
     @Value("${user.change-username.price}")
     private int changeUsernamePrice;
 
-    private final MessageSource messageSource;
+    MessageSource messageSource;
 
-    private final UserRepository userRepository;
+    UserRepository userRepository;
 
-    private final PlayerRepository playerRepository;
+    PlayerRepository playerRepository;
 
-    private final RoleService roleService;
+    RoleService roleService;
 
-    private final PasswordEncoder passwordEncoder;
+    PasswordEncoder passwordEncoder;
 
-    private final PlayerCharactersService playerCharactersService;
+    PlayerCharactersService playerCharactersService;
 
     @Override
     public void initAdmin(AdminInfo adminInfo) {

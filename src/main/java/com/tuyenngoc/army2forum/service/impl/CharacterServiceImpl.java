@@ -3,7 +3,9 @@ package com.tuyenngoc.army2forum.service.impl;
 import com.tuyenngoc.army2forum.domain.entity.Character;
 import com.tuyenngoc.army2forum.repository.CharacterRepository;
 import com.tuyenngoc.army2forum.service.CharacterService;
+import lombok.AccessLevel;
 import lombok.RequiredArgsConstructor;
+import lombok.experimental.FieldDefaults;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 
@@ -12,9 +14,10 @@ import java.util.List;
 @Slf4j
 @Service
 @RequiredArgsConstructor
+@FieldDefaults(level = AccessLevel.PRIVATE, makeFinal = true)
 public class CharacterServiceImpl implements CharacterService {
 
-    private final CharacterRepository characterRepository;
+    CharacterRepository characterRepository;
 
     @Override
     public void initCharacters() {

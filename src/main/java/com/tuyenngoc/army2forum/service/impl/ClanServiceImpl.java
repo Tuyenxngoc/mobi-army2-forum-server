@@ -23,11 +23,16 @@ import com.tuyenngoc.army2forum.exception.BadRequestException;
 import com.tuyenngoc.army2forum.exception.ConflictException;
 import com.tuyenngoc.army2forum.exception.ForbiddenException;
 import com.tuyenngoc.army2forum.exception.NotFoundException;
-import com.tuyenngoc.army2forum.repository.*;
+import com.tuyenngoc.army2forum.repository.ClanMemberRepository;
+import com.tuyenngoc.army2forum.repository.ClanRepository;
+import com.tuyenngoc.army2forum.repository.ClanShopRepository;
+import com.tuyenngoc.army2forum.repository.PlayerRepository;
 import com.tuyenngoc.army2forum.security.CustomUserDetails;
 import com.tuyenngoc.army2forum.service.ClanService;
 import com.tuyenngoc.army2forum.util.PaginationUtil;
+import lombok.AccessLevel;
 import lombok.RequiredArgsConstructor;
+import lombok.experimental.FieldDefaults;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.MessageSource;
 import org.springframework.context.i18n.LocaleContextHolder;
@@ -50,6 +55,7 @@ import java.util.stream.Collectors;
 
 @Service
 @RequiredArgsConstructor
+@FieldDefaults(level = AccessLevel.PRIVATE, makeFinal = true)
 public class ClanServiceImpl implements ClanService {
 
     @Value("${app.icons-directory}")
@@ -58,19 +64,17 @@ public class ClanServiceImpl implements ClanService {
     @Value("${clan.creation.price}")
     private int clanCreationPrice;
 
-    private final PlayerRepository playerRepository;
+    PlayerRepository playerRepository;
 
-    private final ClanRepository clanRepository;
+    ClanRepository clanRepository;
 
-    private final ClanMapper clanMapper;
+    ClanMapper clanMapper;
 
-    private final MessageSource messageSource;
+    MessageSource messageSource;
 
-    private final ClanMemberRepository clanMemberRepository;
+    ClanMemberRepository clanMemberRepository;
 
-    private final ClanApprovalRepository clanApprovalRepository;
-
-    private final ClanShopRepository clanShopRepository;
+    ClanShopRepository clanShopRepository;
 
     private Clan getClanById(Long clanId) {
         return clanRepository.findById(clanId).

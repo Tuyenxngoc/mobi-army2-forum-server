@@ -12,17 +12,20 @@ import com.tuyenngoc.army2forum.service.ClanService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.Valid;
+import lombok.AccessLevel;
 import lombok.RequiredArgsConstructor;
+import lombok.experimental.FieldDefaults;
 import org.springdoc.core.annotations.ParameterObject;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 @RestApiV1
 @RequiredArgsConstructor
+@FieldDefaults(level = AccessLevel.PRIVATE, makeFinal = true)
 @Tag(name = "Clan")
 public class ClanController {
 
-    private final ClanService clanService;
+    ClanService clanService;
 
     @Operation(summary = "API Create Clan")
     @PostMapping(UrlConstant.Clan.CREATE)

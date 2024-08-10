@@ -19,7 +19,9 @@ import com.tuyenngoc.army2forum.repository.ClanMemberRepository;
 import com.tuyenngoc.army2forum.repository.ClanRepository;
 import com.tuyenngoc.army2forum.service.ClanApprovalService;
 import com.tuyenngoc.army2forum.util.PaginationUtil;
+import lombok.AccessLevel;
 import lombok.RequiredArgsConstructor;
+import lombok.experimental.FieldDefaults;
 import org.springframework.context.MessageSource;
 import org.springframework.context.i18n.LocaleContextHolder;
 import org.springframework.data.domain.Page;
@@ -34,15 +36,16 @@ import java.util.stream.Collectors;
 
 @Service
 @RequiredArgsConstructor
+@FieldDefaults(level = AccessLevel.PRIVATE, makeFinal = true)
 public class ClanApprovalServiceImpl implements ClanApprovalService {
 
-    private final ClanMemberRepository clanMemberRepository;
+    ClanMemberRepository clanMemberRepository;
 
-    private final ClanRepository clanRepository;
+    ClanRepository clanRepository;
 
-    private final ClanApprovalRepository clanApprovalRepository;
+    ClanApprovalRepository clanApprovalRepository;
 
-    private final MessageSource messageSource;
+    MessageSource messageSource;
 
     @Override
     public PaginationResponseDto<GetPendingApprovalsResponseDto> getPendingApprovals(Long clanId, Long playerId, PaginationRequestDto requestDto) {

@@ -1,9 +1,10 @@
 package com.tuyenngoc.army2forum.domain.dto.response.player;
 
 import com.fasterxml.jackson.annotation.JsonFormat;
+import com.fasterxml.jackson.annotation.JsonInclude;
 import com.tuyenngoc.army2forum.constant.CommonConstant;
+import com.tuyenngoc.army2forum.domain.dto.ClanDto;
 import com.tuyenngoc.army2forum.domain.entity.Player;
-import com.tuyenngoc.army2forum.util.MaskingUtils;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -23,36 +24,51 @@ public class GetPlayerInfoResponseDto {
 
     private boolean online;
 
+    private String avatar;
+
+    private String username;
+
     private int xu;
 
     private int luong;
 
-    @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = CommonConstant.PATTERN_DATE_TIME)
-    private LocalDateTime x2XpTime;
-
-    private String email;
-
-    private String phoneNumber;
-
-    private boolean isChestLocked;
-
-    private boolean isInvitationLocked;
+    private int cup;
 
     private List<GetPlayerCharacterResponseDto> characters;
+
+    @JsonInclude(JsonInclude.Include.NON_NULL)
+    private ClanDto clan;
+
+    @JsonInclude(JsonInclude.Include.NON_NULL)
+    private Boolean isChestLocked;
+
+    @JsonInclude(JsonInclude.Include.NON_NULL)
+    private Boolean isInvitationLocked;
+
+    @JsonInclude(JsonInclude.Include.NON_NULL)
+    private String email;
+
+    @JsonInclude(JsonInclude.Include.NON_NULL)
+    private String phoneNumber;
+
+    @JsonInclude(JsonInclude.Include.NON_NULL)
+    @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = CommonConstant.PATTERN_DATE_TIME)
+    private LocalDateTime x2XpTime;
 
     public GetPlayerInfoResponseDto(Player player) {
         this.id = player.getId();
         this.online = player.getIsOnline();
+        this.avatar = String.format("/avatar/%d.gif", player.getActiveCharacter().getCharacter().getId());
+        this.username = player.getUser().getUsername();
         this.xu = player.getXu();
         this.luong = player.getLuong();
-        this.x2XpTime = player.getX2XpTime();
-        this.email = MaskingUtils.maskEmail(player.getUser().getEmail());
-        this.phoneNumber = MaskingUtils.maskPhoneNumber(player.getUser().getPhoneNumber());
-        this.isChestLocked = player.getIsChestLocked();
-        this.isInvitationLocked = player.getIsInvitationLocked();
+        this.cup = player.getCup();
         this.characters = player.getPlayerCharacters().stream()
                 .map(GetPlayerCharacterResponseDto::new)
                 .collect(Collectors.toList());
+        if (player.getClanMember() != null) {
+            this.clan = new ClanDto(player.getClanMember().getClan());
+        }
     }
 
 }

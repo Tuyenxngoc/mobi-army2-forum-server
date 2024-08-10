@@ -47,12 +47,13 @@ public class PlayerController {
         return VsResponseUtil.success(playerService.getFollowingPosts(userDetails.getPlayerId(), requestDto));
     }
 
-    @Operation(summary = "Get player information by ID")
-    @GetMapping(UrlConstant.Player.GET_PLAYER_INFO)
-    public ResponseEntity<?> getPlayerInfo(
+    @Operation(summary = "Get player by ID")
+    @GetMapping(UrlConstant.Player.GET_BY_ID)
+    public ResponseEntity<?> getPlayerInfoById(
+            @PathVariable Long id,
             @CurrentUser CustomUserDetails userDetails
     ) {
-        return VsResponseUtil.success(playerService.getPlayerInfo(userDetails.getPlayerId()));
+        return VsResponseUtil.success(playerService.getPlayerInfoById(id, userDetails.getPlayerId()));
     }
 
     @Operation(summary = "Toggle Equipment Chest Lock")

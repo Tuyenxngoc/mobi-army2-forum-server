@@ -20,6 +20,7 @@ import com.tuyenngoc.army2forum.repository.*;
 import com.tuyenngoc.army2forum.security.CustomUserDetails;
 import com.tuyenngoc.army2forum.service.PlayerService;
 import com.tuyenngoc.army2forum.service.RoleService;
+import com.tuyenngoc.army2forum.util.MaskingUtils;
 import com.tuyenngoc.army2forum.util.PaginationUtil;
 import com.tuyenngoc.army2forum.util.SecurityUtils;
 import lombok.AccessLevel;
@@ -58,8 +59,7 @@ public class PlayerServiceImpl implements PlayerService {
 
     PlayerCharacterRepository playerCharacterRepository;
 
-    @Override
-    public Player getPlayerById(Long playerId) {
+    private Player getPlayerById(Long playerId) {
         return playerRepository.findById(playerId)
                 .orElseThrow(() -> new NotFoundException(ErrorMessage.Player.ERR_NOT_FOUND_ID, playerId));
     }
@@ -90,13 +90,6 @@ public class PlayerServiceImpl implements PlayerService {
         responseDto.setMeta(pagingMeta);
 
         return responseDto;
-    }
-
-    @Override
-    public GetPlayerInfoResponseDto getPlayerInfo(Long playerId) {
-        Player player = getPlayerById(playerId);
-
-        return new GetPlayerInfoResponseDto(player);
     }
 
     @Override
@@ -247,4 +240,21 @@ public class PlayerServiceImpl implements PlayerService {
         return new GetPointsResponseDto(playerCharacters.getAdditionalPoints(), playerCharacters.getPoints());
     }
 
+    @Override
+    public GetPlayerInfoResponseDto getPlayerInfoById(Long playerId, Long playerIdRequest) {
+        Player player = getPlayerById(playerId);
+
+        GetPlayerInfoResponseDto responseDto = new GetPlayerInfoResponseDto(player);
+        if (playerId.equals(playerIdRequest)) {
+            responseDto.setX2XpTime(player.getX2XpTime());
+            responseDto.setEmail(MaskingUtils.maskEmail(player.getUser().getEmail()));
+            responseDto.setPhoneNumber(MaskingUtils.maskPhoneNumber(player.getUser().getPhoneNumber()));
+            responseDto.setIsChestLocked(player.getIsChestLocked());
+            responseDto.setIsInvitationLocked(player.getIsInvitationLocked());
+
+
+        }
+
+        return responseDto;
+    }
 }

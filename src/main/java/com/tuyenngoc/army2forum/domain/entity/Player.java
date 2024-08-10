@@ -43,6 +43,9 @@ public class Player extends DateAuditing {
     @Column(name = "luong", nullable = false, columnDefinition = "int default 0")
     private Integer luong = 0;
 
+    @Column(name = "cup", nullable = false, columnDefinition = "int default 0")
+    private Integer cup = 0;
+
     @Column(name = "x2_xp_time")
     private LocalDateTime x2XpTime;
 

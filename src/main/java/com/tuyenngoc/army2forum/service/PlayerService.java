@@ -16,13 +16,9 @@ import java.util.List;
 
 public interface PlayerService {
 
-    Player getPlayerById(Long playerId);
-
     Player updatePlayerRoles(Long playerId, Byte roleId, CustomUserDetails userDetails);
 
     PaginationResponseDto<GetPostResponseDto> getFollowingPosts(Long playerId, PaginationSortRequestDto requestDto);
-
-    GetPlayerInfoResponseDto getPlayerInfo(Long playerId);
 
     CommonResponseDto toggleEquipmentChestLock(Long playerId);
 
@@ -35,5 +31,7 @@ public interface PlayerService {
     List<GetCharacterResponseDto> getPlayerCharacter(Long playerId);
 
     GetPointsResponseDto getPlayerPoints(Long playerId, Long id);
+
+    GetPlayerInfoResponseDto getPlayerInfoById(Long playerId, Long playerIdRequest);
 
 }

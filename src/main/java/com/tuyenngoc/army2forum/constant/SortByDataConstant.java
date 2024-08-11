@@ -9,6 +9,20 @@ public enum SortByDataConstant implements SortByInterface {
         }
     },
 
+    PLAYER {
+        @Override
+        public String getSortBy(String sortBy) {
+            return switch (sortBy) {
+                case "id" -> "id";
+                case "xu" -> "xu";
+                case "luong" -> "luong";
+                case "cup" -> "cup";
+                case "lastModifiedDate" -> "lastModifiedDate";
+                default -> "createdDate";
+            };
+        }
+    },
+
     POST {
         @Override
         public String getSortBy(String sortBy) {

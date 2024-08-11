@@ -3,6 +3,7 @@ package com.tuyenngoc.army2forum.service.impl;
 import com.tuyenngoc.army2forum.constant.ErrorMessage;
 import com.tuyenngoc.army2forum.constant.SortByDataConstant;
 import com.tuyenngoc.army2forum.constant.SuccessMessage;
+import com.tuyenngoc.army2forum.domain.dto.pagination.PaginationFullRequestDto;
 import com.tuyenngoc.army2forum.domain.dto.pagination.PaginationResponseDto;
 import com.tuyenngoc.army2forum.domain.dto.pagination.PaginationSortRequestDto;
 import com.tuyenngoc.army2forum.domain.dto.pagination.PagingMeta;
@@ -13,6 +14,7 @@ import com.tuyenngoc.army2forum.domain.dto.response.post.GetPostResponseDto;
 import com.tuyenngoc.army2forum.domain.entity.Player;
 import com.tuyenngoc.army2forum.domain.entity.PlayerCharacters;
 import com.tuyenngoc.army2forum.domain.entity.Role;
+import com.tuyenngoc.army2forum.domain.specification.PlayerSpecification;
 import com.tuyenngoc.army2forum.exception.BadRequestException;
 import com.tuyenngoc.army2forum.exception.ForbiddenException;
 import com.tuyenngoc.army2forum.exception.NotFoundException;
@@ -252,9 +254,31 @@ public class PlayerServiceImpl implements PlayerService {
             responseDto.setIsChestLocked(player.getIsChestLocked());
             responseDto.setIsInvitationLocked(player.getIsInvitationLocked());
 
-
         }
 
         return responseDto;
     }
+
+    @Override
+    public PaginationResponseDto<GetPlayerResponseDto> getPlayers(PaginationFullRequestDto requestDto) {
+        Pageable pageable = PaginationUtil.buildPageable(requestDto, SortByDataConstant.PLAYER);
+
+        Page<Player> page = playerRepository.findAll(
+                PlayerSpecification.filterPlayers(requestDto.getKeyword(), requestDto.getSearchBy()),
+                pageable
+        );
+
+        List<GetPlayerResponseDto> items = page.getContent().stream()
+                .map(GetPlayerResponseDto::new)
+                .collect(Collectors.toList());
+
+        PagingMeta pagingMeta = PaginationUtil.buildPagingMeta(requestDto, SortByDataConstant.PLAYER, page);
+
+        PaginationResponseDto<GetPlayerResponseDto> responseDto = new PaginationResponseDto<>();
+        responseDto.setItems(items);
+        responseDto.setMeta(pagingMeta);
+
+        return responseDto;
+    }
+
 }

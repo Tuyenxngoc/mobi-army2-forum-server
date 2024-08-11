@@ -1,13 +1,11 @@
 package com.tuyenngoc.army2forum.service;
 
+import com.tuyenngoc.army2forum.domain.dto.pagination.PaginationFullRequestDto;
 import com.tuyenngoc.army2forum.domain.dto.pagination.PaginationResponseDto;
 import com.tuyenngoc.army2forum.domain.dto.pagination.PaginationSortRequestDto;
 import com.tuyenngoc.army2forum.domain.dto.request.UpdatePointsRequestDto;
 import com.tuyenngoc.army2forum.domain.dto.response.CommonResponseDto;
-import com.tuyenngoc.army2forum.domain.dto.response.player.GetCharacterResponseDto;
-import com.tuyenngoc.army2forum.domain.dto.response.player.GetInventoryResponseDto;
-import com.tuyenngoc.army2forum.domain.dto.response.player.GetPlayerInfoResponseDto;
-import com.tuyenngoc.army2forum.domain.dto.response.player.GetPointsResponseDto;
+import com.tuyenngoc.army2forum.domain.dto.response.player.*;
 import com.tuyenngoc.army2forum.domain.dto.response.post.GetPostResponseDto;
 import com.tuyenngoc.army2forum.domain.entity.Player;
 import com.tuyenngoc.army2forum.security.CustomUserDetails;
@@ -33,5 +31,7 @@ public interface PlayerService {
     GetPointsResponseDto getPlayerPoints(Long playerId, Long id);
 
     GetPlayerInfoResponseDto getPlayerInfoById(Long playerId, Long playerIdRequest);
+
+    PaginationResponseDto<GetPlayerResponseDto> getPlayers(PaginationFullRequestDto requestDto);
 
 }

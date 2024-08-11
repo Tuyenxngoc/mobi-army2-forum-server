@@ -4,6 +4,7 @@ import com.tuyenngoc.army2forum.annotation.CurrentUser;
 import com.tuyenngoc.army2forum.annotation.RestApiV1;
 import com.tuyenngoc.army2forum.base.VsResponseUtil;
 import com.tuyenngoc.army2forum.constant.UrlConstant;
+import com.tuyenngoc.army2forum.domain.dto.pagination.PaginationFullRequestDto;
 import com.tuyenngoc.army2forum.domain.dto.pagination.PaginationSortRequestDto;
 import com.tuyenngoc.army2forum.domain.dto.request.UpdatePointsRequestDto;
 import com.tuyenngoc.army2forum.security.CustomUserDetails;
@@ -54,6 +55,13 @@ public class PlayerController {
             @CurrentUser CustomUserDetails userDetails
     ) {
         return VsResponseUtil.success(playerService.getPlayerInfoById(id, userDetails.getPlayerId()));
+    }
+
+    @PreAuthorize("hasAnyRole('SUPER_ADMIN', 'ADMIN')")
+    @Operation(summary = "API get players")
+    @GetMapping(UrlConstant.Player.GET_ALL)
+    public ResponseEntity<?> getPlayers(@ParameterObject PaginationFullRequestDto requestDto) {
+        return VsResponseUtil.success(playerService.getPlayers(requestDto));
     }
 
     @Operation(summary = "Toggle Equipment Chest Lock")

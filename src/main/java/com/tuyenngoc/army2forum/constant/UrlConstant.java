@@ -28,8 +28,9 @@ public class UrlConstant {
         public static final String GET_BY_ID = PRE_FIX + "/{id}";
         public static final String UPDATE = PRE_FIX + "/{id}";
         public static final String DELETE = PRE_FIX + "/{id}";
-
+        public static final String UPDATE_ROLE = PRE_FIX + "/{playerId}/role/{roleId}";
         public static final String CHANGE_USERNAME = PRE_FIX + "/change-username";
+        public static final String LOCK = PRE_FIX + "/{playerId}/lock";
     }
 
     public static class Category {
@@ -92,7 +93,6 @@ public class UrlConstant {
         public static final String UPDATE = PRE_FIX + "/{id}";
         public static final String DELETE = PRE_FIX + "/{id}";
 
-        public static final String UPDATE_ROLE = PRE_FIX + "/{id}/role/{roleId}";
         public static final String GET_FOLLOWING = PRE_FIX + "/following-post";
         public static final String TOGGLE_CHEST_LOCK = PRE_FIX + "/toggle-chest-lock";
         public static final String TOGGLE_INVITATION_LOCK = PRE_FIX + "/toggle-invitation-lock";

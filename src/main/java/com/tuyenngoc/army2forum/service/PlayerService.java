@@ -14,8 +14,6 @@ import java.util.List;
 
 public interface PlayerService {
 
-    Player updatePlayerRoles(Long playerId, Byte roleId, CustomUserDetails userDetails);
-
     PaginationResponseDto<GetPostResponseDto> getFollowingPosts(Long playerId, PaginationSortRequestDto requestDto);
 
     CommonResponseDto toggleEquipmentChestLock(Long playerId);

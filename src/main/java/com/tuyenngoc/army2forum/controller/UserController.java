@@ -6,6 +6,7 @@ import com.tuyenngoc.army2forum.base.VsResponseUtil;
 import com.tuyenngoc.army2forum.constant.UrlConstant;
 import com.tuyenngoc.army2forum.domain.dto.pagination.PaginationFullRequestDto;
 import com.tuyenngoc.army2forum.domain.dto.request.ChangeUsernameRequestDto;
+import com.tuyenngoc.army2forum.domain.dto.request.LockUserRequestDto;
 import com.tuyenngoc.army2forum.domain.dto.request.UpdateUserRequestDto;
 import com.tuyenngoc.army2forum.security.CustomUserDetails;
 import com.tuyenngoc.army2forum.service.UserService;
@@ -36,6 +37,27 @@ public class UserController {
             @CurrentUser CustomUserDetails userDetails
     ) {
         return VsResponseUtil.success(userService.getCurrentUser(userDetails.getUserId()));
+    }
+
+    @PreAuthorize("hasAnyRole('SUPER_ADMIN', 'ADMIN')")
+    @Operation(summary = "Update user roles")
+    @PostMapping(UrlConstant.User.UPDATE_ROLE)
+    public ResponseEntity<?> updatePlayerRoles(
+            @PathVariable Long playerId,
+            @PathVariable Byte roleId,
+            @CurrentUser CustomUserDetails userDetails
+    ) {
+        return VsResponseUtil.success(userService.updateUserRoles(playerId, roleId, userDetails));
+    }
+
+    @PreAuthorize("hasAnyRole('SUPER_ADMIN', 'ADMIN')")
+    @Operation(summary = "API Lock User Account")
+    @PutMapping(UrlConstant.User.LOCK)
+    public ResponseEntity<?> lockUserAccount(
+            @PathVariable Long playerId,
+            @Valid @RequestBody LockUserRequestDto requestDto
+    ) {
+        return VsResponseUtil.success(userService.lockUserAccount(playerId, requestDto));
     }
 
     @PreAuthorize("hasAnyRole('SUPER_ADMIN', 'ADMIN')")

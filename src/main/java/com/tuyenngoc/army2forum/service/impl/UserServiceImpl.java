@@ -13,12 +13,15 @@ import com.tuyenngoc.army2forum.domain.dto.pagination.PaginationFullRequestDto;
 import com.tuyenngoc.army2forum.domain.dto.pagination.PaginationResponseDto;
 import com.tuyenngoc.army2forum.domain.dto.pagination.PagingMeta;
 import com.tuyenngoc.army2forum.domain.dto.request.ChangeUsernameRequestDto;
+import com.tuyenngoc.army2forum.domain.dto.request.LockUserRequestDto;
 import com.tuyenngoc.army2forum.domain.dto.request.UpdateUserRequestDto;
 import com.tuyenngoc.army2forum.domain.dto.response.CommonResponseDto;
 import com.tuyenngoc.army2forum.domain.entity.ClanMember;
 import com.tuyenngoc.army2forum.domain.entity.Player;
+import com.tuyenngoc.army2forum.domain.entity.Role;
 import com.tuyenngoc.army2forum.domain.entity.User;
 import com.tuyenngoc.army2forum.exception.BadRequestException;
+import com.tuyenngoc.army2forum.exception.ForbiddenException;
 import com.tuyenngoc.army2forum.exception.NotFoundException;
 import com.tuyenngoc.army2forum.repository.PlayerRepository;
 import com.tuyenngoc.army2forum.repository.UserRepository;
@@ -27,6 +30,7 @@ import com.tuyenngoc.army2forum.service.PlayerCharactersService;
 import com.tuyenngoc.army2forum.service.RoleService;
 import com.tuyenngoc.army2forum.service.UserService;
 import com.tuyenngoc.army2forum.util.PaginationUtil;
+import com.tuyenngoc.army2forum.util.SecurityUtils;
 import lombok.AccessLevel;
 import lombok.RequiredArgsConstructor;
 import lombok.experimental.FieldDefaults;
@@ -86,6 +90,39 @@ public class UserServiceImpl implements UserService {
                 e.printStackTrace();
             }
         }
+    }
+
+    @Override
+    public CommonResponseDto updateUserRoles(Long playerId, Byte roleId, CustomUserDetails userDetails) {
+        User user = userRepository.findByPlayerId(playerId)
+                .orElseThrow(() -> new NotFoundException(ErrorMessage.User.ERR_NOT_FOUND_ID, playerId));
+
+        Role newRole = roleService.getRole(roleId);
+
+        // Check if the current user's role is higher than the new role
+        if (!SecurityUtils.canAssignRole(userDetails.getAuthorities(), newRole)) {
+            throw new ForbiddenException(ErrorMessage.ERR_FORBIDDEN_UPDATE_DELETE);
+        }
+
+        user.setRole(newRole);
+        userRepository.save(user);
+
+        String message = messageSource.getMessage(SuccessMessage.UPDATE, null, LocaleContextHolder.getLocale());
+        return new CommonResponseDto(message);
+    }
+
+    @Override
+    public CommonResponseDto lockUserAccount(Long playerId, LockUserRequestDto requestDto) {
+        User user = userRepository.findByPlayerId(playerId)
+                .orElseThrow(() -> new NotFoundException(ErrorMessage.User.ERR_NOT_FOUND_ID, playerId));
+
+        user.setIsLocked(true);
+        user.setLockUntil(requestDto.getLockTime().atStartOfDay());
+
+        userRepository.save(user);
+
+        String message = messageSource.getMessage(SuccessMessage.UPDATE, null, LocaleContextHolder.getLocale());
+        return new CommonResponseDto(message);
     }
 
     @Override

@@ -28,17 +28,6 @@ public class PlayerController {
 
     PlayerService playerService;
 
-    @PreAuthorize("hasAnyRole('SUPER_ADMIN', 'ADMIN')")
-    @Operation(summary = "Update player roles")
-    @PostMapping(UrlConstant.Player.UPDATE_ROLE)
-    public ResponseEntity<?> updatePlayerRoles(
-            @PathVariable Long id,
-            @PathVariable Byte roleId,
-            @CurrentUser CustomUserDetails userDetails
-    ) {
-        return VsResponseUtil.success(playerService.updatePlayerRoles(id, roleId, userDetails));
-    }
-
     @Operation(summary = "API get following posts")
     @GetMapping(UrlConstant.Player.GET_FOLLOWING)
     public ResponseEntity<?> getFollowingPosts(

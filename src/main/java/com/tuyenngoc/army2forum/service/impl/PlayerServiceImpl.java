@@ -67,20 +67,6 @@ public class PlayerServiceImpl implements PlayerService {
     }
 
     @Override
-    public Player updatePlayerRoles(Long playerId, Byte roleId, CustomUserDetails userDetails) {
-        Player player = getPlayerById(playerId);
-        Role newRole = roleService.getRole(roleId);
-
-        // Check if the current user's role is higher than the new role
-        if (!SecurityUtils.canAssignRole(userDetails.getAuthorities(), newRole)) {
-            throw new ForbiddenException(ErrorMessage.ERR_FORBIDDEN_UPDATE_DELETE);
-        }
-
-        player.getUser().setRole(newRole);
-        return playerRepository.save(player);
-    }
-
-    @Override
     public PaginationResponseDto<GetPostResponseDto> getFollowingPosts(Long playerId, PaginationSortRequestDto requestDto) {
         Pageable pageable = PaginationUtil.buildPageable(requestDto, SortByDataConstant.POST);
 

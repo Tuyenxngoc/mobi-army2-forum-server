@@ -28,6 +28,8 @@ public interface UserRepository extends JpaRepository<User, String> {
 
     Optional<User> findByVerificationCode(String token);
 
+    Optional<User> findByPlayerId(Long playerId);
+
     @Modifying
     @Transactional
     void deleteAllByIsEnabledFalseAndCreatedDateBefore(LocalDateTime dateTime);

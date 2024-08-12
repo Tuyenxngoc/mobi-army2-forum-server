@@ -26,6 +26,7 @@ import com.tuyenngoc.army2forum.exception.NotFoundException;
 import com.tuyenngoc.army2forum.repository.PlayerRepository;
 import com.tuyenngoc.army2forum.repository.UserRepository;
 import com.tuyenngoc.army2forum.security.CustomUserDetails;
+import com.tuyenngoc.army2forum.service.JwtTokenService;
 import com.tuyenngoc.army2forum.service.PlayerCharactersService;
 import com.tuyenngoc.army2forum.service.RoleService;
 import com.tuyenngoc.army2forum.service.UserService;
@@ -63,6 +64,8 @@ public class UserServiceImpl implements UserService {
     final PasswordEncoder passwordEncoder;
 
     final PlayerCharactersService playerCharactersService;
+
+    final JwtTokenService jwtTokenService;
 
     @Override
     public void initAdmin(AdminInfo adminInfo) {
@@ -112,12 +115,21 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
-    public CommonResponseDto lockUserAccount(Long playerId, LockUserRequestDto requestDto) {
+    public CommonResponseDto lockUserAccount(Long playerId, LockUserRequestDto requestDto, CustomUserDetails userDetails) {
         User user = userRepository.findByPlayerId(playerId)
                 .orElseThrow(() -> new NotFoundException(ErrorMessage.User.ERR_NOT_FOUND_ID, playerId));
 
+        if (user.getRole().getName().equals(RoleConstant.ROLE_ADMIN.name()) ||
+                user.getRole().getName().equals(RoleConstant.ROLE_SUPER_ADMIN.name())
+        ) {
+            throw new ForbiddenException(ErrorMessage.ERR_FORBIDDEN_UPDATE_DELETE);
+        }
+
         user.setIsLocked(true);
-        user.setLockUntil(requestDto.getLockTime().atStartOfDay());
+        user.setLockUntil(requestDto.getLockTime());
+        user.setLockReason(requestDto.getLockReason());
+
+        jwtTokenService.deleteTokens(user.getId());
 
         userRepository.save(user);
 

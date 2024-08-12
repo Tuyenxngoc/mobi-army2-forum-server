@@ -7,7 +7,6 @@ import com.tuyenngoc.army2forum.domain.dto.request.UpdatePointsRequestDto;
 import com.tuyenngoc.army2forum.domain.dto.response.CommonResponseDto;
 import com.tuyenngoc.army2forum.domain.dto.response.player.*;
 import com.tuyenngoc.army2forum.domain.dto.response.post.GetPostResponseDto;
-import com.tuyenngoc.army2forum.domain.entity.Player;
 import com.tuyenngoc.army2forum.security.CustomUserDetails;
 
 import java.util.List;

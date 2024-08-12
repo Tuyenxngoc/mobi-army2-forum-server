@@ -13,18 +13,14 @@ import com.tuyenngoc.army2forum.domain.dto.response.player.*;
 import com.tuyenngoc.army2forum.domain.dto.response.post.GetPostResponseDto;
 import com.tuyenngoc.army2forum.domain.entity.Player;
 import com.tuyenngoc.army2forum.domain.entity.PlayerCharacters;
-import com.tuyenngoc.army2forum.domain.entity.Role;
 import com.tuyenngoc.army2forum.domain.specification.PlayerSpecification;
 import com.tuyenngoc.army2forum.exception.BadRequestException;
-import com.tuyenngoc.army2forum.exception.ForbiddenException;
 import com.tuyenngoc.army2forum.exception.NotFoundException;
 import com.tuyenngoc.army2forum.repository.*;
 import com.tuyenngoc.army2forum.security.CustomUserDetails;
 import com.tuyenngoc.army2forum.service.PlayerService;
-import com.tuyenngoc.army2forum.service.RoleService;
 import com.tuyenngoc.army2forum.util.MaskingUtils;
 import com.tuyenngoc.army2forum.util.PaginationUtil;
-import com.tuyenngoc.army2forum.util.SecurityUtils;
 import lombok.AccessLevel;
 import lombok.RequiredArgsConstructor;
 import lombok.experimental.FieldDefaults;
@@ -50,8 +46,6 @@ public class PlayerServiceImpl implements PlayerService {
     PlayerRepository playerRepository;
 
     PostRepository postRepository;
-
-    RoleService roleService;
 
     MessageSource messageSource;
 

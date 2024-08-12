@@ -1,7 +1,5 @@
 package com.tuyenngoc.army2forum.domain.dto.request;
 
-import com.tuyenngoc.army2forum.constant.ErrorMessage;
-import jakarta.validation.constraints.NotNull;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -15,7 +13,8 @@ import java.time.LocalDate;
 @AllArgsConstructor
 public class LockUserRequestDto {
 
-    @NotNull(message = ErrorMessage.INVALID_NOT_BLANK_FIELD)
     private LocalDate lockTime;
+
+    private String lockReason;
 
 }

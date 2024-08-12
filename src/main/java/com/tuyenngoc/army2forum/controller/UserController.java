@@ -55,9 +55,10 @@ public class UserController {
     @PutMapping(UrlConstant.User.LOCK)
     public ResponseEntity<?> lockUserAccount(
             @PathVariable Long playerId,
-            @Valid @RequestBody LockUserRequestDto requestDto
+            @Valid @RequestBody LockUserRequestDto requestDto,
+            @CurrentUser CustomUserDetails userDetails
     ) {
-        return VsResponseUtil.success(userService.lockUserAccount(playerId, requestDto));
+        return VsResponseUtil.success(userService.lockUserAccount(playerId, requestDto, userDetails));
     }
 
     @PreAuthorize("hasAnyRole('SUPER_ADMIN', 'ADMIN')")

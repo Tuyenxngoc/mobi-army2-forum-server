@@ -40,6 +40,7 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.web.authentication.logout.SecurityContextLogoutHandler;
 import org.springframework.stereotype.Service;
 
+import java.time.LocalDate;
 import java.util.*;
 import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.TimeUnit;
@@ -76,6 +77,31 @@ public class AuthServiceImpl implements AuthService {
 
     @Override
     public LoginResponseDto login(LoginRequestDto request) {
+        User user = userRepository.findByUsername(request.getUsername())
+                .orElseThrow(() -> new UnauthorizedException(ErrorMessage.Auth.ERR_INCORRECT_USERNAME_PASSWORD));
+
+        // Kiểm tra nếu tài khoản bị khóa
+        if (user.getIsLocked()) {
+            LocalDate lockUntil = user.getLockUntil();
+
+            // Nếu lockUntil là null, tài khoản bị khóa vĩnh viễn
+            if (lockUntil == null) {
+                throw new UnauthorizedException(ErrorMessage.Auth.ERR_ACCOUNT_LOCKED, "Vĩnh viễn", null);
+            }
+
+            // Nếu thời gian hiện tại đã qua lockUntil, mở khóa tài khoản
+            if (LocalDate.now().isAfter(lockUntil)) {
+                user.setIsLocked(false);
+                user.setLockUntil(null);
+                user.setLockReason(null);
+                userRepository.save(user);
+            } else {
+                // Nếu tài khoản vẫn bị khóa, ném ngoại lệ với lý do và thời gian khóa
+                String lockReason = user.getLockReason();
+                throw new UnauthorizedException(ErrorMessage.Auth.ERR_ACCOUNT_LOCKED, lockUntil, lockReason);
+            }
+        }
+
         try {
             Authentication authentication = authenticationManager.authenticate(
                     new UsernamePasswordAuthenticationToken(request.getUsername(), request.getPassword())

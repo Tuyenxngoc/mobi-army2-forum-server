@@ -17,7 +17,7 @@ public interface UserService {
 
     CommonResponseDto updateUserRoles(Long playerId, Byte roleId, CustomUserDetails userDetails);
 
-    CommonResponseDto lockUserAccount(Long playerId, LockUserRequestDto requestDto);
+    CommonResponseDto lockUserAccount(Long playerId, LockUserRequestDto requestDto, CustomUserDetails userDetails);
 
     UserDto getCurrentUser(String userId);
 

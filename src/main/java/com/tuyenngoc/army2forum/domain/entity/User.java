@@ -6,7 +6,7 @@ import jakarta.persistence.*;
 import lombok.*;
 import org.hibernate.annotations.UuidGenerator;
 
-import java.time.LocalDateTime;
+import java.time.LocalDate;
 
 @Getter
 @Setter
@@ -53,7 +53,10 @@ public class User extends DateAuditing {
     private Boolean isLocked = false;
 
     @Column(name = "lock_until")
-    private LocalDateTime lockUntil;
+    private LocalDate lockUntil;
+
+    @Column(name = "lock_reason")
+    private String lockReason;
 
     @OneToOne(mappedBy = "user", fetch = FetchType.LAZY, cascade = CascadeType.ALL)
     @JsonIgnore

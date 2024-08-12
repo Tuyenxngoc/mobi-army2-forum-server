@@ -12,6 +12,8 @@ import lombok.experimental.FieldDefaults;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 
+import java.util.List;
+
 @Slf4j
 @Service
 @RequiredArgsConstructor
@@ -43,6 +45,11 @@ public class RoleServiceImpl implements RoleService {
             roleRepository.save(new Role(RoleConstant.ROLE_USER.name()));
             log.info("Initializing roles: SUPER ADMIN, ADMIN, MODERATOR, COLLABORATOR, SUPPORT, USER");
         }
+    }
+
+    @Override
+    public List<Role> getRoles() {
+        return roleRepository.findAll();
     }
 
 }

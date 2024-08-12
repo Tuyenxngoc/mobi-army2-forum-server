@@ -20,7 +20,7 @@ public class UrlConstant {
     }
 
     public static class User {
-        private static final String PRE_FIX = "/user";
+        private static final String PRE_FIX = "/users";
 
         public static final String GET_CURRENT_USER = PRE_FIX + "/current";
         public static final String CREATE = PRE_FIX;

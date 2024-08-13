@@ -14,7 +14,7 @@ import java.util.Properties;
 @Getter
 @Setter
 @Configuration
-@PropertySource("classpath:config.properties")
+@PropertySource("classpath:application.properties")
 @ConfigurationProperties(prefix = "mail")
 public class MailConfig {
 

@@ -14,7 +14,7 @@ import java.util.Map;
 @Getter
 @Setter
 @Configuration
-@PropertySource("classpath:config.properties")
+@PropertySource("classpath:application.properties")
 @ConfigurationProperties(prefix = "cloudinary")
 public class CloudinaryConfig {
 

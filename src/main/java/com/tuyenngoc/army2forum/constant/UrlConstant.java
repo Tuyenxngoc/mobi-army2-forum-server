@@ -16,7 +16,7 @@ public class UrlConstant {
         public static final String CONFIRM = PRE_FIX + "/confirm";
         public static final String RESEND_CONFIRMATION_EMAIL = PRE_FIX + "/resend-code";
         public static final String CHECK_EMAIL_CONFIRMED = PRE_FIX + "/check-email";
-        public static final String OAUTH2_CALLBACK = "/login/oauth2/code/google";
+        public static final String GOOGLE_LOGIN = "/auth/google-login";
     }
 
     public static class User {

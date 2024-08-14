@@ -19,6 +19,8 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.Authentication;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.Map;
+
 @RestApiV1
 @RequiredArgsConstructor
 @FieldDefaults(level = AccessLevel.PRIVATE, makeFinal = true)
@@ -94,14 +96,10 @@ public class AuthController {
         return VsResponseUtil.success(authService.isEmailConfirmed(email));
     }
 
-    @Operation(summary = "API OAuth2 callback")
-    @GetMapping(UrlConstant.Auth.OAUTH2_CALLBACK)
-    public ResponseEntity<?> oauth2Callback(
-            @RequestParam("code") String code,
-            HttpServletRequest request,
-            HttpServletResponse response
-    ) {
-        return VsResponseUtil.success(authService.handleOAuth2Callback(code, request, response));
+    @Operation(summary = "API Login with Google")
+    @PostMapping(UrlConstant.Auth.GOOGLE_LOGIN)
+    public ResponseEntity<?> loginWithGoogle(@RequestBody Map<String, Object> payload) {
+        return VsResponseUtil.success(authService.loginWithGoogle(payload));
     }
 
 }

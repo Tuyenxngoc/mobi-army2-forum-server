@@ -9,6 +9,8 @@ import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import org.springframework.security.core.Authentication;
 
+import java.util.Map;
+
 public interface AuthService {
 
     LoginResponseDto login(LoginRequestDto request);
@@ -29,6 +31,6 @@ public interface AuthService {
 
     boolean isEmailConfirmed(String email);
 
-    LoginResponseDto handleOAuth2Callback(String code, HttpServletRequest request, HttpServletResponse response);
+    LoginResponseDto loginWithGoogle(Map<String, Object> payload);
 
 }

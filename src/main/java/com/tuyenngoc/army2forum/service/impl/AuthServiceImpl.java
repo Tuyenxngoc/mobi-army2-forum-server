@@ -3,6 +3,7 @@ package com.tuyenngoc.army2forum.service.impl;
 import com.tuyenngoc.army2forum.constant.ErrorMessage;
 import com.tuyenngoc.army2forum.constant.RoleConstant;
 import com.tuyenngoc.army2forum.constant.SuccessMessage;
+import com.tuyenngoc.army2forum.domain.dto.UserInfo;
 import com.tuyenngoc.army2forum.domain.dto.common.DataMailDto;
 import com.tuyenngoc.army2forum.domain.dto.request.auth.*;
 import com.tuyenngoc.army2forum.domain.dto.response.CommonResponseDto;
@@ -74,6 +75,8 @@ public class AuthServiceImpl implements AuthService {
     PlayerRepository playerRepository;
 
     PlayerCharactersService playerCharactersService;
+
+    OAuth2GoogleService oAuth2GoogleService;
 
     @Override
     public LoginResponseDto login(LoginRequestDto request) {
@@ -345,9 +348,14 @@ public class AuthServiceImpl implements AuthService {
     }
 
     @Override
-    public LoginResponseDto handleOAuth2Callback(String code, HttpServletRequest request, HttpServletResponse response) {
-        System.out.println(code);
-        return null;
+    public LoginResponseDto loginWithGoogle(Map<String, Object> payload) {
+        try {
+            String token = (String) payload.get("access_token");
+            UserInfo userInfo = oAuth2GoogleService.verifyAccessToken(token);
+            return null;
+        } catch (Exception e) {
+            throw new UnauthorizedException(ErrorMessage.ERR_UNAUTHORIZED);
+        }
     }
 
 }

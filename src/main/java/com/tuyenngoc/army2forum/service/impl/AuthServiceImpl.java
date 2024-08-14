@@ -83,27 +83,7 @@ public class AuthServiceImpl implements AuthService {
         User user = userRepository.findByUsername(request.getUsername())
                 .orElseThrow(() -> new UnauthorizedException(ErrorMessage.Auth.ERR_INCORRECT_USERNAME_PASSWORD));
 
-        // Kiểm tra nếu tài khoản bị khóa
-        if (user.getIsLocked()) {
-            LocalDate lockUntil = user.getLockUntil();
-
-            // Nếu lockUntil là null, tài khoản bị khóa vĩnh viễn
-            if (lockUntil == null) {
-                throw new UnauthorizedException(ErrorMessage.Auth.ERR_ACCOUNT_LOCKED, "Vĩnh viễn", null);
-            }
-
-            // Nếu thời gian hiện tại đã qua lockUntil, mở khóa tài khoản
-            if (LocalDate.now().isAfter(lockUntil)) {
-                user.setIsLocked(false);
-                user.setLockUntil(null);
-                user.setLockReason(null);
-                userRepository.save(user);
-            } else {
-                // Nếu tài khoản vẫn bị khóa, ném ngoại lệ với lý do và thời gian khóa
-                String lockReason = user.getLockReason();
-                throw new UnauthorizedException(ErrorMessage.Auth.ERR_ACCOUNT_LOCKED, lockUntil, lockReason);
-            }
-        }
+        checkUserLocked(user);
 
         try {
             Authentication authentication = authenticationManager.authenticate(
@@ -349,12 +329,57 @@ public class AuthServiceImpl implements AuthService {
 
     @Override
     public LoginResponseDto loginWithGoogle(Map<String, Object> payload) {
+        String token = (String) payload.get("access_token");
+        UserInfo userInfo;
         try {
-            String token = (String) payload.get("access_token");
-            UserInfo userInfo = oAuth2GoogleService.verifyAccessToken(token);
-            return null;
+            userInfo = oAuth2GoogleService.verifyAccessToken(token);
         } catch (Exception e) {
-            throw new UnauthorizedException(ErrorMessage.ERR_UNAUTHORIZED);
+            throw new BadRequestException(ErrorMessage.Auth.INVALID_ACCESS_TOKEN);
+        }
+        Optional<User> optionalUser = userRepository.findByEmail(userInfo.getEmail());
+        if (optionalUser.isPresent()) {
+            User user = optionalUser.get();
+
+            checkUserLocked(user);
+
+            CustomUserDetails userDetails = CustomUserDetails.create(user);
+
+            String accessToken = jwtTokenProvider.generateToken(userDetails, Boolean.FALSE);
+            String refreshToken = jwtTokenProvider.generateToken(userDetails, Boolean.TRUE);
+
+            jwtTokenService.saveAccessToken(accessToken, user.getId());
+            jwtTokenService.saveRefreshToken(refreshToken, user.getId());
+
+            return new LoginResponseDto(
+                    accessToken,
+                    refreshToken,
+                    userDetails.getAuthorities()
+            );
+        } else {
+            throw new UnauthorizedException(ErrorMessage.Auth.USER_NOT_FOUND);
+        }
+    }
+
+    private void checkUserLocked(User user) {
+        if (user.getIsLocked()) {
+            LocalDate lockUntil = user.getLockUntil();
+
+            // Nếu lockUntil là null, tài khoản bị khóa vĩnh viễn
+            if (lockUntil == null) {
+                throw new UnauthorizedException(ErrorMessage.Auth.ERR_ACCOUNT_LOCKED, "Vĩnh viễn", null);
+            }
+
+            // Nếu thời gian hiện tại đã qua lockUntil, mở khóa tài khoản
+            if (LocalDate.now().isAfter(lockUntil)) {
+                user.setIsLocked(false);
+                user.setLockUntil(null);
+                user.setLockReason(null);
+                userRepository.save(user);
+            } else {
+                // Nếu tài khoản vẫn bị khóa, ném ngoại lệ với lý do và thời gian khóa
+                String lockReason = user.getLockReason();
+                throw new UnauthorizedException(ErrorMessage.Auth.ERR_ACCOUNT_LOCKED, lockUntil, lockReason);
+            }
         }
     }
 

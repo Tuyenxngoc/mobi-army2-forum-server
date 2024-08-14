@@ -42,7 +42,7 @@ public class OAuth2GoogleService {
             String email = jsonNode.get("email").asText();
             boolean emailVerified = jsonNode.get("email_verified").asBoolean();
 
-            return new UserInfo(userId, email, "", emailVerified);
+            return new UserInfo(userId, email, emailVerified);
         } else {
             throw new Exception("Invalid Google access token.");
         }

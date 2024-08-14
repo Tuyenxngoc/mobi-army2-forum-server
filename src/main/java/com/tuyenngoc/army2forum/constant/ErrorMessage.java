@@ -62,6 +62,8 @@ public class ErrorMessage {
         public static final String ERR_ACCOUNT_LOCKED = "exception.auth.account.locked";
         public static final String ERR_INVALID_REFRESH_TOKEN = "exception.auth.invalid.refresh.token";
         public static final String EXPIRED_REFRESH_TOKEN = "exception.auth.expired.refresh.token";
+        public static final String INVALID_ACCESS_TOKEN = "exception.auth.invalid.access.token";
+        public static final String USER_NOT_FOUND = "exception.auth.user.not.found";
     }
 
     public static class Role {

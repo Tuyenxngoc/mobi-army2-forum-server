@@ -1,9 +1,7 @@
 package com.tuyenngoc.army2forum.security;
 
-import com.tuyenngoc.army2forum.repository.UserRepository;
 import com.tuyenngoc.army2forum.security.jwt.JwtAuthenticationEntryPoint;
 import com.tuyenngoc.army2forum.security.jwt.JwtAuthenticationFilter;
-import com.tuyenngoc.army2forum.service.impl.CustomOAuth2UserService;
 import lombok.AccessLevel;
 import lombok.RequiredArgsConstructor;
 import lombok.experimental.FieldDefaults;
@@ -20,16 +18,9 @@ import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.config.annotation.web.configurers.AbstractHttpConfigurer;
 import org.springframework.security.config.http.SessionCreationPolicy;
-import org.springframework.security.core.authority.mapping.GrantedAuthoritiesMapper;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
-import org.springframework.security.oauth2.client.oidc.userinfo.OidcUserRequest;
-import org.springframework.security.oauth2.client.oidc.userinfo.OidcUserService;
-import org.springframework.security.oauth2.client.userinfo.OAuth2UserRequest;
-import org.springframework.security.oauth2.client.userinfo.OAuth2UserService;
-import org.springframework.security.oauth2.core.oidc.user.OidcUser;
-import org.springframework.security.oauth2.core.user.OAuth2User;
 import org.springframework.security.web.SecurityFilterChain;
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
 import org.springframework.web.cors.CorsConfiguration;
@@ -70,8 +61,6 @@ public class SecurityConfig {
 
     JwtAuthenticationFilter jwtAuthenticationFilter;
 
-    UserRepository userRepository;
-
     @Bean
     public PasswordEncoder passwordEncoder() {
         return new BCryptPasswordEncoder();
@@ -108,33 +97,8 @@ public class SecurityConfig {
                 .sessionManagement(session -> session.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
                 .authenticationProvider(authenticationProvider())
                 .addFilterBefore(jwtAuthenticationFilter, UsernamePasswordAuthenticationFilter.class)
-                .exceptionHandling(exception -> exception.authenticationEntryPoint(new JwtAuthenticationEntryPoint()))
-                .oauth2Login(oauth2 -> oauth2
-                        .userInfoEndpoint(userInfo -> userInfo
-                                .userAuthoritiesMapper(userAuthoritiesMapper())
-                                .userService(oauth2UserService())
-                                .oidcUserService(oidcUserService())
-                        )
-                );
+                .exceptionHandling(exception -> exception.authenticationEntryPoint(new JwtAuthenticationEntryPoint()));
         return http.build();
-    }
-
-    @Bean
-    public GrantedAuthoritiesMapper userAuthoritiesMapper() {
-        return (authorities) -> {
-            System.out.println(authorities);
-            return authorities;
-        };
-    }
-
-    @Bean
-    public OAuth2UserService<OAuth2UserRequest, OAuth2User> oauth2UserService() {
-        return new CustomOAuth2UserService(userRepository, passwordEncoder());
-    }
-
-    @Bean
-    public OAuth2UserService<OidcUserRequest, OidcUser> oidcUserService() {
-        return new OidcUserService();
     }
 
     @Bean

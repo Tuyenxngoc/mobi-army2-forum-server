@@ -97,15 +97,10 @@ public class UserServiceImpl implements UserService {
 
     @Override
     public CommonResponseDto updateUserRoles(Long playerId, Byte roleId, CustomUserDetails userDetails) {
-        User user = userRepository.findByPlayerId(playerId)
-                .orElseThrow(() -> new NotFoundException(ErrorMessage.User.ERR_NOT_FOUND_ID, playerId));
-
         Role newRole = roleService.getRole(roleId);
 
-        // Check if the current user's role is higher than the new role
-        if (!SecurityUtils.canAssignRole(userDetails.getAuthorities(), newRole)) {
-            throw new ForbiddenException(ErrorMessage.ERR_FORBIDDEN_UPDATE_DELETE);
-        }
+        User user = userRepository.findByPlayerId(playerId)
+                .orElseThrow(() -> new NotFoundException(ErrorMessage.User.ERR_NOT_FOUND_ID, playerId));
 
         user.setRole(newRole);
         userRepository.save(user);

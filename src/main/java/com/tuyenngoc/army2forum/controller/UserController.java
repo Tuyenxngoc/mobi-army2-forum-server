@@ -39,7 +39,7 @@ public class UserController {
         return VsResponseUtil.success(userService.getCurrentUser(userDetails.getUserId()));
     }
 
-    @PreAuthorize("hasAnyRole('SUPER_ADMIN', 'ADMIN')")
+    @PreAuthorize("hasAnyRole('SUPER_ADMIN')")
     @Operation(summary = "Update user roles")
     @PostMapping(UrlConstant.User.UPDATE_ROLE)
     public ResponseEntity<?> updatePlayerRoles(

@@ -81,6 +81,7 @@ public class ErrorMessage {
         public static final String INVALID_VERIFICATION_CODE = "exception.user.invalid.verification.code";
         public static final String RATE_LIMIT = "exception.user.rate.limit";
         public static final String INVALID_EMAIL = "exception.user.invalid.email";
+        public static final String ERR_NOT_ALLOWED_SUPER_ADMIN = "exception.user.not.allowed.super.admin";
     }
 
     public static class Category {

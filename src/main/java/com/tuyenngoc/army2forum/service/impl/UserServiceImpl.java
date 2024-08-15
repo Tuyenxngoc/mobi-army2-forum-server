@@ -99,6 +99,10 @@ public class UserServiceImpl implements UserService {
     public CommonResponseDto updateUserRoles(Long playerId, Byte roleId, CustomUserDetails userDetails) {
         Role newRole = roleService.getRole(roleId);
 
+        if(newRole.getName().equals(RoleConstant.ROLE_SUPER_ADMIN.name())){
+            throw new BadRequestException(ErrorMessage.User.ERR_NOT_ALLOWED_SUPER_ADMIN);
+        }
+
         User user = userRepository.findByPlayerId(playerId)
                 .orElseThrow(() -> new NotFoundException(ErrorMessage.User.ERR_NOT_FOUND_ID, playerId));
 

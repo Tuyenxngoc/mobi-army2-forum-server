@@ -20,7 +20,7 @@ public class PostRequestDto {
     private String title;
 
     @NotBlank(message = ErrorMessage.INVALID_NOT_BLANK_FIELD)
-    @Size(max = 255, message = ErrorMessage.INVALID_TEXT_LENGTH)
+    @Size(max = 3000, message = ErrorMessage.INVALID_TEXT_LENGTH)
     @Size(min = 5, message = ErrorMessage.INVALID_TEXT_LENGTH)
     private String content;
 

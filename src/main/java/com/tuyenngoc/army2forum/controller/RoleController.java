@@ -21,7 +21,7 @@ public class RoleController {
 
     RoleService roleService;
 
-    @PreAuthorize("hasAnyRole('SUPER_ADMIN', 'ADMIN')")
+    @PreAuthorize("hasAnyRole('SUPER_ADMIN')")
     @Operation(summary = "API get roles")
     @GetMapping(UrlConstant.Role.GET_ALL)
     public ResponseEntity<?> getRoles() {

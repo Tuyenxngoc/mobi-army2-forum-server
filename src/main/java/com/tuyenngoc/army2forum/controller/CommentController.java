@@ -38,7 +38,7 @@ public class CommentController {
         return VsResponseUtil.success(commentService.createComment(userDetails.getPlayerId(), postId, requestDto));
     }
 
-    @PreAuthorize("hasAnyRole('SUPER_ADMIN', 'ADMIN')")
+    @PreAuthorize("hasAnyRole('SUPER_ADMIN', 'ADMIN', 'MODERATOR', 'SUPPORT')")
     @Operation(summary = "API Update Comment")
     @PutMapping(UrlConstant.Comment.UPDATE)
     public ResponseEntity<?> updateComment(
@@ -48,7 +48,7 @@ public class CommentController {
         return VsResponseUtil.success(commentService.updateComment(id, requestDto));
     }
 
-    @PreAuthorize("hasAnyRole('SUPER_ADMIN', 'ADMIN')")
+    @PreAuthorize("hasAnyRole('SUPER_ADMIN', 'ADMIN', 'MODERATOR', 'SUPPORT')")
     @Operation(summary = "API Delete Comment")
     @DeleteMapping(UrlConstant.Comment.DELETE)
     public ResponseEntity<?> deleteComment(@PathVariable Long id) {

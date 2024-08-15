@@ -58,10 +58,10 @@ import java.util.stream.Collectors;
 @FieldDefaults(level = AccessLevel.PRIVATE)
 public class ClanServiceImpl implements ClanService {
 
-    @Value("${app.icons-directory}")
+    @Value("${app.icons-directory:static/res/icon/clan/}")
     String iconsDirectory;
 
-    @Value("${clan.creation.price}")
+    @Value("${clan.creation.price:1000}")
     int clanCreationPrice;
 
     final PlayerRepository playerRepository;

@@ -15,14 +15,14 @@ import java.util.concurrent.TimeUnit;
 @FieldDefaults(level = AccessLevel.PRIVATE)
 public class JwtTokenServiceImpl implements JwtTokenService {
 
-    private static final String ACCESS_TOKEN_KEY = "ACCESS_TOKEN_";
-    private static final String REFRESH_TOKEN_KEY = "REFRESH_TOKEN_";
+    static final String ACCESS_TOKEN_KEY = "ACCESS_TOKEN_";
+    static final String REFRESH_TOKEN_KEY = "REFRESH_TOKEN_";
 
-    @Value("${jwt.access.expiration_time}")
-    private Integer EXPIRATION_TIME_ACCESS_TOKEN;
+    @Value("${jwt.access.expiration_time:60}")
+    int expirationTimeAccessToken;
 
-    @Value("${jwt.refresh.expiration_time}")
-    private Integer EXPIRATION_TIME_REFRESH_TOKEN;
+    @Value("${jwt.refresh.expiration_time:1440}")
+    int expirationTimeRefreshToken;
 
     final RedisTemplate<String, Object> redisTemplate;
 
@@ -36,12 +36,12 @@ public class JwtTokenServiceImpl implements JwtTokenService {
 
     @Override
     public void saveAccessToken(String accessToken, String userId) {
-        redisTemplate.opsForValue().set(getAccessTokenKey(userId), accessToken, EXPIRATION_TIME_ACCESS_TOKEN, TimeUnit.MINUTES);
+        redisTemplate.opsForValue().set(getAccessTokenKey(userId), accessToken, expirationTimeAccessToken, TimeUnit.MINUTES);
     }
 
     @Override
     public void saveRefreshToken(String refreshToken, String userId) {
-        redisTemplate.opsForValue().set(getRefreshTokenKey(userId), refreshToken, EXPIRATION_TIME_REFRESH_TOKEN, TimeUnit.MINUTES);
+        redisTemplate.opsForValue().set(getRefreshTokenKey(userId), refreshToken, expirationTimeRefreshToken, TimeUnit.MINUTES);
     }
 
     @Override

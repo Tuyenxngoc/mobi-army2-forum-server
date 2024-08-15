@@ -28,6 +28,7 @@ import com.tuyenngoc.army2forum.util.SecurityUtils;
 import lombok.AccessLevel;
 import lombok.RequiredArgsConstructor;
 import lombok.experimental.FieldDefaults;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.MessageSource;
 import org.springframework.context.i18n.LocaleContextHolder;
 import org.springframework.data.domain.Page;
@@ -42,26 +43,27 @@ import java.util.stream.Collectors;
 
 @Service
 @RequiredArgsConstructor
-@FieldDefaults(level = AccessLevel.PRIVATE, makeFinal = true)
+@FieldDefaults(level = AccessLevel.PRIVATE)
 public class PostServiceImpl implements PostService {
 
-    private static final byte MAX_PENDING_POSTS = 10;
+    @Value("${forum.max-pending-posts}")
+    byte maxPendingPosts = 10;
 
-    PostRepository postRepository;
+    final PostRepository postRepository;
 
-    PlayerRepository playerRepository;
+    final PlayerRepository playerRepository;
 
-    CategoryRepository categoryRepository;
+    final CategoryRepository categoryRepository;
 
-    PostMapper postMapper;
+    final PostMapper postMapper;
 
-    MessageSource messageSource;
+    final MessageSource messageSource;
 
-    PostFollowRepository postFollowRepository;
+    final PostFollowRepository postFollowRepository;
 
-    LikeRepository likeRepository;
+    final LikeRepository likeRepository;
 
-    PlayerNotificationService playerNotificationService;
+    final PlayerNotificationService playerNotificationService;
 
     @Override
     public Post getPostById(Long postId) {
@@ -106,8 +108,8 @@ public class PostServiceImpl implements PostService {
     @Transactional
     public CommonResponseDto createPost(PostRequestDto requestDto, CustomUserDetails userDetails) {
         long pendingPostsCount = postRepository.countByPlayerIdAndIsApprovedFalse(userDetails.getPlayerId());
-        if (pendingPostsCount >= MAX_PENDING_POSTS) {
-            throw new BadRequestException(ErrorMessage.Post.ERR_MAX_PENDING_POSTS, MAX_PENDING_POSTS);
+        if (pendingPostsCount >= maxPendingPosts) {
+            throw new BadRequestException(ErrorMessage.Post.ERR_MAX_PENDING_POSTS, maxPendingPosts);
         }
 
         Player player = playerRepository.findById(userDetails.getPlayerId())

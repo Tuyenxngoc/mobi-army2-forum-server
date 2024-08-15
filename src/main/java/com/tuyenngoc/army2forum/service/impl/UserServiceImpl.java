@@ -50,7 +50,7 @@ import org.springframework.stereotype.Service;
 @FieldDefaults(level = AccessLevel.PRIVATE)
 public class UserServiceImpl implements UserService {
 
-    @Value("${user.change-username.price}")
+    @Value("${user.change-username.price:200}")
     int changeUsernamePrice;
 
     final MessageSource messageSource;

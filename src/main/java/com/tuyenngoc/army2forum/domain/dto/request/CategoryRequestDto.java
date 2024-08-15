@@ -16,8 +16,10 @@ public class CategoryRequestDto {
 
     @NotBlank(message = ErrorMessage.INVALID_NOT_BLANK_FIELD)
     @Size(max = 15, message = ErrorMessage.INVALID_TEXT_LENGTH)
+    @Size(min = 3, message = ErrorMessage.INVALID_TEXT_LENGTH)
     private String name;
 
+    @Size(max = 255, message = ErrorMessage.INVALID_TEXT_LENGTH)
     private String description;
 
 }

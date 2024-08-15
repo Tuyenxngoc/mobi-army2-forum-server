@@ -40,10 +40,10 @@ public class RoleServiceImpl implements RoleService {
             roleRepository.save(new Role(RoleConstant.ROLE_SUPER_ADMIN.name()));
             roleRepository.save(new Role(RoleConstant.ROLE_ADMIN.name()));
             roleRepository.save(new Role(RoleConstant.ROLE_MODERATOR.name()));
-            roleRepository.save(new Role(RoleConstant.ROLE_COLLABORATOR.name()));
             roleRepository.save(new Role(RoleConstant.ROLE_SUPPORT.name()));
             roleRepository.save(new Role(RoleConstant.ROLE_USER.name()));
-            log.info("Initializing roles: SUPER ADMIN, ADMIN, MODERATOR, COLLABORATOR, SUPPORT, USER");
+
+            log.info("Initializing roles: SUPER ADMIN, ADMIN, MODERATOR, SUPPORT, USER");
         }
     }
 

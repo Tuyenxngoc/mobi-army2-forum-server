@@ -116,8 +116,9 @@ public class AuthServiceImpl implements AuthService {
             HttpServletResponse response,
             Authentication authentication
     ) {
-        if (authentication != null && authentication.getName() != null) {
-            jwtTokenService.deleteTokens(authentication.getName());
+        if (authentication != null && authentication.getPrincipal() != null) {
+            CustomUserDetails customUserDetails = (CustomUserDetails) authentication.getPrincipal();
+            jwtTokenService.deleteTokens(customUserDetails.getUserId());
         }
 
         SecurityContextLogoutHandler logout = new SecurityContextLogoutHandler();
@@ -132,10 +133,10 @@ public class AuthServiceImpl implements AuthService {
         String refreshToken = request.getRefreshToken();
 
         if (jwtTokenProvider.validateToken(refreshToken)) {
-            String username = jwtTokenProvider.extractClaimUsername(refreshToken);
+            String userId = jwtTokenProvider.extractSubjectFromJwt(refreshToken);
 
-            if (jwtTokenService.isRefreshTokenExists(refreshToken, username)) {
-                User user = userRepository.findByUsername(username)
+            if (jwtTokenService.isRefreshTokenExists(refreshToken, userId)) {
+                User user = userRepository.findById(userId)
                         .orElseThrow(() -> new BadRequestException(ErrorMessage.Auth.ERR_INVALID_REFRESH_TOKEN));
                 CustomUserDetails userDetails = CustomUserDetails.create(user);
 
@@ -330,12 +331,17 @@ public class AuthServiceImpl implements AuthService {
     @Override
     public LoginResponseDto loginWithGoogle(Map<String, Object> payload) {
         String token = (String) payload.get("access_token");
+        if (token == null || token.trim().isEmpty()) {
+            throw new BadRequestException(ErrorMessage.Auth.INVALID_ACCESS_TOKEN);
+        }
+
         UserInfo userInfo;
         try {
             userInfo = oAuth2GoogleService.verifyAccessToken(token);
         } catch (Exception e) {
             throw new BadRequestException(ErrorMessage.Auth.INVALID_ACCESS_TOKEN);
         }
+
         Optional<User> optionalUser = userRepository.findByEmail(userInfo.getEmail());
         if (optionalUser.isPresent()) {
             User user = optionalUser.get();
@@ -366,7 +372,7 @@ public class AuthServiceImpl implements AuthService {
 
             // Nếu lockUntil là null, tài khoản bị khóa vĩnh viễn
             if (lockUntil == null) {
-                throw new UnauthorizedException(ErrorMessage.Auth.ERR_ACCOUNT_LOCKED, "Vĩnh viễn", null);
+                throw new UnauthorizedException(ErrorMessage.Auth.ERR_ACCOUNT_LOCKED, null, null);
             }
 
             // Nếu thời gian hiện tại đã qua lockUntil, mở khóa tài khoản
@@ -374,6 +380,7 @@ public class AuthServiceImpl implements AuthService {
                 user.setIsLocked(false);
                 user.setLockUntil(null);
                 user.setLockReason(null);
+
                 userRepository.save(user);
             } else {
                 // Nếu tài khoản vẫn bị khóa, ném ngoại lệ với lý do và thời gian khóa

@@ -2,6 +2,7 @@ package com.tuyenngoc.army2forum.domain.entity;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.tuyenngoc.army2forum.domain.entity.common.UserDateAuditing;
+import com.tuyenngoc.army2forum.domain.entity.listener.CategoryListener;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
@@ -16,6 +17,7 @@ import java.util.List;
 @NoArgsConstructor
 @AllArgsConstructor
 @Entity
+@EntityListeners(CategoryListener.class)
 @Table(name = "categories",
         uniqueConstraints = @UniqueConstraint(name = "UN_CATEGORY_NAME", columnNames = "name"))
 public class Category extends UserDateAuditing {

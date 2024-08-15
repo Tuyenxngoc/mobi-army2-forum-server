@@ -18,6 +18,7 @@ import com.tuyenngoc.army2forum.exception.BadRequestException;
 import com.tuyenngoc.army2forum.exception.ConflictException;
 import com.tuyenngoc.army2forum.exception.NotFoundException;
 import com.tuyenngoc.army2forum.repository.CategoryRepository;
+import com.tuyenngoc.army2forum.service.CategoryRedisService;
 import com.tuyenngoc.army2forum.service.CategoryService;
 import com.tuyenngoc.army2forum.util.PaginationUtil;
 import lombok.AccessLevel;
@@ -45,6 +46,8 @@ public class CategoryServiceImpl implements CategoryService {
 
     CategoryRepository categoryRepository;
 
+    CategoryRedisService categoryRedisService;
+
     @Override
     public void initCategories(AdminInfo adminInfo) {
         if (categoryRepository.count() == 0) {
@@ -68,7 +71,19 @@ public class CategoryServiceImpl implements CategoryService {
 
     @Override
     public List<CategoryDto> getCategories() {
-        return categoryRepository.getAllCategories();
+        List<CategoryDto> cachedCategories = categoryRedisService.getCategories();
+
+        if (cachedCategories != null && !cachedCategories.isEmpty()) {
+            return cachedCategories;
+        }
+
+        List<CategoryDto> categoriesFromDb = categoryRepository.getAllCategories();
+
+        if (categoriesFromDb != null && !categoriesFromDb.isEmpty()) {
+            categoryRedisService.addCategories(categoriesFromDb);
+        }
+
+        return categoriesFromDb;
     }
 
     @Override

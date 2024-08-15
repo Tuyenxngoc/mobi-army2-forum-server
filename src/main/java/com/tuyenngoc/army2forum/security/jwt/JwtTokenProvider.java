@@ -22,14 +22,14 @@ public class JwtTokenProvider {
     private static final String USERNAME_KEY = "username";
     private static final String AUTHORITIES_KEY = "auth";
 
-    @Value("${jwt.secret}")
+    @Value("${jwt.secret:76947ef7-7af1-4745-bfda-ab2d5cb09290}")
     private String SECRET_KEY;
 
-    @Value("${jwt.access.expiration_time}")
-    private Integer EXPIRATION_TIME_ACCESS_TOKEN;
+    @Value("${jwt.access.expiration_time:60}")
+    private int EXPIRATION_TIME_ACCESS_TOKEN;
 
-    @Value("${jwt.refresh.expiration_time}")
-    private Integer EXPIRATION_TIME_REFRESH_TOKEN;
+    @Value("${jwt.refresh.expiration_time:1440}")
+    private int EXPIRATION_TIME_REFRESH_TOKEN;
 
     public String generateToken(CustomUserDetails userDetails, Boolean isRefreshToken) {
         String authorities = userDetails.getAuthorities().stream()
@@ -42,6 +42,7 @@ public class JwtTokenProvider {
         if (isRefreshToken) {
             return Jwts.builder()
                     .setClaims(claim)
+                    .setSubject(userDetails.getUserId())
                     .setIssuedAt(new Date(System.currentTimeMillis()))
                     .setExpiration(new Date(System.currentTimeMillis() + (EXPIRATION_TIME_REFRESH_TOKEN * 60L * 1000L)))
                     .signWith(SignatureAlgorithm.HS256, SECRET_KEY)

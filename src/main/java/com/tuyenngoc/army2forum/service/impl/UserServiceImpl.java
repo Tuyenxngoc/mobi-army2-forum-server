@@ -31,7 +31,6 @@ import com.tuyenngoc.army2forum.service.PlayerCharactersService;
 import com.tuyenngoc.army2forum.service.RoleService;
 import com.tuyenngoc.army2forum.service.UserService;
 import com.tuyenngoc.army2forum.util.PaginationUtil;
-import com.tuyenngoc.army2forum.util.SecurityUtils;
 import lombok.AccessLevel;
 import lombok.RequiredArgsConstructor;
 import lombok.experimental.FieldDefaults;
@@ -99,7 +98,7 @@ public class UserServiceImpl implements UserService {
     public CommonResponseDto updateUserRoles(Long playerId, Byte roleId, CustomUserDetails userDetails) {
         Role newRole = roleService.getRole(roleId);
 
-        if(newRole.getName().equals(RoleConstant.ROLE_SUPER_ADMIN.name())){
+        if (newRole.getName().equals(RoleConstant.ROLE_SUPER_ADMIN.name())) {
             throw new BadRequestException(ErrorMessage.User.ERR_NOT_ALLOWED_SUPER_ADMIN);
         }
 

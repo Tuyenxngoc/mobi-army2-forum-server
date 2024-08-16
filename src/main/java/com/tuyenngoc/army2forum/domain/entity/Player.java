@@ -113,6 +113,10 @@ public class Player extends DateAuditing {
     @JsonIgnore
     private List<PlayerCharacters> playerCharacters = new ArrayList<>();
 
+    @OneToMany(mappedBy = "player", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
+    @JsonIgnore
+    private List<Transaction> transactions = new ArrayList<>();
+
     public Player(Long id) {
         this.id = id;
     }

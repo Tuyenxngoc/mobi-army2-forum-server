@@ -7,6 +7,7 @@ import lombok.NoArgsConstructor;
 import lombok.Setter;
 
 import java.time.LocalDateTime;
+import java.util.Objects;
 
 @Getter
 @Setter
@@ -43,5 +44,22 @@ public class EquipChest {
 
     @JsonProperty("apc")
     private int[] addPercents;
+
+    public EquipChest(int key) {
+        this.key = key;
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        EquipChest that = (EquipChest) o;
+        return key == that.key;
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(key);
+    }
 
 }

@@ -31,4 +31,6 @@ public interface PlayerService {
 
     PaginationResponseDto<GetPlayerResponseDto> getPlayers(PaginationFullRequestDto requestDto);
 
+    String getPlayerAvatar(Long playerId);
+
 }

@@ -100,6 +100,7 @@ public class UrlConstant {
         public static final String UPDATE_ADDITIONAL_POINTS = PRE_FIX + "/additional-points";
         public static final String GET_PLAYER_CHARACTER = PRE_FIX + "/character";
         public static final String GET_PLAYER_POINTS = PRE_FIX + "/character/{id}/points";
+        public static final String GET_PLAYER_AVATAR = PRE_FIX + "/avatar";
     }
 
     public static class PlayerNotification {

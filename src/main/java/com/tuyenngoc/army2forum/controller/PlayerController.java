@@ -105,4 +105,11 @@ public class PlayerController {
     ) {
         return VsResponseUtil.success(playerService.getPlayerPoints(userDetails.getPlayerId(), id));
     }
+
+    @Operation(summary = "Get player avatar")
+    @GetMapping(UrlConstant.Player.GET_PLAYER_AVATAR)
+    public ResponseEntity<?> getPlayerAvatar(@CurrentUser CustomUserDetails userDetails) {
+        return VsResponseUtil.success(playerService.getPlayerAvatar(userDetails.getPlayerId()));
+    }
+
 }

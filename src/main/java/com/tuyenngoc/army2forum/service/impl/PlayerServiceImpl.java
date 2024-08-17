@@ -11,8 +11,10 @@ import com.tuyenngoc.army2forum.domain.dto.request.UpdatePointsRequestDto;
 import com.tuyenngoc.army2forum.domain.dto.response.CommonResponseDto;
 import com.tuyenngoc.army2forum.domain.dto.response.player.*;
 import com.tuyenngoc.army2forum.domain.dto.response.post.GetPostResponseDto;
+import com.tuyenngoc.army2forum.domain.entity.Equip;
 import com.tuyenngoc.army2forum.domain.entity.Player;
 import com.tuyenngoc.army2forum.domain.entity.PlayerCharacters;
+import com.tuyenngoc.army2forum.domain.json.EquipChest;
 import com.tuyenngoc.army2forum.domain.specification.PlayerSpecification;
 import com.tuyenngoc.army2forum.exception.BadRequestException;
 import com.tuyenngoc.army2forum.exception.NotFoundException;
@@ -34,6 +36,7 @@ import javax.imageio.ImageIO;
 import java.awt.image.BufferedImage;
 import java.io.File;
 import java.io.IOException;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
 import java.util.stream.Collectors;
@@ -261,4 +264,30 @@ public class PlayerServiceImpl implements PlayerService {
         return responseDto;
     }
 
+    @Override
+    public String getPlayerAvatar(Long playerId) {
+        Player player = getPlayerById(playerId);
+        int[] data = player.getActiveCharacter().getData();
+
+        List<EquipChest> equipChests = new ArrayList<>();
+        for (int key : data) {
+            int index = player.getEquipmentChest().indexOf(new EquipChest(key));
+            if (index != -1) {
+                equipChests.add(player.getEquipmentChest().get(index));
+            }
+        }
+
+        for (EquipChest equipChest : equipChests) {
+            Equip equip = equipRepository.getEquip(equipChest.getCharacterId(), equipChest.getEquipType(), equipChest.getEquipIndex()).orElse(null);
+            if (equip != null) {
+                int[] bigImageCutX = equip.getBigImageCutX();
+                int[] bigImageCutY = equip.getBigImageCutY();
+                int[] bigImageSizeX = equip.getBigImageSizeX();
+                int[] bigImageSizeY = equip.getBigImageSizeY();
+                int[] bigImageAlignX = equip.getBigImageAlignX();
+                int[] bigImageAlignY = equip.getBigImageAlignY();
+            }
+        }
+        return null;
+    }
 }

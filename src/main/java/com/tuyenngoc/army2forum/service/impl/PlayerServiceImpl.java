@@ -38,6 +38,8 @@ import java.awt.*;
 import java.awt.image.BufferedImage;
 import java.io.File;
 import java.io.IOException;
+import java.time.LocalDateTime;
+import java.time.temporal.ChronoUnit;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
@@ -47,6 +49,32 @@ import java.util.stream.Collectors;
 @RequiredArgsConstructor
 @FieldDefaults(level = AccessLevel.PRIVATE, makeFinal = true)
 public class PlayerServiceImpl implements PlayerService {
+
+    static int[][] HEAD_1 = {
+            {13, 10, 0, 96, 24, 24},
+            {13, 10, 0, 96, 24, 24},
+            {13, 10, 0, 96, 24, 24},
+            {13, 16, 0, 134, 30, 30},
+            {13, 10, 0, 96, 24, 24},
+            {13, 10, 0, 96, 24, 24},
+            {13, 10, 0, 96, 24, 24},
+            {13, 14, 0, 132, 32, 32},
+            {13, 10, 0, 96, 24, 24},
+            {13, 10, 0, 96, 24, 24}
+    };
+
+    static int[][] HEAD_2 = {
+            {13, 10, 0, 120, 24, 24},
+            {13, 10, 0, 120, 24, 24},
+            {13, 10, 0, 120, 24, 24},
+            {13, 15, 0, 165, 30, 30},
+            {13, 10, 0, 120, 24, 24},
+            {13, 10, 0, 120, 24, 24},
+            {13, 11, 0, 120, 24, 24},
+            {13, 14, 0, 164, 32, 32},
+            {13, 10, 0, 120, 24, 24},
+            {13, 10, 0, 120, 24, 24}
+    };
 
     PlayerRepository playerRepository;
 
@@ -270,7 +298,6 @@ public class PlayerServiceImpl implements PlayerService {
     public String getPlayerAvatar(Long playerId) {
         Player player = getPlayerById(playerId);
 
-        //Lấy ra danh sách trang bị
         int[] data = player.getActiveCharacter().getData();
         List<EquipChest> equipChests = new ArrayList<>();
         for (int key : data) {
@@ -280,10 +307,13 @@ public class PlayerServiceImpl implements PlayerService {
             }
         }
 
-        //Lấy chỉ số trang bị
         List<Equip> equips = new ArrayList<>();
+        LocalDateTime now = LocalDateTime.now();
         for (EquipChest equipChest : equipChests) {
-            equipRepository.getEquip(equipChest.getCharacterId(), equipChest.getEquipType(), equipChest.getEquipIndex()).ifPresent(equips::add);
+            Equip equip = equipRepository.getEquip(equipChest.getCharacterId(), equipChest.getEquipType(), equipChest.getEquipIndex()).orElse(null);
+            if (equip != null && !(ChronoUnit.DAYS.between(equipChest.getPurchaseDate(), now) > equip.getExpirationDays())) {
+                equips.add(equip);
+            }
         }
 
         byte characterId = player.getActiveCharacter().getCharacter().getId();
@@ -301,38 +331,12 @@ public class PlayerServiceImpl implements PlayerService {
             BufferedImage bigImage = ImageIO.read(new File(String.format("src/main/resources/static/res/bigImage/bigImage%d.png", characterId)));
             BufferedImage playerImage = ImageIO.read(new File(String.format("src/main/resources/static/res/player/%d.png", characterId)));
 
-            //Tạo ảnh
-            int[][] head1 = {
-                    {13, 10, 0, 96, 24, 24},
-                    {13, 10, 0, 96, 24, 24},
-                    {13, 10, 0, 96, 24, 24},
-                    {13, 16, 0, 134, 30, 30},
-                    {13, 10, 0, 96, 24, 24},
-                    {13, 10, 0, 96, 24, 24},
-                    {13, 10, 0, 96, 24, 24},
-                    {13, 14, 0, 132, 32, 32},
-                    {13, 10, 0, 96, 24, 24},
-                    {13, 10, 0, 96, 24, 24}
-            };
-            BufferedImage image1 = createImage(bigImage, playerImage, equips, head1[characterId], 4);
-
-            int[][] head2 = {
-                    {13, 10, 0, 120, 24, 24},
-                    {13, 10, 0, 120, 24, 24},
-                    {13, 10, 0, 120, 24, 24},
-                    {13, 15, 0, 165, 30, 30},
-                    {13, 10, 0, 120, 24, 24},
-                    {13, 10, 0, 120, 24, 24},
-                    {13, 11, 0, 120, 24, 24},
-                    {13, 14, 0, 164, 32, 32},
-                    {13, 10, 0, 120, 24, 24},
-                    {13, 10, 0, 120, 24, 24}
-            };
-            BufferedImage image2 = createImage(bigImage, playerImage, equips, head2[characterId], 5);
+            BufferedImage image1 = createImage(bigImage, playerImage, HEAD_1[characterId], equips, 4);
+            BufferedImage image2 = createImage(bigImage, playerImage, HEAD_2[characterId], equips, 5);
 
             String username = player.getUser().getUsername();
-            String outputDir = "src/main/resources/static/tmp/";
-            String outputGifPath = String.format("%soutput_%s.gif", outputDir, username);
+            String outputGifPath = String.format("src/main/resources/static/avatar/%s.gif", username);
+
             GifCreator.createGif(image1, image2, outputGifPath);
 
             return outputGifPath;
@@ -342,11 +346,10 @@ public class PlayerServiceImpl implements PlayerService {
         }
     }
 
-    private BufferedImage createImage(BufferedImage bigImage, BufferedImage playerImage, List<Equip> equips, int[] cutCoordinates, int index) {
+    private BufferedImage createImage(BufferedImage bigImage, BufferedImage playerImage, int[] cutCoordinates, List<Equip> equips, int index) {
         BufferedImage image = new BufferedImage(50, 50, BufferedImage.TYPE_INT_ARGB);
         Graphics2D graphics = image.createGraphics();
 
-        //Vẽ súng và ba lô trước
         for (Equip equip : equips) {
             if (equip.getEquipType() == 0 || equip.getEquipType() == 4) {
                 BufferedImage equipImage = bigImage.getSubimage(
@@ -359,11 +362,9 @@ public class PlayerServiceImpl implements PlayerService {
             }
         }
 
-        //Vẽ ảnh nhân vật
         BufferedImage playerImageCut = playerImage.getSubimage(cutCoordinates[2], cutCoordinates[3], cutCoordinates[4], cutCoordinates[5]);
         graphics.drawImage(playerImageCut, cutCoordinates[0], cutCoordinates[1], null);
 
-        //Vẽ các trang bị còn lại
         for (Equip equip : equips) {
             if (equip.getEquipType() == 0 || equip.getEquipType() == 4) {
                 continue;
@@ -376,6 +377,7 @@ public class PlayerServiceImpl implements PlayerService {
             );
             graphics.drawImage(equipImage, 31 + equip.getBigImageAlignX()[index], 50 + equip.getBigImageAlignY()[index], null);
         }
+
         graphics.dispose();
 
         return image;

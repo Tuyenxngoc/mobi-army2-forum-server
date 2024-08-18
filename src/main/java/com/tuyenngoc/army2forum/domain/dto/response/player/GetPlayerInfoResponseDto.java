@@ -10,6 +10,8 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 
+import java.nio.file.Files;
+import java.nio.file.Paths;
 import java.time.LocalDateTime;
 import java.util.List;
 import java.util.stream.Collectors;
@@ -58,7 +60,6 @@ public class GetPlayerInfoResponseDto {
     public GetPlayerInfoResponseDto(Player player) {
         this.id = player.getId();
         this.online = player.getIsOnline();
-        this.avatar = String.format("/avatar/%d.gif", player.getActiveCharacter().getCharacter().getId());
         this.username = player.getUser().getUsername();
         this.xu = player.getXu();
         this.luong = player.getLuong();
@@ -68,6 +69,13 @@ public class GetPlayerInfoResponseDto {
                 .collect(Collectors.toList());
         if (player.getClanMember() != null) {
             this.clan = new ClanDto(player.getClanMember().getClan());
+        }
+
+        String avatarPath = String.format("/avatar/%s_%d.gif", this.username, player.getActiveCharacter().getCharacter().getId());
+        if (Files.exists(Paths.get("src/main/resources/static" + avatarPath))) {
+            this.avatar = avatarPath;
+        } else {
+            this.avatar = "/avatar/default.png";
         }
     }
 

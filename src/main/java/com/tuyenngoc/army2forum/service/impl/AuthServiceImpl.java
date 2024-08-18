@@ -78,6 +78,8 @@ public class AuthServiceImpl implements AuthService {
 
     OAuth2GoogleService oAuth2GoogleService;
 
+    PlayerService playerService;
+
     @Override
     public LoginResponseDto login(LoginRequestDto request) {
         User user = userRepository.findByUsername(request.getUsername())
@@ -97,6 +99,9 @@ public class AuthServiceImpl implements AuthService {
 
             jwtTokenService.saveAccessToken(accessToken, customUserDetails.getUserId());
             jwtTokenService.saveRefreshToken(refreshToken, customUserDetails.getUserId());
+
+            //Cập nhật avatar
+            playerService.getPlayerAvatar(customUserDetails.getPlayerId());
 
             return new LoginResponseDto(
                     accessToken,

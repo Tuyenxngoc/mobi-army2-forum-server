@@ -6,6 +6,9 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 
+import java.nio.file.Files;
+import java.nio.file.Paths;
+
 @Setter
 @Getter
 @NoArgsConstructor
@@ -31,12 +34,18 @@ public class GetPlayerCharacterResponseDto {
     public GetPlayerCharacterResponseDto(PlayerCharacters playerCharacters) {
         this.id = playerCharacters.getCharacter().getId();
         this.name = playerCharacters.getCharacter().getName();
-        this.avatar = String.format("/avatar/%d.gif", this.id);
         this.xp = playerCharacters.getXp();
         this.level = playerCharacters.getLevel();
         this.points = playerCharacters.getPoints();
         this.additionalPoints = playerCharacters.getAdditionalPoints();
         this.data = playerCharacters.getData();
+
+        String avatarPath = String.format("/avatar/%s_%d.gif", playerCharacters.getPlayer().getUser().getUsername(), this.id);
+        if (Files.exists(Paths.get("src/main/resources/static" + avatarPath))) {
+            this.avatar = avatarPath;
+        } else {
+            this.avatar = "/avatar/default.png";
+        }
     }
 
 }

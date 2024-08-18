@@ -71,11 +71,11 @@ public class GetPlayerInfoResponseDto {
             this.clan = new ClanDto(player.getClanMember().getClan());
         }
 
-        String avatarPath = String.format("/avatar/%s_%d.gif", this.username, player.getActiveCharacter().getCharacter().getId());
-        if (Files.exists(Paths.get("src/main/resources/static" + avatarPath))) {
-            this.avatar = avatarPath;
+        String avatarPath = String.format("avatar/%s_%d.gif", this.username, player.getActiveCharacter().getCharacter().getId());
+        if (Files.exists(Paths.get("public/" + avatarPath))) {
+            this.avatar = "/images/" + avatarPath;
         } else {
-            this.avatar = "/avatar/default.png";
+            this.avatar = "/images/avatar/default.png";
         }
     }
 

@@ -15,7 +15,7 @@ import lombok.Setter;
 public class TokenRefreshRequestDto {
 
     @NotBlank(message = ErrorMessage.INVALID_NOT_BLANK_FIELD)
-    @Size(max = 255, message = ErrorMessage.INVALID_TEXT_LENGTH)
+    @Size(max = 500, message = ErrorMessage.INVALID_TEXT_LENGTH)
     private String refreshToken;
 
 }

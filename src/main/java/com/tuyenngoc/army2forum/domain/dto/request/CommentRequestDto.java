@@ -15,8 +15,7 @@ import lombok.Setter;
 public class CommentRequestDto {
 
     @NotBlank(message = ErrorMessage.INVALID_NOT_BLANK_FIELD)
-    @Size(max = 100, message = ErrorMessage.INVALID_TEXT_LENGTH)
-    @Size(min = 3, message = ErrorMessage.INVALID_TEXT_LENGTH)
+    @Size(min = 3, max = 100, message = ErrorMessage.INVALID_TEXT_LENGTH)
     private String content;
 
 }

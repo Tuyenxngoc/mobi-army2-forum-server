@@ -19,14 +19,12 @@ public class RegisterRequestDto {
 
     @NotBlank(message = ErrorMessage.INVALID_NOT_BLANK_FIELD)
     @Pattern(regexp = CommonConstant.REGEXP_FULL_NAME, message = ErrorMessage.INVALID_FORMAT_NAME)
-    @Size(max = 100, message = ErrorMessage.INVALID_TEXT_LENGTH)
-    @Size(min = 2, message = ErrorMessage.INVALID_TEXT_LENGTH)
+    @Size(min = 2, max = 100, message = ErrorMessage.INVALID_TEXT_LENGTH)
     private String fullName;
 
     @NotBlank(message = ErrorMessage.INVALID_NOT_BLANK_FIELD)
     @Pattern(regexp = CommonConstant.REGEXP_PHONE_NUMBER, message = ErrorMessage.INVALID_FORMAT_PHONE)
-    @Size(max = 20, message = ErrorMessage.INVALID_TEXT_LENGTH)
-    @Size(min = 10, message = ErrorMessage.INVALID_TEXT_LENGTH)
+    @Size(min = 10, max = 20, message = ErrorMessage.INVALID_TEXT_LENGTH)
     private String phoneNumber;
 
     @NotBlank(message = ErrorMessage.INVALID_NOT_BLANK_FIELD)
@@ -44,8 +42,7 @@ public class RegisterRequestDto {
 
     @NotBlank(message = ErrorMessage.INVALID_NOT_BLANK_FIELD)
     @Email(message = ErrorMessage.INVALID_FORMAT_EMAIL)
-    @Size(max = 255, message = ErrorMessage.INVALID_TEXT_LENGTH)
-    @Size(min = 5, message = ErrorMessage.INVALID_TEXT_LENGTH)
+    @Size(min = 5, max = 255, message = ErrorMessage.INVALID_TEXT_LENGTH)
     private String email;
 
 }

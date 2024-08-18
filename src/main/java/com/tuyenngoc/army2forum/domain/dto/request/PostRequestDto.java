@@ -15,13 +15,11 @@ import lombok.Setter;
 public class PostRequestDto {
 
     @NotBlank(message = ErrorMessage.INVALID_NOT_BLANK_FIELD)
-    @Size(max = 255, message = ErrorMessage.INVALID_TEXT_LENGTH)
-    @Size(min = 5, message = ErrorMessage.INVALID_TEXT_LENGTH)
+    @Size(min = 5, max = 255, message = ErrorMessage.INVALID_TEXT_LENGTH)
     private String title;
 
     @NotBlank(message = ErrorMessage.INVALID_NOT_BLANK_FIELD)
-    @Size(max = 3000, message = ErrorMessage.INVALID_TEXT_LENGTH)
-    @Size(min = 5, message = ErrorMessage.INVALID_TEXT_LENGTH)
+    @Size(min = 5, max = 3000, message = ErrorMessage.INVALID_TEXT_LENGTH)
     private String content;
 
     private Long categoryId;

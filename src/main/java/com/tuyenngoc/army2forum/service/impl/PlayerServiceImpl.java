@@ -21,6 +21,7 @@ import com.tuyenngoc.army2forum.exception.NotFoundException;
 import com.tuyenngoc.army2forum.repository.*;
 import com.tuyenngoc.army2forum.security.CustomUserDetails;
 import com.tuyenngoc.army2forum.service.PlayerService;
+import com.tuyenngoc.army2forum.util.GifCreator;
 import com.tuyenngoc.army2forum.util.MaskingUtils;
 import com.tuyenngoc.army2forum.util.PaginationUtil;
 import lombok.AccessLevel;
@@ -38,7 +39,6 @@ import java.awt.image.BufferedImage;
 import java.io.File;
 import java.io.IOException;
 import java.util.ArrayList;
-import java.util.Comparator;
 import java.util.List;
 import java.util.Objects;
 import java.util.stream.Collectors;
@@ -280,20 +280,24 @@ public class PlayerServiceImpl implements PlayerService {
             }
         }
 
-        //Nếu trống thì trả về trang bị mặc định
-        if (equipChests.isEmpty()) {
-            return String.format("static/avatar/%d.gif", player.getActiveCharacter().getCharacter().getId());
-        }
-
         //Lấy chỉ số trang bị
         List<Equip> equips = new ArrayList<>();
         for (EquipChest equipChest : equipChests) {
             equipRepository.getEquip(equipChest.getCharacterId(), equipChest.getEquipType(), equipChest.getEquipIndex()).ifPresent(equips::add);
         }
-        equips.sort(Comparator.comparing(Equip::getEquipType));
+
+        byte characterId = player.getActiveCharacter().getCharacter().getId();
+
+        List<Equip> defaultEquips = equipRepository.getEquipDefault(characterId);
+        for (Equip defaultEquip : defaultEquips) {
+            boolean existsInEquips = equips.stream()
+                    .anyMatch(equip -> equip.getEquipType().equals(defaultEquip.getEquipType()));
+            if (!existsInEquips) {
+                equips.add(defaultEquip);
+            }
+        }
 
         try {
-            byte characterId = player.getActiveCharacter().getCharacter().getId();
             BufferedImage bigImage = ImageIO.read(new File(String.format("src/main/resources/static/res/bigImage/bigImage%d.png", characterId)));
             BufferedImage playerImage = ImageIO.read(new File(String.format("src/main/resources/static/res/player/%d.png", characterId)));
 
@@ -302,7 +306,7 @@ public class PlayerServiceImpl implements PlayerService {
                     {13, 10, 0, 96, 24, 24},
                     {13, 10, 0, 96, 24, 24},
                     {13, 10, 0, 96, 24, 24},
-                    {13, 13, 0, 134, 30, 30},
+                    {13, 16, 0, 134, 30, 30},
                     {13, 10, 0, 96, 24, 24},
                     {13, 10, 0, 96, 24, 24},
                     {13, 10, 0, 96, 24, 24},
@@ -316,7 +320,7 @@ public class PlayerServiceImpl implements PlayerService {
                     {13, 10, 0, 120, 24, 24},
                     {13, 10, 0, 120, 24, 24},
                     {13, 10, 0, 120, 24, 24},
-                    {13, 12, 0, 165, 30, 30},
+                    {13, 15, 0, 165, 30, 30},
                     {13, 10, 0, 120, 24, 24},
                     {13, 10, 0, 120, 24, 24},
                     {13, 11, 0, 120, 24, 24},
@@ -327,21 +331,11 @@ public class PlayerServiceImpl implements PlayerService {
             BufferedImage image2 = createImage(bigImage, playerImage, equips, head2[characterId], 5);
 
             String username = player.getUser().getUsername();
-            // Định dạng tên tệp
             String outputDir = "src/main/resources/static/tmp/";
-            String image1FilePath = String.format("%simage1_%s.png", outputDir, username);
-            String image2FilePath = String.format("%simage2_%s.png", outputDir, username);
+            String outputGifPath = String.format("%soutput_%s.gif", outputDir, username);
+            GifCreator.createGif(image1, image2, outputGifPath);
 
-            // Lưu image1
-            File image1File = new File(image1FilePath);
-            ImageIO.write(image1, "png", image1File);
-
-            // Lưu image2
-            File image2File = new File(image2FilePath);
-            ImageIO.write(image2, "png", image2File);
-
-            // Trả về đường dẫn đến tệp tin hình ảnh
-            return String.format("Saved images to: %s and %s", image1FilePath, image2FilePath);
+            return outputGifPath;
         } catch (Exception e) {
             e.printStackTrace();
             return null;
@@ -350,16 +344,11 @@ public class PlayerServiceImpl implements PlayerService {
 
     private BufferedImage createImage(BufferedImage bigImage, BufferedImage playerImage, List<Equip> equips, int[] cutCoordinates, int index) {
         BufferedImage image = new BufferedImage(50, 50, BufferedImage.TYPE_INT_ARGB);
-
-        // Tạo đối tượng Graphics2D để vẽ lên BufferedImage
         Graphics2D graphics = image.createGraphics();
-        try {
-            // Cắt và vẽ hình ảnh của người chơi
-            BufferedImage playerImageCut = playerImage.getSubimage(cutCoordinates[2], cutCoordinates[3], cutCoordinates[4], cutCoordinates[5]);
-            graphics.drawImage(playerImageCut, cutCoordinates[0], cutCoordinates[1], null);
 
-            // Vẽ hình ảnh của các trang bị
-            for (Equip equip : equips) {
+        //Vẽ súng và ba lô trước
+        for (Equip equip : equips) {
+            if (equip.getEquipType() == 0 || equip.getEquipType() == 4) {
                 BufferedImage equipImage = bigImage.getSubimage(
                         equip.getBigImageCutX()[index],
                         equip.getBigImageCutY()[index],
@@ -368,10 +357,26 @@ public class PlayerServiceImpl implements PlayerService {
                 );
                 graphics.drawImage(equipImage, 31 + equip.getBigImageAlignX()[index], 50 + equip.getBigImageAlignY()[index], null);
             }
-        } finally {
-            // Đảm bảo giải phóng tài nguyên Graphics2D
-            graphics.dispose();
         }
+
+        //Vẽ ảnh nhân vật
+        BufferedImage playerImageCut = playerImage.getSubimage(cutCoordinates[2], cutCoordinates[3], cutCoordinates[4], cutCoordinates[5]);
+        graphics.drawImage(playerImageCut, cutCoordinates[0], cutCoordinates[1], null);
+
+        //Vẽ các trang bị còn lại
+        for (Equip equip : equips) {
+            if (equip.getEquipType() == 0 || equip.getEquipType() == 4) {
+                continue;
+            }
+            BufferedImage equipImage = bigImage.getSubimage(
+                    equip.getBigImageCutX()[index],
+                    equip.getBigImageCutY()[index],
+                    equip.getBigImageSizeX()[index],
+                    equip.getBigImageSizeY()[index]
+            );
+            graphics.drawImage(equipImage, 31 + equip.getBigImageAlignX()[index], 50 + equip.getBigImageAlignY()[index], null);
+        }
+        graphics.dispose();
 
         return image;
     }

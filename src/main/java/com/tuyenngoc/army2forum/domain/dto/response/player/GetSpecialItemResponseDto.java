@@ -26,7 +26,7 @@ public class GetSpecialItemResponseDto {
         this.id = item.getId();
         this.name = item.getName();
         this.detail = item.getDetail();
-        this.imageUrl = String.format("/res/icon/item/%d.png", item.getId());
+        this.imageUrl = String.format("/images/icon/item/%d.png", item.getId());
     }
 
 }

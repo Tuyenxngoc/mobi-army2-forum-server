@@ -35,7 +35,7 @@ public class GetEquipmentResponseDto {
             if (slot < 0) {
                 slots.add(null);
             } else {
-                slots.add("/res/icon/item/" + slot + ".png");
+                slots.add("/images/icon/item/" + slot + ".png");
             }
         }
     }

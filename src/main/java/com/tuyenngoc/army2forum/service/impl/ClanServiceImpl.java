@@ -58,7 +58,7 @@ import java.util.stream.Collectors;
 @FieldDefaults(level = AccessLevel.PRIVATE)
 public class ClanServiceImpl implements ClanService {
 
-    @Value("${app.icons-directory:static/res/icon/clan/}")
+    @Value("${app.icons-directory:public/icon/clan/}")
     String iconsDirectory;
 
     @Value("${clan.creation.price:1000}")
@@ -207,7 +207,7 @@ public class ClanServiceImpl implements ClanService {
                         try {
                             String fileName = filePath.getFileName().toString();
                             Long id = Long.parseLong(fileName.split("\\.")[0]); // Extract ID from filename
-                            String src = "/res/icon/clan/" + fileName; // Relative URL to serve static content
+                            String src = "/images/icon/clan/" + fileName; // Relative URL to serve static content
                             return new GetClanIconResponseDto(id, src);
                         } catch (NumberFormatException e) {
                             System.err.println("Error parsing ID from file: " + filePath + ", Exception: " + e.getMessage());

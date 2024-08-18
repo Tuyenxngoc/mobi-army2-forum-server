@@ -47,7 +47,7 @@ public class GetClanDetailResponseDto extends DateAuditingDto {
 
         this.id = clan.getId();
         this.iconId = clan.getIcon();
-        this.icon = String.format("/res/icon/clan/%d.png", clan.getIcon());
+        this.icon = String.format("/images/icon/clan/%d.png", clan.getIcon());
         this.name = clan.getName();
         this.masterName = clan.getMaster().getUser().getUsername();
         this.memberCount = clan.getMembers().size();

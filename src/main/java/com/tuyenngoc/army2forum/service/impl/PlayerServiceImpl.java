@@ -157,8 +157,8 @@ public class PlayerServiceImpl implements PlayerService {
                             GetEquipmentResponseDto equipResponseDto = new GetEquipmentResponseDto(equip, equipChest);
 
                             // Đường dẫn đến thư mục tmp và ảnh gốc
-                            String tmpDirPath = "src/main/resources/static/tmp";
-                            String originalImagePath = "src/main/resources/static/res/itemSpecial.png";
+                            String tmpDirPath = "public/tmp";
+                            String originalImagePath = "src/main/resources/static/itemSpecial.png";
 
                             // Kiểm tra và tạo thư mục tmp nếu chưa tồn tại
                             File tmpDir = new File(tmpDirPath);
@@ -328,14 +328,14 @@ public class PlayerServiceImpl implements PlayerService {
         }
 
         try {
-            BufferedImage bigImage = ImageIO.read(new File(String.format("src/main/resources/static/res/bigImage/bigImage%d.png", characterId)));
-            BufferedImage playerImage = ImageIO.read(new File(String.format("src/main/resources/static/res/player/%d.png", characterId)));
+            BufferedImage bigImage = ImageIO.read(new File(String.format("src/main/resources/static/bigImage/bigImage%d.png", characterId)));
+            BufferedImage playerImage = ImageIO.read(new File(String.format("src/main/resources/static/player/%d.png", characterId)));
 
             BufferedImage image1 = createImage(bigImage, playerImage, HEAD_1[characterId], equips, 4);
             BufferedImage image2 = createImage(bigImage, playerImage, HEAD_2[characterId], equips, 5);
 
             String username = player.getUser().getUsername();
-            String outputGifPath = String.format("src/main/resources/static/avatar/%s_%d.gif", username, characterId);
+            String outputGifPath = String.format("public/avatar/%s_%d.gif", username, characterId);
 
             GifCreator.createGif(image1, image2, outputGifPath);
 

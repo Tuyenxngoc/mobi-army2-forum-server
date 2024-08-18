@@ -21,6 +21,6 @@ public class ClanDto {
     public ClanDto(Clan clan) {
         this.id = clan.getId();
         this.name = clan.getName();
-        this.icon = String.format("/res/icon/clan/%d.png", clan.getIcon());
+        this.icon = String.format("/images/icon/clan/%d.png", clan.getIcon());
     }
 }

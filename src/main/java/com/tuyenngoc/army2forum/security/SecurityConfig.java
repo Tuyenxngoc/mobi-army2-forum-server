@@ -53,9 +53,7 @@ public class SecurityConfig {
             "/api/v1/auth/google-login",
             "/api/v1/auth/forget-password",
             // static resources
-            "/res/**",
-            "/avatar/**",
-            "/tmp/**",
+            "/images/**",
     };
 
     UserDetailsService userDetailsService;

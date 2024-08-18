@@ -26,7 +26,7 @@ public class GetClanResponseDto {
 
     public GetClanResponseDto(Clan clan) {
         this.id = clan.getId();
-        this.icon = String.format("/res/icon/clan/%d.png", clan.getIcon());
+        this.icon = String.format("/images/icon/clan/%d.png", clan.getIcon());
         this.name = clan.getName();
         this.masterName = clan.getMaster().getUser().getUsername();
         this.memberCount = clan.getMembers().size();

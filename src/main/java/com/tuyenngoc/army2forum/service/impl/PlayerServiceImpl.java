@@ -319,9 +319,8 @@ public class PlayerServiceImpl implements PlayerService {
 
         if (!isDisguiseSet) {
             handleEquipments(data, player, now, equips);
+            addDefaultEquips(characterId, equips);
         }
-
-        addDefaultEquips(characterId, equips);
 
         createAvatarImage(characterId, username, equips);
     }

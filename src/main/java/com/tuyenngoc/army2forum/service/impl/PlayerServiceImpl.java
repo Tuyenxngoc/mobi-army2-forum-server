@@ -40,6 +40,8 @@ import java.awt.*;
 import java.awt.image.BufferedImage;
 import java.io.File;
 import java.io.IOException;
+import java.nio.file.Files;
+import java.nio.file.Paths;
 import java.time.LocalDateTime;
 import java.time.temporal.ChronoUnit;
 import java.util.ArrayList;
@@ -79,15 +81,15 @@ public class PlayerServiceImpl implements PlayerService {
             {13, 10, 0, 120, 24, 24}
     };
 
-    private String tmpPath = "app/public/images/tmp";
+    private final String tmpPath = "app/public/images/tmp";
 
-    private String avatarPath = "app/public/images/avatar/%s_%d.gif";
+    private final String avatarPath = "app/public/images/avatar/%s_%d.gif";
 
-    private String specialItemPath = "app/data/images/itemSpecial.png";
+    private final String specialItemPath = "app/data/images/itemSpecial.png";
 
-    private String bigImagePath = "app/data/images/bigImage/bigImage%d.png";
+    private final String bigImagePath = "app/data/images/bigImage/bigImage%d.png";
 
-    private String playerPath = "app/data/images/player/%d.png";
+    private final String playerPath = "app/data/images/player/%d.png";
 
     final PlayerRepository playerRepository;
 
@@ -387,6 +389,16 @@ public class PlayerServiceImpl implements PlayerService {
         graphics.dispose();
 
         return image;
+    }
+
+    public static String getAvatar(String playerName, long characterId) {
+        String avatarPath = String.format("/images/avatar/%s_%d.gif", playerName, characterId);
+
+        if (Files.exists(Paths.get("app/public" + avatarPath))) {
+            return avatarPath;
+        } else {
+            return "/images/default.png";
+        }
     }
 
 }

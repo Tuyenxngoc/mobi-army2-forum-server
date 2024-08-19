@@ -1,5 +1,6 @@
 package com.tuyenngoc.army2forum.domain.dto;
 
+import com.tuyenngoc.army2forum.constant.FilePaths;
 import com.tuyenngoc.army2forum.domain.entity.Clan;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
@@ -21,6 +22,6 @@ public class ClanDto {
     public ClanDto(Clan clan) {
         this.id = clan.getId();
         this.name = clan.getName();
-        this.icon = String.format("/images/icon/clan/%d.png", clan.getIcon());
+        this.icon = String.format(FilePaths.ICON_CLAN_PATH + "%d.png", clan.getIcon());
     }
 }

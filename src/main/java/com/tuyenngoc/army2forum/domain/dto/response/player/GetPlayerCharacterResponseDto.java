@@ -1,13 +1,11 @@
 package com.tuyenngoc.army2forum.domain.dto.response.player;
 
 import com.tuyenngoc.army2forum.domain.entity.PlayerCharacters;
+import com.tuyenngoc.army2forum.service.impl.PlayerServiceImpl;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
-
-import java.nio.file.Files;
-import java.nio.file.Paths;
 
 @Setter
 @Getter
@@ -34,18 +32,12 @@ public class GetPlayerCharacterResponseDto {
     public GetPlayerCharacterResponseDto(PlayerCharacters playerCharacters) {
         this.id = playerCharacters.getCharacter().getId();
         this.name = playerCharacters.getCharacter().getName();
+        this.avatar = PlayerServiceImpl.getAvatar(playerCharacters.getPlayer().getUser().getUsername(), this.id);
         this.xp = playerCharacters.getXp();
         this.level = playerCharacters.getLevel();
         this.points = playerCharacters.getPoints();
         this.additionalPoints = playerCharacters.getAdditionalPoints();
         this.data = playerCharacters.getData();
-
-        String avatarPath = String.format("/images/avatar/%s_%d.gif", playerCharacters.getPlayer().getUser().getUsername(), this.id);
-        if (Files.exists(Paths.get("public" + avatarPath))) {
-            this.avatar = avatarPath;
-        } else {
-            this.avatar = "/images/default.png";
-        }
     }
 
 }

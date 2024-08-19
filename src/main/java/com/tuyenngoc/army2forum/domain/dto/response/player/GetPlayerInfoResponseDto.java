@@ -5,13 +5,12 @@ import com.fasterxml.jackson.annotation.JsonInclude;
 import com.tuyenngoc.army2forum.constant.CommonConstant;
 import com.tuyenngoc.army2forum.domain.dto.ClanDto;
 import com.tuyenngoc.army2forum.domain.entity.Player;
+import com.tuyenngoc.army2forum.service.impl.PlayerServiceImpl;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 
-import java.nio.file.Files;
-import java.nio.file.Paths;
 import java.time.LocalDateTime;
 import java.util.List;
 import java.util.stream.Collectors;
@@ -26,9 +25,9 @@ public class GetPlayerInfoResponseDto {
 
     private boolean online;
 
-    private String avatar;
-
     private String username;
+
+    private String avatar;
 
     private int xu;
 
@@ -61,6 +60,7 @@ public class GetPlayerInfoResponseDto {
         this.id = player.getId();
         this.online = player.getIsOnline();
         this.username = player.getUser().getUsername();
+        this.avatar = PlayerServiceImpl.getAvatar(this.username, player.getActiveCharacter().getCharacter().getId());
         this.xu = player.getXu();
         this.luong = player.getLuong();
         this.cup = player.getCup();
@@ -69,13 +69,6 @@ public class GetPlayerInfoResponseDto {
                 .collect(Collectors.toList());
         if (player.getClanMember() != null) {
             this.clan = new ClanDto(player.getClanMember().getClan());
-        }
-
-        String avatarPath = String.format("/images/avatar/%s_%d.gif", this.username, player.getActiveCharacter().getCharacter().getId());
-        if (Files.exists(Paths.get("public/" + avatarPath))) {
-            this.avatar = avatarPath;
-        } else {
-            this.avatar = "/images/default.png";
         }
     }
 

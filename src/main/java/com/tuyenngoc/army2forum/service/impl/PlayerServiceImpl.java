@@ -45,6 +45,7 @@ import java.nio.file.Paths;
 import java.time.LocalDateTime;
 import java.time.temporal.ChronoUnit;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 import java.util.Objects;
 import java.util.stream.Collectors;
@@ -308,36 +309,76 @@ public class PlayerServiceImpl implements PlayerService {
     @Override
     public void getPlayerAvatar(Long playerId) {
         Player player = getPlayerById(playerId);
-
         int[] data = player.getActiveCharacter().getData();
-        List<EquipChest> equipChests = new ArrayList<>();
-        for (int key : data) {
-            int index = player.getEquipmentChest().indexOf(new EquipChest(key));
-            if (index != -1) {
-                equipChests.add(player.getEquipmentChest().get(index));
-            }
+        String username = player.getUser().getUsername();
+        byte characterId = player.getActiveCharacter().getCharacter().getId();
+
+        LocalDateTime now = LocalDateTime.now();
+        List<Equip> equips = new ArrayList<>();
+        boolean isDisguiseSet = handleDisguise(data, player, characterId, now, equips);
+
+        if (!isDisguiseSet) {
+            handleEquipments(data, player, now, equips);
         }
 
-        List<Equip> equips = new ArrayList<>();
-        LocalDateTime now = LocalDateTime.now();
+        addDefaultEquips(characterId, equips);
+
+        createAvatarImage(characterId, username, equips);
+    }
+
+    private boolean handleDisguise(int[] data, Player player, byte characterId, LocalDateTime now, List<Equip> equips) {
+        if (data[5] != -1) {
+            EquipChest equipChest = findEquipChest(data[5], player.getEquipmentChest());
+            if (equipChest != null) {
+                Equip equip = getValidEquip(equipChest, now);
+                if (equip != null && equip.getIsDisguise() == 1) {
+                    List<Integer> disguiseIndexes = Arrays.stream(equip.getDisguiseEquippedIndexes())
+                            .boxed()
+                            .collect(Collectors.toList());
+                    equips.addAll(equipRepository.getEquipByIndexes(characterId, disguiseIndexes));
+                    return true;
+                }
+            }
+        }
+        return false;
+    }
+
+    private void handleEquipments(int[] data, Player player, LocalDateTime now, List<Equip> equips) {
+        List<EquipChest> equipChests = Arrays.stream(data)
+                .filter(key -> key != -1)
+                .mapToObj(key -> findEquipChest(key, player.getEquipmentChest()))
+                .filter(Objects::nonNull)
+                .collect(Collectors.toList());
+
         for (EquipChest equipChest : equipChests) {
-            Equip equip = equipRepository.getEquip(equipChest.getCharacterId(), equipChest.getEquipType(), equipChest.getEquipIndex()).orElse(null);
-            if (equip != null && !(ChronoUnit.DAYS.between(equipChest.getPurchaseDate(), now) > equip.getExpirationDays())) {
+            Equip equip = getValidEquip(equipChest, now);
+            if (equip != null) {
                 equips.add(equip);
             }
         }
+    }
 
-        byte characterId = player.getActiveCharacter().getCharacter().getId();
+    private EquipChest findEquipChest(int key, List<EquipChest> equipmentChest) {
+        int index = equipmentChest.indexOf(new EquipChest(key));
+        return index != -1 ? equipmentChest.get(index) : null;
+    }
 
+    private Equip getValidEquip(EquipChest equipChest, LocalDateTime now) {
+        return equipRepository.getEquip(equipChest.getCharacterId(), equipChest.getEquipType(), equipChest.getEquipIndex())
+                .filter(equip -> ChronoUnit.DAYS.between(equipChest.getPurchaseDate(), now) <= equip.getExpirationDays())
+                .orElse(null);
+    }
+
+    private void addDefaultEquips(byte characterId, List<Equip> equips) {
         List<Equip> defaultEquips = equipRepository.getEquipDefault(characterId);
         for (Equip defaultEquip : defaultEquips) {
-            boolean existsInEquips = equips.stream()
-                    .anyMatch(equip -> equip.getEquipType().equals(defaultEquip.getEquipType()));
-            if (!existsInEquips) {
+            if (equips.stream().noneMatch(equip -> equip.getEquipType().equals(defaultEquip.getEquipType()))) {
                 equips.add(defaultEquip);
             }
         }
+    }
 
+    private void createAvatarImage(byte characterId, String username, List<Equip> equips) {
         try {
             BufferedImage bigImage = ImageIO.read(new File(String.format(bigImagePath, characterId)));
             BufferedImage playerImage = ImageIO.read(new File(String.format(playerPath, characterId)));
@@ -345,12 +386,10 @@ public class PlayerServiceImpl implements PlayerService {
             BufferedImage image1 = createImage(bigImage, playerImage, HEAD_1[characterId], equips, 4);
             BufferedImage image2 = createImage(bigImage, playerImage, HEAD_2[characterId], equips, 5);
 
-            String username = player.getUser().getUsername();
             String outputGifPath = String.format(avatarPath, username, characterId);
-
             GifCreator.createGif(image1, image2, outputGifPath);
-        } catch (Exception e) {
-            log.error("Error creating GIF image " + e.getMessage(), e);
+        } catch (IOException e) {
+            log.error("Error creating GIF image", e);
         }
     }
 

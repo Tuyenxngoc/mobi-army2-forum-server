@@ -29,4 +29,13 @@ public interface EquipRepository extends JpaRepository<Equip, Short> {
             "e.isDefault = TRUE")
     List<Equip> getEquipDefault(@Param("characterId") byte characterId);
 
+    @Query("SELECT e FROM " +
+            "Equip e WHERE " +
+            "e.characterId = :characterId AND " +
+            "e.equipIndex IN :equippedIndexes")
+    List<Equip> getEquipByIndexes(
+            @Param("characterId") byte characterId,
+            @Param("equippedIndexes") List<Integer> equippedIndexes
+    );
+
 }

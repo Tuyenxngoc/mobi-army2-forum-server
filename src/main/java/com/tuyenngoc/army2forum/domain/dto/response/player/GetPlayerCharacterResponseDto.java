@@ -40,11 +40,11 @@ public class GetPlayerCharacterResponseDto {
         this.additionalPoints = playerCharacters.getAdditionalPoints();
         this.data = playerCharacters.getData();
 
-        String avatarPath = String.format("/avatar/%s_%d.gif", playerCharacters.getPlayer().getUser().getUsername(), this.id);
-        if (Files.exists(Paths.get("src/main/resources/static" + avatarPath))) {
+        String avatarPath = String.format("/images/avatar/%s_%d.gif", playerCharacters.getPlayer().getUser().getUsername(), this.id);
+        if (Files.exists(Paths.get("public" + avatarPath))) {
             this.avatar = avatarPath;
         } else {
-            this.avatar = "/avatar/default.png";
+            this.avatar = "/images/avatar/default.png";
         }
     }
 

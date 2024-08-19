@@ -35,11 +35,11 @@ public class PlayerDto {
         this.isOnline = player.getIsOnline();
         this.points = player.getComments().size() + player.getPosts().size();
 
-        String avatarPath = String.format("/avatar/%s_%d.gif", this.name, player.getActiveCharacter().getCharacter().getId());
-        if (Files.exists(Paths.get("src/main/resources/static" + avatarPath))) {
+        String avatarPath = String.format("/images/avatar/%s_%d.gif", this.name, player.getActiveCharacter().getCharacter().getId());
+        if (Files.exists(Paths.get("public" + avatarPath))) {
             this.avatar = avatarPath;
         } else {
-            this.avatar = "/avatar/default.png";
+            this.avatar = "/images/avatar/default.png";
         }
     }
 }

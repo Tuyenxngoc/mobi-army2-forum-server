@@ -71,9 +71,9 @@ public class GetPlayerInfoResponseDto {
             this.clan = new ClanDto(player.getClanMember().getClan());
         }
 
-        String avatarPath = String.format("avatar/%s_%d.gif", this.username, player.getActiveCharacter().getCharacter().getId());
+        String avatarPath = String.format("/images/avatar/%s_%d.gif", this.username, player.getActiveCharacter().getCharacter().getId());
         if (Files.exists(Paths.get("public/" + avatarPath))) {
-            this.avatar = "/images/" + avatarPath;
+            this.avatar = avatarPath;
         } else {
             this.avatar = "/images/avatar/default.png";
         }

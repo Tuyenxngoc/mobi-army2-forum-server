@@ -335,7 +335,7 @@ public class PlayerServiceImpl implements PlayerService {
             BufferedImage image2 = createImage(bigImage, playerImage, HEAD_2[characterId], equips, 5);
 
             String username = player.getUser().getUsername();
-            String outputGifPath = String.format("public/avatar/%s_%d.gif", username, characterId);
+            String outputGifPath = String.format("public/images/avatar/%s_%d.gif", username, characterId);
 
             GifCreator.createGif(image1, image2, outputGifPath);
 

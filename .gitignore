@@ -1,4 +1,5 @@
 /.idea/
-/public/images/avatar/
-/src/main/resources/config.properties
 /target/
+/src/main/resources/config.properties
+/app/public/images/avatar/
+/app/public/images/tmp/

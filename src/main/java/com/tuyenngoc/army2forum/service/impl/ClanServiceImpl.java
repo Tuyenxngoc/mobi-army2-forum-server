@@ -1,9 +1,6 @@
 package com.tuyenngoc.army2forum.service.impl;
 
-import com.tuyenngoc.army2forum.constant.ClanMemberRightsConstants;
-import com.tuyenngoc.army2forum.constant.ErrorMessage;
-import com.tuyenngoc.army2forum.constant.SortByDataConstant;
-import com.tuyenngoc.army2forum.constant.SuccessMessage;
+import com.tuyenngoc.army2forum.constant.*;
 import com.tuyenngoc.army2forum.domain.dto.pagination.PaginationFullRequestDto;
 import com.tuyenngoc.army2forum.domain.dto.pagination.PaginationResponseDto;
 import com.tuyenngoc.army2forum.domain.dto.pagination.PagingMeta;
@@ -36,17 +33,14 @@ import lombok.experimental.FieldDefaults;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.MessageSource;
 import org.springframework.context.i18n.LocaleContextHolder;
-import org.springframework.core.io.ClassPathResource;
-import org.springframework.core.io.Resource;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.io.File;
 import java.io.IOException;
 import java.nio.file.Files;
-import java.nio.file.Path;
-import java.nio.file.Paths;
 import java.time.Duration;
 import java.time.LocalDateTime;
 import java.util.List;
@@ -58,8 +52,7 @@ import java.util.stream.Collectors;
 @FieldDefaults(level = AccessLevel.PRIVATE)
 public class ClanServiceImpl implements ClanService {
 
-    @Value("${app.icons-directory:public/icon/clan/}")
-    String iconsDirectory;
+    String iconsDirectory = "app/public/images/icon/clan/";
 
     @Value("${clan.creation.price:1000}")
     int clanCreationPrice;
@@ -196,25 +189,28 @@ public class ClanServiceImpl implements ClanService {
     @Override
     public List<GetClanIconResponseDto> getClanIcons() {
         try {
-            // Get the path to the resource directory
-            Resource resource = new ClassPathResource(iconsDirectory);
-            Path path = Paths.get(resource.getURI());
+            File directory = new File(iconsDirectory);
+            if (!directory.exists()) {
+                return List.of();
+            }
+            if (!directory.isDirectory()) {
+                return List.of();
+            }
 
-            // List all files in the directory
-            return Files.list(path)
+            return Files.list(directory.toPath())
                     .filter(Files::isRegularFile)
                     .map(filePath -> {
                         try {
                             String fileName = filePath.getFileName().toString();
-                            Long id = Long.parseLong(fileName.split("\\.")[0]); // Extract ID from filename
-                            String src = "/images/icon/clan/" + fileName; // Relative URL to serve static content
+                            Long id = Long.parseLong(fileName.split("\\.")[0]);
+                            String src = FilePaths.ICON_CLAN_PATH + fileName;
                             return new GetClanIconResponseDto(id, src);
                         } catch (NumberFormatException e) {
                             System.err.println("Error parsing ID from file: " + filePath + ", Exception: " + e.getMessage());
-                            return null; // Skip this file if parsing fails
+                            return null;
                         }
                     })
-                    .filter(Objects::nonNull) // Filter out any null results
+                    .filter(Objects::nonNull)
                     .collect(Collectors.toList());
         } catch (IOException e) {
             e.printStackTrace();

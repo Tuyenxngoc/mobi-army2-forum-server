@@ -1,5 +1,6 @@
 package com.tuyenngoc.army2forum.domain.dto.response.player;
 
+import com.tuyenngoc.army2forum.constant.FilePaths;
 import com.tuyenngoc.army2forum.domain.entity.Equip;
 import com.tuyenngoc.army2forum.domain.json.EquipChest;
 import lombok.AllArgsConstructor;
@@ -35,7 +36,7 @@ public class GetEquipmentResponseDto {
             if (slot < 0) {
                 slots.add(null);
             } else {
-                slots.add("/images/icon/item/" + slot + ".png");
+                slots.add(FilePaths.ICON_ITEM_PATH + slot + ".png");
             }
         }
     }

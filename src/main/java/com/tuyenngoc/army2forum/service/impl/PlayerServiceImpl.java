@@ -1,6 +1,7 @@
 package com.tuyenngoc.army2forum.service.impl;
 
 import com.tuyenngoc.army2forum.constant.ErrorMessage;
+import com.tuyenngoc.army2forum.constant.FilePaths;
 import com.tuyenngoc.army2forum.constant.SortByDataConstant;
 import com.tuyenngoc.army2forum.constant.SuccessMessage;
 import com.tuyenngoc.army2forum.domain.dto.pagination.PaginationFullRequestDto;
@@ -27,6 +28,7 @@ import com.tuyenngoc.army2forum.util.PaginationUtil;
 import lombok.AccessLevel;
 import lombok.RequiredArgsConstructor;
 import lombok.experimental.FieldDefaults;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.context.MessageSource;
 import org.springframework.context.i18n.LocaleContextHolder;
 import org.springframework.data.domain.Page;
@@ -45,12 +47,13 @@ import java.util.List;
 import java.util.Objects;
 import java.util.stream.Collectors;
 
+@Slf4j
 @Service
 @RequiredArgsConstructor
-@FieldDefaults(level = AccessLevel.PRIVATE, makeFinal = true)
+@FieldDefaults(level = AccessLevel.PRIVATE)
 public class PlayerServiceImpl implements PlayerService {
 
-    static int[][] HEAD_1 = {
+    static final int[][] HEAD_1 = {
             {13, 10, 0, 96, 24, 24},
             {13, 10, 0, 96, 24, 24},
             {13, 10, 0, 96, 24, 24},
@@ -63,7 +66,7 @@ public class PlayerServiceImpl implements PlayerService {
             {13, 10, 0, 96, 24, 24}
     };
 
-    static int[][] HEAD_2 = {
+    static final int[][] HEAD_2 = {
             {13, 10, 0, 120, 24, 24},
             {13, 10, 0, 120, 24, 24},
             {13, 10, 0, 120, 24, 24},
@@ -76,17 +79,27 @@ public class PlayerServiceImpl implements PlayerService {
             {13, 10, 0, 120, 24, 24}
     };
 
-    PlayerRepository playerRepository;
+    private String tmpPath = "app/public/images/tmp";
 
-    PostRepository postRepository;
+    private String avatarPath = "app/public/images/avatar/%s_%d.gif";
 
-    MessageSource messageSource;
+    private String specialItemPath = "app/data/images/itemSpecial.png";
 
-    SpecialItemRepository specialItemRepository;
+    private String bigImagePath = "app/data/images/bigImage/bigImage%d.png";
 
-    EquipRepository equipRepository;
+    private String playerPath = "app/data/images/player/%d.png";
 
-    PlayerCharacterRepository playerCharacterRepository;
+    final PlayerRepository playerRepository;
+
+    final PostRepository postRepository;
+
+    final MessageSource messageSource;
+
+    final SpecialItemRepository specialItemRepository;
+
+    final EquipRepository equipRepository;
+
+    final PlayerCharacterRepository playerCharacterRepository;
 
     private Player getPlayerById(Long playerId) {
         return playerRepository.findById(playerId)
@@ -156,12 +169,8 @@ public class PlayerServiceImpl implements PlayerService {
                         .map(equip -> {
                             GetEquipmentResponseDto equipResponseDto = new GetEquipmentResponseDto(equip, equipChest);
 
-                            // Đường dẫn đến thư mục tmp và ảnh gốc
-                            String tmpDirPath = "public/tmp";
-                            String originalImagePath = "src/main/resources/static/itemSpecial.png";
-
                             // Kiểm tra và tạo thư mục tmp nếu chưa tồn tại
-                            File tmpDir = new File(tmpDirPath);
+                            File tmpDir = new File(tmpPath);
                             if (!tmpDir.exists()) {
                                 tmpDir.mkdirs();
                             }
@@ -174,7 +183,7 @@ public class PlayerServiceImpl implements PlayerService {
                             if (!frameCountImageFile.exists()) {
                                 try {
                                     // Đọc ảnh gốc
-                                    BufferedImage originalImage = ImageIO.read(new File(originalImagePath));
+                                    BufferedImage originalImage = ImageIO.read(new File(specialItemPath));
 
                                     // Cắt ảnh từ ảnh gốc
                                     int y = equip.getFrameCount() * 16;
@@ -189,7 +198,7 @@ public class PlayerServiceImpl implements PlayerService {
                             }
 
                             // Tạo link ảnh
-                            equipResponseDto.setImageUrl("/tmp/" + frameCountImageName);
+                            equipResponseDto.setImageUrl(FilePaths.TMP_PATH + frameCountImageName);
 
                             return equipResponseDto;
                         }).orElse(null))
@@ -295,7 +304,7 @@ public class PlayerServiceImpl implements PlayerService {
     }
 
     @Override
-    public String getPlayerAvatar(Long playerId) {
+    public void getPlayerAvatar(Long playerId) {
         Player player = getPlayerById(playerId);
 
         int[] data = player.getActiveCharacter().getData();
@@ -328,21 +337,18 @@ public class PlayerServiceImpl implements PlayerService {
         }
 
         try {
-            BufferedImage bigImage = ImageIO.read(new File(String.format("src/main/resources/static/bigImage/bigImage%d.png", characterId)));
-            BufferedImage playerImage = ImageIO.read(new File(String.format("src/main/resources/static/player/%d.png", characterId)));
+            BufferedImage bigImage = ImageIO.read(new File(String.format(bigImagePath, characterId)));
+            BufferedImage playerImage = ImageIO.read(new File(String.format(playerPath, characterId)));
 
             BufferedImage image1 = createImage(bigImage, playerImage, HEAD_1[characterId], equips, 4);
             BufferedImage image2 = createImage(bigImage, playerImage, HEAD_2[characterId], equips, 5);
 
             String username = player.getUser().getUsername();
-            String outputGifPath = String.format("public/images/avatar/%s_%d.gif", username, characterId);
+            String outputGifPath = String.format(avatarPath, username, characterId);
 
             GifCreator.createGif(image1, image2, outputGifPath);
-
-            return outputGifPath;
         } catch (Exception e) {
-            e.printStackTrace();
-            return null;
+            log.error("Error creating GIF image " + e.getMessage(), e);
         }
     }
 

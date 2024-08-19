@@ -1,5 +1,6 @@
 package com.tuyenngoc.army2forum.domain.dto.response.player;
 
+import com.tuyenngoc.army2forum.constant.FilePaths;
 import com.tuyenngoc.army2forum.domain.entity.SpecialItem;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
@@ -26,7 +27,7 @@ public class GetSpecialItemResponseDto {
         this.id = item.getId();
         this.name = item.getName();
         this.detail = item.getDetail();
-        this.imageUrl = String.format("/images/icon/item/%d.png", item.getId());
+        this.imageUrl = String.format(FilePaths.ICON_ITEM_PATH + "%d.png", item.getId());
     }
 
 }

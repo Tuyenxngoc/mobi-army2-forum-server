@@ -75,7 +75,7 @@ public class GetPlayerInfoResponseDto {
         if (Files.exists(Paths.get("public/" + avatarPath))) {
             this.avatar = avatarPath;
         } else {
-            this.avatar = "/images/avatar/default.png";
+            this.avatar = "/images/default.png";
         }
     }
 

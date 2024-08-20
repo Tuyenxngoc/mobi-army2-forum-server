@@ -398,13 +398,15 @@ public class PlayerServiceImpl implements PlayerService {
 
         for (Equip equip : equips) {
             if (equip.getEquipType() == 0 || equip.getEquipType() == 4) {
-                BufferedImage equipImage = bigImage.getSubimage(
-                        equip.getBigImageCutX()[index],
-                        equip.getBigImageCutY()[index],
-                        equip.getBigImageSizeX()[index],
-                        equip.getBigImageSizeY()[index]
-                );
-                graphics.drawImage(equipImage, 31 + equip.getBigImageAlignX()[index], 50 + equip.getBigImageAlignY()[index], null);
+                if (!isRegionNotDefined(equip, index)) {
+                    BufferedImage equipImage = bigImage.getSubimage(
+                            equip.getBigImageCutX()[index],
+                            equip.getBigImageCutY()[index],
+                            equip.getBigImageSizeX()[index],
+                            equip.getBigImageSizeY()[index]
+                    );
+                    graphics.drawImage(equipImage, 31 + equip.getBigImageAlignX()[index], 50 + equip.getBigImageAlignY()[index], null);
+                }
             }
         }
 
@@ -415,18 +417,27 @@ public class PlayerServiceImpl implements PlayerService {
             if (equip.getEquipType() == 0 || equip.getEquipType() == 4) {
                 continue;
             }
-            BufferedImage equipImage = bigImage.getSubimage(
-                    equip.getBigImageCutX()[index],
-                    equip.getBigImageCutY()[index],
-                    equip.getBigImageSizeX()[index],
-                    equip.getBigImageSizeY()[index]
-            );
-            graphics.drawImage(equipImage, 31 + equip.getBigImageAlignX()[index], 50 + equip.getBigImageAlignY()[index], null);
+            if (!isRegionNotDefined(equip, index)) {
+                BufferedImage equipImage = bigImage.getSubimage(
+                        equip.getBigImageCutX()[index],
+                        equip.getBigImageCutY()[index],
+                        equip.getBigImageSizeX()[index],
+                        equip.getBigImageSizeY()[index]
+                );
+                graphics.drawImage(equipImage, 31 + equip.getBigImageAlignX()[index], 50 + equip.getBigImageAlignY()[index], null);
+            }
         }
 
         graphics.dispose();
 
         return image;
+    }
+
+    private boolean isRegionNotDefined(Equip equip, int index) {
+        return equip.getBigImageCutX()[index] == 0 &&
+                equip.getBigImageCutY()[index] == 0 &&
+                equip.getBigImageSizeX()[index] == 0 &&
+                equip.getBigImageSizeY()[index] == 0;
     }
 
     public static String getAvatar(String playerName, long characterId) {

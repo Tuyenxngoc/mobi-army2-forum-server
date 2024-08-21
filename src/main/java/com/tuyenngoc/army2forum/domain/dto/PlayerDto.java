@@ -16,11 +16,13 @@ public class PlayerDto {
 
     private long id;
 
-    private String name;
+    private String username;
+
+    private String roleName;
 
     private String avatar;
 
-    private boolean isOnline;
+    private boolean online;
 
     private int points;
 
@@ -29,9 +31,10 @@ public class PlayerDto {
 
     public PlayerDto(Player player) {
         this.id = player.getId();
-        this.name = player.getUser().getUsername();
-        this.avatar = PlayerServiceImpl.getAvatar(this.name, player.getActiveCharacter().getCharacter().getId());
-        this.isOnline = player.getIsOnline();
+        this.username = player.getUser().getUsername();
+        this.roleName = player.getUser().getRole().getName();
+        this.avatar = PlayerServiceImpl.getAvatar(this.username, player.getActiveCharacter().getCharacter().getId());
+        this.online = player.getIsOnline();
         this.points = player.getComments().size() + player.getPosts().size();
     }
 }

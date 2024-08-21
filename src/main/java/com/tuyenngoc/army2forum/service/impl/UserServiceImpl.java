@@ -3,18 +3,12 @@ package com.tuyenngoc.army2forum.service.impl;
 import com.tuyenngoc.army2forum.config.properties.AdminInfo;
 import com.tuyenngoc.army2forum.constant.ErrorMessage;
 import com.tuyenngoc.army2forum.constant.RoleConstant;
-import com.tuyenngoc.army2forum.constant.SortByDataConstant;
 import com.tuyenngoc.army2forum.constant.SuccessMessage;
 import com.tuyenngoc.army2forum.domain.dto.ClanDto;
 import com.tuyenngoc.army2forum.domain.dto.ClanMemberDto;
 import com.tuyenngoc.army2forum.domain.dto.PlayerDto;
-import com.tuyenngoc.army2forum.domain.dto.UserDto;
-import com.tuyenngoc.army2forum.domain.dto.pagination.PaginationFullRequestDto;
-import com.tuyenngoc.army2forum.domain.dto.pagination.PaginationResponseDto;
-import com.tuyenngoc.army2forum.domain.dto.pagination.PagingMeta;
 import com.tuyenngoc.army2forum.domain.dto.request.ChangeUsernameRequestDto;
 import com.tuyenngoc.army2forum.domain.dto.request.LockUserRequestDto;
-import com.tuyenngoc.army2forum.domain.dto.request.UpdateUserRequestDto;
 import com.tuyenngoc.army2forum.domain.dto.response.CommonResponseDto;
 import com.tuyenngoc.army2forum.domain.entity.ClanMember;
 import com.tuyenngoc.army2forum.domain.entity.Player;
@@ -30,7 +24,6 @@ import com.tuyenngoc.army2forum.service.JwtTokenService;
 import com.tuyenngoc.army2forum.service.PlayerCharactersService;
 import com.tuyenngoc.army2forum.service.RoleService;
 import com.tuyenngoc.army2forum.service.UserService;
-import com.tuyenngoc.army2forum.util.PaginationUtil;
 import lombok.AccessLevel;
 import lombok.RequiredArgsConstructor;
 import lombok.experimental.FieldDefaults;
@@ -38,8 +31,6 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.MessageSource;
 import org.springframework.context.i18n.LocaleContextHolder;
-import org.springframework.data.domain.Page;
-import org.springframework.data.domain.Pageable;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
@@ -95,6 +86,32 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
+    public User getUserById(String userId) {
+        return userRepository.findById(userId)
+                .orElseThrow(() -> new NotFoundException(ErrorMessage.User.ERR_NOT_FOUND_ID, userId));
+    }
+
+    @Override
+    public PlayerDto getCurrentUser(Long playerId) {
+        Player player = playerRepository.findById(playerId)
+                .orElseThrow(() -> new NotFoundException(ErrorMessage.Player.ERR_NOT_FOUND_ID, playerId));
+
+        PlayerDto responseDto = new PlayerDto(player);
+        ClanMember clanMember = player.getClanMember();
+        if (clanMember != null) {
+            ClanDto clanDto = new ClanDto(clanMember.getClan());
+
+            ClanMemberDto clanMemberDto = new ClanMemberDto();
+            clanMemberDto.setRights(clanMember.getRights());
+            clanMemberDto.setClan(clanDto);
+
+            responseDto.setClanMember(clanMemberDto);
+        }
+
+        return responseDto;
+    }
+
+    @Override
     public CommonResponseDto updateUserRoles(Long playerId, Byte roleId, CustomUserDetails userDetails) {
         Role newRole = roleService.getRole(roleId);
 
@@ -133,75 +150,6 @@ public class UserServiceImpl implements UserService {
 
         String message = messageSource.getMessage(SuccessMessage.UPDATE, null, LocaleContextHolder.getLocale());
         return new CommonResponseDto(message);
-    }
-
-    @Override
-    public UserDto getCurrentUser(String userId) {
-        User user = userRepository.findById(userId)
-                .orElseThrow(() -> new NotFoundException(ErrorMessage.User.ERR_NOT_FOUND_ID, userId));
-        Player player = user.getPlayer();
-
-        UserDto responseDto = new UserDto();
-        responseDto.setFullName(user.getFullName());
-        responseDto.setRoleName(user.getRole().getName());
-
-        PlayerDto playerDto = new PlayerDto(player);
-        ClanMember clanMember = player.getClanMember();
-        if (clanMember != null) {
-            ClanDto clanDto = new ClanDto(clanMember.getClan());
-
-            ClanMemberDto clanMemberDto = new ClanMemberDto();
-            clanMemberDto.setRights(clanMember.getRights());
-            clanMemberDto.setClan(clanDto);
-
-            playerDto.setClanMember(clanMemberDto);
-        }
-        responseDto.setPlayer(playerDto);
-
-        return responseDto;
-    }
-
-    @Override
-    public User updateUser(String userId, UpdateUserRequestDto requestDto) {
-        User user = userRepository.findById(userId)
-                .orElseThrow(() -> new NotFoundException(ErrorMessage.User.ERR_NOT_FOUND_ID, userId));
-
-        user.setPhoneNumber(requestDto.getPhoneNumber());
-        user.setFullName(requestDto.getFullName());
-
-        return userRepository.save(user);
-    }
-
-    @Override
-    public CommonResponseDto deleteUser(String userId) {
-        if (!userRepository.existsById(userId)) {
-            throw new NotFoundException(ErrorMessage.User.ERR_NOT_FOUND_ID, userId);
-        }
-
-        userRepository.deleteById(userId);
-
-        String message = messageSource.getMessage(SuccessMessage.DELETE, null, LocaleContextHolder.getLocale());
-        return new CommonResponseDto(message);
-    }
-
-    @Override
-    public User getUserById(String userId) {
-        return userRepository.findById(userId)
-                .orElseThrow(() -> new NotFoundException(ErrorMessage.User.ERR_NOT_FOUND_ID, userId));
-    }
-
-    @Override
-    public PaginationResponseDto<User> getUsers(PaginationFullRequestDto requestDto) {
-        Pageable pageable = PaginationUtil.buildPageable(requestDto, SortByDataConstant.USER);
-
-        Page<User> page = userRepository.findAll(pageable);
-        PagingMeta pagingMeta = PaginationUtil.buildPagingMeta(requestDto, SortByDataConstant.USER, page);
-
-        PaginationResponseDto<User> responseDto = new PaginationResponseDto<>();
-        responseDto.setItems(page.getContent());
-        responseDto.setMeta(pagingMeta);
-
-        return responseDto;
     }
 
     @Override

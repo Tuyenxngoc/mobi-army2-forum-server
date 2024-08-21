@@ -2,7 +2,7 @@ package com.tuyenngoc.army2forum.service.impl;
 
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
-import com.tuyenngoc.army2forum.domain.dto.UserInfo;
+import com.tuyenngoc.army2forum.domain.dto.UserInfoDto;
 import org.springframework.http.HttpEntity;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpMethod;
@@ -16,7 +16,7 @@ public class OAuth2GoogleService {
 
     private static final String GOOGLE_TOKEN_INFO_URL = "https://www.googleapis.com/oauth2/v3/userinfo";
 
-    public UserInfo verifyAccessToken(String accessToken) throws Exception {
+    public UserInfoDto verifyAccessToken(String accessToken) throws Exception {
         RestTemplate restTemplate = new RestTemplate();
 
         UriComponentsBuilder uriBuilder = UriComponentsBuilder.fromHttpUrl(GOOGLE_TOKEN_INFO_URL)
@@ -42,7 +42,7 @@ public class OAuth2GoogleService {
             String email = jsonNode.get("email").asText();
             boolean emailVerified = jsonNode.get("email_verified").asBoolean();
 
-            return new UserInfo(userId, email, emailVerified);
+            return new UserInfoDto(userId, email, emailVerified);
         } else {
             throw new Exception("Invalid Google access token.");
         }

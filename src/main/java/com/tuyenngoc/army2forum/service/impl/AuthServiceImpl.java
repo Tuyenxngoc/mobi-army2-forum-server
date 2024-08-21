@@ -3,7 +3,7 @@ package com.tuyenngoc.army2forum.service.impl;
 import com.tuyenngoc.army2forum.constant.ErrorMessage;
 import com.tuyenngoc.army2forum.constant.RoleConstant;
 import com.tuyenngoc.army2forum.constant.SuccessMessage;
-import com.tuyenngoc.army2forum.domain.dto.UserInfo;
+import com.tuyenngoc.army2forum.domain.dto.UserInfoDto;
 import com.tuyenngoc.army2forum.domain.dto.common.DataMailDto;
 import com.tuyenngoc.army2forum.domain.dto.request.auth.*;
 import com.tuyenngoc.army2forum.domain.dto.response.CommonResponseDto;
@@ -340,14 +340,14 @@ public class AuthServiceImpl implements AuthService {
             throw new BadRequestException(ErrorMessage.Auth.INVALID_ACCESS_TOKEN);
         }
 
-        UserInfo userInfo;
+        UserInfoDto userInfoDto;
         try {
-            userInfo = oAuth2GoogleService.verifyAccessToken(token);
+            userInfoDto = oAuth2GoogleService.verifyAccessToken(token);
         } catch (Exception e) {
             throw new BadRequestException(ErrorMessage.Auth.INVALID_ACCESS_TOKEN);
         }
 
-        Optional<User> optionalUser = userRepository.findByEmail(userInfo.getEmail());
+        Optional<User> optionalUser = userRepository.findByEmail(userInfoDto.getEmail());
         if (optionalUser.isPresent()) {
             User user = optionalUser.get();
 

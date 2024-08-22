@@ -19,7 +19,7 @@ public class NotificationRequestDto {
     private String title;
 
     @NotBlank(message = ErrorMessage.INVALID_NOT_BLANK_FIELD)
-    @Size(min = 5, max = 255, message = ErrorMessage.INVALID_TEXT_LENGTH)
+    @Size(min = 5, max = 2000, message = ErrorMessage.INVALID_TEXT_LENGTH)
     private String content;
 
 }

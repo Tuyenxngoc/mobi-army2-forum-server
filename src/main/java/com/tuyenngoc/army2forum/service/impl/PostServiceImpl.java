@@ -22,6 +22,7 @@ import com.tuyenngoc.army2forum.exception.NotFoundException;
 import com.tuyenngoc.army2forum.repository.*;
 import com.tuyenngoc.army2forum.security.CustomUserDetails;
 import com.tuyenngoc.army2forum.service.PlayerNotificationService;
+import com.tuyenngoc.army2forum.service.PostRedisService;
 import com.tuyenngoc.army2forum.service.PostService;
 import com.tuyenngoc.army2forum.util.PaginationUtil;
 import com.tuyenngoc.army2forum.util.SecurityUtils;
@@ -39,6 +40,7 @@ import org.springframework.transaction.annotation.Transactional;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 import java.util.List;
+import java.util.Optional;
 import java.util.stream.Collectors;
 
 @Service
@@ -64,6 +66,8 @@ public class PostServiceImpl implements PostService {
     final LikeRepository likeRepository;
 
     final PlayerNotificationService playerNotificationService;
+
+    final PostRedisService postRedisService;
 
     @Override
     public Post getPostById(Long postId) {
@@ -94,14 +98,19 @@ public class PostServiceImpl implements PostService {
     public PaginationResponseDto<GetPostResponseDto> getPosts(PaginationRequestDto requestDto, Long categoryId) {
         Pageable pageable = PaginationUtil.buildPageable(requestDto);
 
-        Page<GetPostResponseDto> page = postRepository.getPosts(pageable, categoryId);
-        PagingMeta pagingMeta = PaginationUtil.buildPagingMeta(requestDto, page);
+        return Optional.ofNullable(postRedisService.getPostsByCategoryId(categoryId, pageable))
+                .orElseGet(() -> {
+                    Page<GetPostResponseDto> page = postRepository.getPosts(pageable, categoryId);
+                    PagingMeta pagingMeta = PaginationUtil.buildPagingMeta(requestDto, page);
 
-        PaginationResponseDto<GetPostResponseDto> responseDto = new PaginationResponseDto<>();
-        responseDto.setItems(page.getContent());
-        responseDto.setMeta(pagingMeta);
+                    PaginationResponseDto<GetPostResponseDto> responseDto = new PaginationResponseDto<>();
+                    responseDto.setItems(page.getContent());
+                    responseDto.setMeta(pagingMeta);
 
-        return responseDto;
+                    postRedisService.savePost(categoryId, pageable, responseDto);
+
+                    return responseDto;
+                });
     }
 
     @Override

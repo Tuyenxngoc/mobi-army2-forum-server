@@ -37,6 +37,7 @@ import org.springframework.stereotype.Service;
 
 import javax.imageio.ImageIO;
 import java.awt.*;
+import java.awt.geom.AffineTransform;
 import java.awt.image.BufferedImage;
 import java.io.File;
 import java.io.IOException;
@@ -396,6 +397,10 @@ public class PlayerServiceImpl implements PlayerService {
         BufferedImage image = new BufferedImage(50, 50, BufferedImage.TYPE_INT_ARGB);
         Graphics2D graphics = image.createGraphics();
 
+        AffineTransform originalTransform = graphics.getTransform();
+        graphics.translate(image.getWidth(), 0);
+        graphics.scale(-1, 1);
+
         for (Equip equip : equips) {
             if (equip.getEquipType() == 0 || equip.getEquipType() == 4) {
                 if (!isRegionNotDefined(equip, index)) {
@@ -428,6 +433,7 @@ public class PlayerServiceImpl implements PlayerService {
             }
         }
 
+        graphics.setTransform(originalTransform);
         graphics.dispose();
 
         return image;

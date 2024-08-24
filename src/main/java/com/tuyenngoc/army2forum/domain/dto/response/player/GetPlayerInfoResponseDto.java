@@ -27,6 +27,8 @@ public class GetPlayerInfoResponseDto {
 
     private String username;
 
+    private String roleName;
+
     private String avatar;
 
     private int xu;
@@ -60,6 +62,7 @@ public class GetPlayerInfoResponseDto {
         this.id = player.getId();
         this.online = player.getIsOnline();
         this.username = player.getUser().getUsername();
+        this.roleName = player.getUser().getRole().getName();
         this.avatar = PlayerServiceImpl.getAvatar(this.username, player.getActiveCharacter().getCharacter().getId());
         this.xu = player.getXu();
         this.luong = player.getLuong();

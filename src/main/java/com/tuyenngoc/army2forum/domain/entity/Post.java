@@ -2,7 +2,6 @@ package com.tuyenngoc.army2forum.domain.entity;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.tuyenngoc.army2forum.domain.entity.common.UserDateAuditing;
-import com.tuyenngoc.army2forum.domain.entity.listener.CategoryListener;
 import com.tuyenngoc.army2forum.domain.entity.listener.PostListener;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;

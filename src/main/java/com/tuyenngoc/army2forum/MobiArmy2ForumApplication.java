@@ -38,6 +38,8 @@ public class MobiArmy2ForumApplication {
 
     EquipService equipService;
 
+    SpecialItemService specialItemService;
+
     public static void main(String[] args) {
         Environment env = SpringApplication.run(MobiArmy2ForumApplication.class, args).getEnvironment();
         String appName = env.getProperty("spring.application.name");
@@ -61,6 +63,7 @@ public class MobiArmy2ForumApplication {
             userService.initAdmin(adminInfo);
             categoryService.initCategories(adminInfo);
             equipService.initCacheEquips();
+            specialItemService.initCacheSpecialItems();
         };
     }
 

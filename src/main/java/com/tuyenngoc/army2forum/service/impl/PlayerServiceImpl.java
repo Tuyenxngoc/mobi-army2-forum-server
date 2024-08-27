@@ -23,6 +23,7 @@ import com.tuyenngoc.army2forum.repository.*;
 import com.tuyenngoc.army2forum.security.CustomUserDetails;
 import com.tuyenngoc.army2forum.service.EquipRedisService;
 import com.tuyenngoc.army2forum.service.PlayerService;
+import com.tuyenngoc.army2forum.service.SpecialItemRedisService;
 import com.tuyenngoc.army2forum.util.GifCreator;
 import com.tuyenngoc.army2forum.util.MaskingUtils;
 import com.tuyenngoc.army2forum.util.PaginationUtil;
@@ -100,7 +101,7 @@ public class PlayerServiceImpl implements PlayerService {
 
     final MessageSource messageSource;
 
-    final SpecialItemRepository specialItemRepository;
+    final SpecialItemRedisService specialItemRedisService;
 
     final EquipRepository equipRepository;
 
@@ -162,7 +163,7 @@ public class PlayerServiceImpl implements PlayerService {
         Player player = getPlayerById(playerId);
 
         List<GetSpecialItemResponseDto> specialItemDtos = player.getItemChest().stream()
-                .map(specialItemChest -> specialItemRepository.findById(specialItemChest.getId())
+                .map(specialItemChest -> specialItemRedisService.getSpecialItem(specialItemChest.getId())
                         .map(specialItem -> {
                             GetSpecialItemResponseDto itemResponseDto = new GetSpecialItemResponseDto(specialItem);
                             itemResponseDto.setQuantity(specialItemChest.getQuantity());

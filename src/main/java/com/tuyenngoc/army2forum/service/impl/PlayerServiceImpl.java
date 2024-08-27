@@ -21,6 +21,7 @@ import com.tuyenngoc.army2forum.exception.BadRequestException;
 import com.tuyenngoc.army2forum.exception.NotFoundException;
 import com.tuyenngoc.army2forum.repository.*;
 import com.tuyenngoc.army2forum.security.CustomUserDetails;
+import com.tuyenngoc.army2forum.service.EquipRedisService;
 import com.tuyenngoc.army2forum.service.PlayerService;
 import com.tuyenngoc.army2forum.util.GifCreator;
 import com.tuyenngoc.army2forum.util.MaskingUtils;
@@ -83,15 +84,15 @@ public class PlayerServiceImpl implements PlayerService {
             {13, 10, 0, 120, 24, 24}
     };
 
-    private final String tmpPath = "app/public/images/tmp";
+    static final String tmpPath = "app/public/images/tmp";
 
-    private final String avatarPath = "app/public/images/avatar/%s_%d.gif";
+    static final String avatarPath = "app/public/images/avatar/%s_%d.gif";
 
-    private final String specialItemPath = "app/data/images/itemSpecial.png";
+    static final String specialItemPath = "app/data/images/itemSpecial.png";
 
-    private final String bigImagePath = "app/data/images/bigImage/bigImage%d.png";
+    static final String bigImagePath = "app/data/images/bigImage/bigImage%d.png";
 
-    private final String playerPath = "app/data/images/player/%d.png";
+    static final String playerPath = "app/data/images/player/%d.png";
 
     final PlayerRepository playerRepository;
 
@@ -104,6 +105,8 @@ public class PlayerServiceImpl implements PlayerService {
     final EquipRepository equipRepository;
 
     final PlayerCharacterRepository playerCharacterRepository;
+
+    final EquipRedisService equipRedisService;
 
     private Player getPlayerById(Long playerId) {
         return playerRepository.findById(playerId)
@@ -169,7 +172,7 @@ public class PlayerServiceImpl implements PlayerService {
                 .collect(Collectors.toList());
 
         List<GetEquipmentResponseDto> equipmentDtos = player.getEquipmentChest().stream()
-                .map(equipChest -> equipRepository.getEquip(equipChest.getCharacterId(), equipChest.getEquipType(), equipChest.getEquipIndex())
+                .map(equipChest -> equipRedisService.getEquip(equipChest.getCharacterId(), equipChest.getEquipType(), equipChest.getEquipIndex())
                         .map(equip -> {
                             GetEquipmentResponseDto equipResponseDto = new GetEquipmentResponseDto(equip, equipChest);
 
@@ -364,7 +367,7 @@ public class PlayerServiceImpl implements PlayerService {
     }
 
     private Equip getValidEquip(EquipChest equipChest, LocalDateTime now) {
-        return equipRepository.getEquip(equipChest.getCharacterId(), equipChest.getEquipType(), equipChest.getEquipIndex())
+        return equipRedisService.getEquip(equipChest.getCharacterId(), equipChest.getEquipType(), equipChest.getEquipIndex())
                 .filter(equip -> ChronoUnit.DAYS.between(equipChest.getPurchaseDate(), now) <= equip.getExpirationDays())
                 .orElse(null);
     }

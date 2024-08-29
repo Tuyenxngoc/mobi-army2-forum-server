@@ -20,7 +20,8 @@ public class CategorySpecification {
                     case Category_.ID -> predicate = builder.and(predicate, builder.equal(root.get(Category_.id),
                             SpecificationsUtil.castToRequiredType(root.get(Category_.id).getJavaType(), keyword)));
 
-                    case Category_.NAME -> predicate = builder.and(predicate, builder.like(root.get(Category_.name), "%" + keyword + "%"));
+                    case Category_.NAME ->
+                            predicate = builder.and(predicate, builder.like(root.get(Category_.name), "%" + keyword + "%"));
                 }
             }
             return predicate;

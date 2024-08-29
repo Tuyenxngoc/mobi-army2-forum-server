@@ -37,7 +37,8 @@ public class PostSpecification {
                     case Post_.ID -> predicate = builder.and(predicate, builder.equal(root.get(Post_.id),
                             SpecificationsUtil.castToRequiredType(root.get(Post_.id).getJavaType(), keyword)));
 
-                    case Post_.TITLE -> predicate = builder.and(predicate, builder.like(root.get(Post_.title), "%" + keyword + "%"));
+                    case Post_.TITLE ->
+                            predicate = builder.and(predicate, builder.like(root.get(Post_.title), "%" + keyword + "%"));
 
                     case Post_.PLAYER -> {
                         Join<Post, Player> postPlayerJoin = root.join(Post_.player);

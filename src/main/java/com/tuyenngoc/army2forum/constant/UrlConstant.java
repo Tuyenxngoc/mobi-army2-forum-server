@@ -171,4 +171,13 @@ public class UrlConstant {
         public static final String REJECT_MEMBER = PRE_FIX + "/{approvalId}/reject";
     }
 
+    public static class GiftCode {
+        private static final String PRE_FIX = "/gift-codes";
+
+        public static final String CREATE = PRE_FIX;
+        public static final String GET_ALL = PRE_FIX;
+        public static final String GET_BY_ID = PRE_FIX + "/{id}";
+        public static final String UPDATE = PRE_FIX + "/{id}";
+        public static final String DELETE = PRE_FIX + "/{id}";
+    }
 }

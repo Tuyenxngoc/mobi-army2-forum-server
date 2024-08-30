@@ -11,6 +11,8 @@ import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.stereotype.Service;
 import org.springframework.util.StringUtils;
 
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Optional;
 import java.util.Set;
 
@@ -57,6 +59,34 @@ public class EquipRedisServiceImpl implements EquipRedisService {
             return Optional.empty();
         }
     }
+
+    @Override
+    public List<Equip> getEquips(Byte characterId, Byte equipType) {
+        try {
+            String keyPattern = String.format("EQUIP_%d_%d_*", characterId, equipType).toUpperCase();
+            Set<String> keys = redisTemplate.keys(keyPattern);
+            if (keys == null || keys.isEmpty()) {
+                log.warn("No equipments found in Redis for characterId: {} and equipType: {}", characterId, equipType);
+                return List.of();
+            }
+
+            List<Equip> equips = new ArrayList<>();
+            for (String key : keys) {
+                String json = redisTemplate.opsForValue().get(key);
+                if (StringUtils.hasText(json)) {
+                    Equip equip = objectMapper.readValue(json, Equip.class);
+                    equips.add(equip);
+                }
+            }
+
+            log.info("Found {} equipments for characterId: {} and equipType: {}", equips.size(), characterId, equipType);
+            return equips;
+        } catch (Exception e) {
+            log.error("Error retrieving equipments from Redis: {}", e.getMessage(), e);
+            return List.of();
+        }
+    }
+
 
     @Override
     public int countEquip() {

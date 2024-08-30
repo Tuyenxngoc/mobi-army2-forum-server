@@ -36,4 +36,9 @@ public class EquipServiceImpl implements EquipService {
         }
     }
 
+    @Override
+    public List<Equip> getEquipsByCharacterIdAndType(byte characterId, byte type) {
+        return equipRedisService.getEquips(characterId, type);
+    }
+
 }

@@ -180,4 +180,16 @@ public class UrlConstant {
         public static final String UPDATE = PRE_FIX + "/{id}";
         public static final String DELETE = PRE_FIX + "/{id}";
     }
+
+    public static class Equip {
+        private static final String PRE_FIX = "/equips";
+
+        public static final String CREATE = PRE_FIX;
+        public static final String GET_ALL = PRE_FIX;
+        public static final String GET_BY_ID = PRE_FIX + "/{id}";
+        public static final String UPDATE = PRE_FIX + "/{id}";
+        public static final String DELETE = PRE_FIX + "/{id}";
+
+        public static final String GET_BY_CHARACTER_ID_AND_TYPE = PRE_FIX + "/{characterId}/{type}";
+    }
 }

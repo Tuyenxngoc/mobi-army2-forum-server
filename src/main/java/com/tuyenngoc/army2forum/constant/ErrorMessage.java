@@ -138,4 +138,8 @@ public class ErrorMessage {
         public static final String ERR_ALREADY_MEMBER = "exception.clan-approval.already.member";
     }
 
+    public static class GiftCode {
+        public static final String ERR_NOT_FOUND_ID = "exception.gift-code.not.found.id";
+        public static final String ERR_DUPLICATE_CODE = "exception.gift-code.duplicate";
+    }
 }

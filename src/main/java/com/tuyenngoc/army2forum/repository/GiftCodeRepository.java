@@ -11,4 +11,6 @@ public interface GiftCodeRepository extends JpaRepository<GiftCode, Long> {
 
     Optional<GiftCode> findByCode(String code);
 
+    boolean existsByCode(String code);
+
 }

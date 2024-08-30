@@ -4,7 +4,8 @@ import com.tuyenngoc.army2forum.annotation.RestApiV1;
 import com.tuyenngoc.army2forum.base.VsResponseUtil;
 import com.tuyenngoc.army2forum.constant.UrlConstant;
 import com.tuyenngoc.army2forum.domain.dto.pagination.PaginationFullRequestDto;
-import com.tuyenngoc.army2forum.domain.dto.request.GiftCodeRequestDto;
+import com.tuyenngoc.army2forum.domain.dto.request.CreateGiftCodeRequestDto;
+import com.tuyenngoc.army2forum.domain.dto.request.UpdateGiftCodeRequestDto;
 import com.tuyenngoc.army2forum.service.GiftCodeService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
@@ -42,7 +43,7 @@ public class GiftCodeController {
     @PreAuthorize("hasRole('SUPER_ADMIN')")
     @Operation(summary = "API Create GiftCode")
     @PostMapping(UrlConstant.GiftCode.CREATE)
-    public ResponseEntity<?> createGiftCode(@Valid @RequestBody GiftCodeRequestDto requestDto) {
+    public ResponseEntity<?> createGiftCode(@Valid @RequestBody CreateGiftCodeRequestDto requestDto) {
         return VsResponseUtil.success(giftCodeService.createGiftCode(requestDto));
     }
 
@@ -51,7 +52,7 @@ public class GiftCodeController {
     @PutMapping(UrlConstant.GiftCode.UPDATE)
     public ResponseEntity<?> updateGiftCode(
             @PathVariable Long id,
-            @Valid @RequestBody GiftCodeRequestDto requestDto
+            @Valid @RequestBody UpdateGiftCodeRequestDto requestDto
     ) {
         return VsResponseUtil.success(giftCodeService.updateGiftCode(id, requestDto));
     }

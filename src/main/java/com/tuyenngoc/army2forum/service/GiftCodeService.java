@@ -2,7 +2,8 @@ package com.tuyenngoc.army2forum.service;
 
 import com.tuyenngoc.army2forum.domain.dto.pagination.PaginationFullRequestDto;
 import com.tuyenngoc.army2forum.domain.dto.pagination.PaginationResponseDto;
-import com.tuyenngoc.army2forum.domain.dto.request.GiftCodeRequestDto;
+import com.tuyenngoc.army2forum.domain.dto.request.CreateGiftCodeRequestDto;
+import com.tuyenngoc.army2forum.domain.dto.request.UpdateGiftCodeRequestDto;
 import com.tuyenngoc.army2forum.domain.dto.response.CommonResponseDto;
 
 public interface GiftCodeService {
@@ -11,9 +12,9 @@ public interface GiftCodeService {
 
     PaginationResponseDto<Object> getGiftCodes(PaginationFullRequestDto requestDto);
 
-    CommonResponseDto createGiftCode(GiftCodeRequestDto requestDto);
+    CommonResponseDto createGiftCode(CreateGiftCodeRequestDto requestDto);
 
-    CommonResponseDto updateGiftCode(Long id, GiftCodeRequestDto requestDto);
+    CommonResponseDto updateGiftCode(Long id, UpdateGiftCodeRequestDto requestDto);
 
     CommonResponseDto deleteGiftCode(Long id);
 

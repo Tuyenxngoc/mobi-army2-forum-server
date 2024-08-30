@@ -36,4 +36,9 @@ public class SpecialItemServiceImpl implements SpecialItemService {
         }
     }
 
+    @Override
+    public List<SpecialItem> getSpecialItem() {
+        return specialItemRedisService.getSpecialItems();
+    }
+
 }

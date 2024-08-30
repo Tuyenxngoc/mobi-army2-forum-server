@@ -11,6 +11,8 @@ import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.stereotype.Service;
 import org.springframework.util.StringUtils;
 
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Optional;
 import java.util.Set;
 
@@ -55,6 +57,33 @@ public class SpecialItemRedisServiceImpl implements SpecialItemRedisService {
         } catch (Exception e) {
             log.error("Error retrieving special item from Redis: {}", e.getMessage(), e);
             return Optional.empty();
+        }
+    }
+
+    @Override
+    public List<SpecialItem> getSpecialItems() {
+        try {
+            String keyPattern = "SPECIAL_ITEM_*";
+            Set<String> keys = redisTemplate.keys(keyPattern);
+            if (keys == null || keys.isEmpty()) {
+                log.warn("No special items found with key pattern: {}", keyPattern);
+                return List.of();
+            }
+
+            List<SpecialItem> specialItems = new ArrayList<>();
+            for (String key : keys) {
+                String json = redisTemplate.opsForValue().get(key);
+                if (StringUtils.hasText(json)) {
+                    SpecialItem specialItem = objectMapper.readValue(json, SpecialItem.class);
+                    specialItems.add(specialItem);
+                }
+            }
+
+            log.info("Found {} special items", specialItems.size());
+            return specialItems;
+        } catch (Exception e) {
+            log.error("Error retrieving special items from Redis: {}", e.getMessage(), e);
+            return List.of();
         }
     }
 

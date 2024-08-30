@@ -87,7 +87,6 @@ public class EquipRedisServiceImpl implements EquipRedisService {
         }
     }
 
-
     @Override
     public int countEquip() {
         Set<String> keys = redisTemplate.keys("EQUIP_*");

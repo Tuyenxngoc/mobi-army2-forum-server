@@ -57,7 +57,7 @@ public class SendMailUtil {
         helper.setTo(mail.getTo());
         helper.setSubject(mail.getSubject());
         helper.setText(mail.getContent());
-        if (files != null && files.length > 0) {
+        if (files != null) {
             for (MultipartFile file : files) {
                 helper.addAttachment(Objects.requireNonNull(file.getOriginalFilename()), file);
             }

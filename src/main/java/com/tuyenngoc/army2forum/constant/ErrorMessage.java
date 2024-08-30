@@ -22,6 +22,7 @@ public class ErrorMessage {
     public static final String INVALID_SOME_THING_FIELD_IS_REQUIRED = "invalid.general.required";
     public static final String INVALID_ARRAY_IS_REQUIRED = "invalid.array.required";
     public static final String INVALID_ARRAY_NOT_EMPTY = "invalid.array.not.empty";
+    public static final String INVALID_ARRAY_LENGTH = "invalid.array.length";
     public static final String INVALID_NOT_BLANK_FIELD = "invalid.general.not-blank";
     public static final String INVALID_NOT_NULL_FIELD = "invalid.general.not-null";
     public static final String INVALID_FORMAT_NAME = "invalid.name-format";
@@ -34,6 +35,8 @@ public class ErrorMessage {
     public static final String INVALID_MINIMUM_ONE = "invalid.minimum-one";
     public static final String INVALID_MINIMUM_ZERO = "invalid.minimum-zero";
     public static final String INVALID_MAXIMUM_ONE_HUNDRED = "invalid.maximum-one-hundred";
+    public static final String INVALID_MAXIMUM_INT = "invalid.maximum-int";
+    public static final String INVALID_MAXIMUM_SHORT = "invalid.maximum-short";
     public static final String INVALID_TEXT_LENGTH = "invalid.text.length";
     public static final String INVALID_KEYWORD_LENGTH = "invalid.keyword.length";
 

@@ -1,6 +1,11 @@
 package com.tuyenngoc.army2forum.domain.entity;
 
+import com.tuyenngoc.army2forum.converter.EquipmentChestConverter;
+import com.tuyenngoc.army2forum.converter.IntArrayJsonConverter;
+import com.tuyenngoc.army2forum.converter.ItemChestConverter;
 import com.tuyenngoc.army2forum.domain.entity.common.UserDateAuditing;
+import com.tuyenngoc.army2forum.domain.json.EquipChest;
+import com.tuyenngoc.army2forum.domain.json.SpecialItemChest;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
@@ -8,6 +13,8 @@ import lombok.NoArgsConstructor;
 import lombok.Setter;
 
 import java.time.LocalDateTime;
+import java.util.ArrayList;
+import java.util.List;
 
 @Getter
 @Setter
@@ -29,14 +36,17 @@ public class GiftCode extends UserDateAuditing {
     @Column(name = "usage_limit", nullable = false)
     private Short usageLimit;
 
+    @Convert(converter = IntArrayJsonConverter.class)
     @Column(name = "used_player_ids", nullable = false)
-    private String usedPlayerIds;
+    private int[] usedPlayerIds = new int[1];
 
+    @Convert(converter = EquipmentChestConverter.class)
     @Column(name = "equips", nullable = false)
-    private String equips;
+    private List<EquipChest> equips = new ArrayList<>();
 
+    @Convert(converter = ItemChestConverter.class)
     @Column(name = "items", nullable = false)
-    private String items;
+    private List<SpecialItemChest> items = new ArrayList<>();
 
     @Column(name = "expiration_date")
     private LocalDateTime expirationDate;

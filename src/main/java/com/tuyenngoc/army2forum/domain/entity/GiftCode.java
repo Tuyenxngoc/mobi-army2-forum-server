@@ -1,8 +1,8 @@
 package com.tuyenngoc.army2forum.domain.entity;
 
 import com.tuyenngoc.army2forum.converter.EquipmentChestConverter;
-import com.tuyenngoc.army2forum.converter.IntArrayJsonConverter;
 import com.tuyenngoc.army2forum.converter.ItemChestConverter;
+import com.tuyenngoc.army2forum.converter.ListIntegerJsonConverter;
 import com.tuyenngoc.army2forum.domain.entity.common.UserDateAuditing;
 import com.tuyenngoc.army2forum.domain.json.EquipChest;
 import com.tuyenngoc.army2forum.domain.json.SpecialItemChest;
@@ -36,9 +36,9 @@ public class GiftCode extends UserDateAuditing {
     @Column(name = "usage_limit", nullable = false)
     private Short usageLimit;
 
-    @Convert(converter = IntArrayJsonConverter.class)
+    @Convert(converter = ListIntegerJsonConverter.class)
     @Column(name = "used_player_ids", nullable = false)
-    private int[] usedPlayerIds = new int[1];
+    private List<Integer> usedPlayerIds = new ArrayList<>();
 
     @Convert(converter = EquipmentChestConverter.class)
     @Column(name = "equips", nullable = false)

@@ -26,14 +26,14 @@ public class GiftCodeController {
 
     GiftCodeService giftCodeService;
 
-    @PreAuthorize("hasRole('SUPER_ADMIN')")
+    @PreAuthorize("hasAnyRole('SUPER_ADMIN', 'ADMIN')")
     @Operation(summary = "API Get GiftCode By Id")
     @GetMapping(UrlConstant.GiftCode.GET_BY_ID)
     public ResponseEntity<?> getGiftCodeById(@PathVariable Long id) {
         return VsResponseUtil.success(giftCodeService.getGiftCodeDetailById(id));
     }
 
-    @PreAuthorize("hasRole('SUPER_ADMIN')")
+    @PreAuthorize("hasAnyRole('SUPER_ADMIN', 'ADMIN')")
     @Operation(summary = "API Get GiftCodes")
     @GetMapping(UrlConstant.GiftCode.GET_ALL)
     public ResponseEntity<?> getGiftCodesForAdmin(@ParameterObject PaginationFullRequestDto requestDto) {
@@ -47,7 +47,7 @@ public class GiftCodeController {
         return VsResponseUtil.success(giftCodeService.createGiftCode(requestDto));
     }
 
-    @PreAuthorize("hasRole('SUPER_ADMIN')")
+    @PreAuthorize("hasAnyRole('SUPER_ADMIN', 'ADMIN')")
     @Operation(summary = "API Update GiftCode")
     @PutMapping(UrlConstant.GiftCode.UPDATE)
     public ResponseEntity<?> updateGiftCode(
@@ -64,4 +64,13 @@ public class GiftCodeController {
         return VsResponseUtil.success(giftCodeService.deleteGiftCode(id));
     }
 
+    @PreAuthorize("hasAnyRole('SUPER_ADMIN', 'ADMIN')")
+    @Operation(summary = "API Get Players by GiftCode Id")
+    @GetMapping(UrlConstant.GiftCode.GET_PLAYERS_BY_ID)
+    public ResponseEntity<?> getPlayersByGiftCodeId(
+            @PathVariable Long id,
+            @ParameterObject PaginationFullRequestDto requestDto
+    ) {
+        return VsResponseUtil.success(giftCodeService.getPlayersByGiftCodeId(id, requestDto));
+    }
 }

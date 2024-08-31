@@ -105,4 +105,15 @@ public enum SortByDataConstant implements SortByInterface {
             };
         }
     },
+
+    PLAYER_GIFT_CODES {
+        @Override
+        public String getSortBy(String sortBy) {
+            return switch (sortBy) {
+                case "player" -> "player";
+                case "giftCode" -> "giftCode";
+                default -> "redeemTime";
+            };
+        }
+    },
 }

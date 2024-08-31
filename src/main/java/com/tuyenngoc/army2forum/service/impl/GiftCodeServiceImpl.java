@@ -10,14 +10,18 @@ import com.tuyenngoc.army2forum.domain.dto.pagination.PagingMeta;
 import com.tuyenngoc.army2forum.domain.dto.request.CreateGiftCodeRequestDto;
 import com.tuyenngoc.army2forum.domain.dto.request.UpdateGiftCodeRequestDto;
 import com.tuyenngoc.army2forum.domain.dto.response.CommonResponseDto;
-import com.tuyenngoc.army2forum.domain.dto.response.GetGiftCodeDetailResponseDto;
+import com.tuyenngoc.army2forum.domain.dto.response.giftcode.GetGiftCodeDetailResponseDto;
+import com.tuyenngoc.army2forum.domain.dto.response.giftcode.GetPlayerGiftCodeResponseDto;
 import com.tuyenngoc.army2forum.domain.dto.response.player.GetEquipmentResponseDto;
 import com.tuyenngoc.army2forum.domain.dto.response.player.GetSpecialItemResponseDto;
 import com.tuyenngoc.army2forum.domain.entity.GiftCode;
+import com.tuyenngoc.army2forum.domain.entity.PlayerGiftCode;
 import com.tuyenngoc.army2forum.domain.specification.GiftCodeSpecification;
+import com.tuyenngoc.army2forum.domain.specification.PlayerGiftCodeSpecification;
 import com.tuyenngoc.army2forum.exception.ConflictException;
 import com.tuyenngoc.army2forum.exception.NotFoundException;
 import com.tuyenngoc.army2forum.repository.GiftCodeRepository;
+import com.tuyenngoc.army2forum.repository.PlayerGiftCodeRepository;
 import com.tuyenngoc.army2forum.service.EquipRedisService;
 import com.tuyenngoc.army2forum.service.GiftCodeService;
 import com.tuyenngoc.army2forum.service.SpecialItemRedisService;
@@ -49,6 +53,8 @@ public class GiftCodeServiceImpl implements GiftCodeService {
     static String specialItemPath = "app/data/images/itemSpecial.png";
 
     GiftCodeRepository giftCodeRepository;
+
+    PlayerGiftCodeRepository playerGiftCodeRepository;
 
     EquipRedisService equipRedisService;
 
@@ -186,6 +192,30 @@ public class GiftCodeServiceImpl implements GiftCodeService {
 
         String message = messageSource.getMessage(SuccessMessage.DELETE, null, LocaleContextHolder.getLocale());
         return new CommonResponseDto(message);
+    }
+
+    @Override
+    public PaginationResponseDto<GetPlayerGiftCodeResponseDto> getPlayersByGiftCodeId(Long id, PaginationFullRequestDto requestDto) {
+        Pageable pageable = PaginationUtil.buildPageable(requestDto, SortByDataConstant.PLAYER_GIFT_CODES);
+
+        Page<PlayerGiftCode> page = playerGiftCodeRepository.findAll(
+                PlayerGiftCodeSpecification.filterByGiftCodeId(id).and(
+                        PlayerGiftCodeSpecification.filterPlayerGiftCodes(requestDto.getKeyword(), requestDto.getSearchBy())
+                ),
+                pageable
+        );
+
+        List<GetPlayerGiftCodeResponseDto> items = page.getContent().stream()
+                .map(GetPlayerGiftCodeResponseDto::new)
+                .toList();
+
+        PagingMeta pagingMeta = PaginationUtil.buildPagingMeta(requestDto, SortByDataConstant.PLAYER_GIFT_CODES, page);
+
+        PaginationResponseDto<GetPlayerGiftCodeResponseDto> responseDto = new PaginationResponseDto<>();
+        responseDto.setItems(items);
+        responseDto.setMeta(pagingMeta);
+
+        return responseDto;
     }
 
 }

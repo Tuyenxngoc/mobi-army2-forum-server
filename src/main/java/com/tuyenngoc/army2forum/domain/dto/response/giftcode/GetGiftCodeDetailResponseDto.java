@@ -1,4 +1,4 @@
-package com.tuyenngoc.army2forum.domain.dto.response;
+package com.tuyenngoc.army2forum.domain.dto.response.giftcode;
 
 import com.tuyenngoc.army2forum.domain.dto.common.UserDateAuditingDto;
 import com.tuyenngoc.army2forum.domain.dto.response.player.GetEquipmentResponseDto;

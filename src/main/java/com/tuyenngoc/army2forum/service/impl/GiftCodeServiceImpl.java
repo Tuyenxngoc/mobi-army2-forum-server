@@ -11,6 +11,7 @@ import com.tuyenngoc.army2forum.domain.dto.request.CreateGiftCodeRequestDto;
 import com.tuyenngoc.army2forum.domain.dto.request.UpdateGiftCodeRequestDto;
 import com.tuyenngoc.army2forum.domain.dto.response.CommonResponseDto;
 import com.tuyenngoc.army2forum.domain.dto.response.giftcode.GetGiftCodeDetailResponseDto;
+import com.tuyenngoc.army2forum.domain.dto.response.giftcode.GetGiftCodeResponseDto;
 import com.tuyenngoc.army2forum.domain.dto.response.giftcode.GetPlayerGiftCodeResponseDto;
 import com.tuyenngoc.army2forum.domain.dto.response.player.GetEquipmentResponseDto;
 import com.tuyenngoc.army2forum.domain.dto.response.player.GetSpecialItemResponseDto;
@@ -131,7 +132,7 @@ public class GiftCodeServiceImpl implements GiftCodeService {
     }
 
     @Override
-    public PaginationResponseDto<GiftCode> getGiftCodes(PaginationFullRequestDto requestDto) {
+    public PaginationResponseDto<GetGiftCodeResponseDto> getGiftCodes(PaginationFullRequestDto requestDto) {
         Pageable pageable = PaginationUtil.buildPageable(requestDto, SortByDataConstant.GIFT_CODES);
 
         Page<GiftCode> page = giftCodeRepository.findAll(
@@ -139,10 +140,14 @@ public class GiftCodeServiceImpl implements GiftCodeService {
                 pageable
         );
 
+        List<GetGiftCodeResponseDto> items = page.getContent().stream()
+                .map(GetGiftCodeResponseDto::new)
+                .toList();
+
         PagingMeta pagingMeta = PaginationUtil.buildPagingMeta(requestDto, SortByDataConstant.GIFT_CODES, page);
 
-        PaginationResponseDto<GiftCode> responseDto = new PaginationResponseDto<>();
-        responseDto.setItems(page.getContent());
+        PaginationResponseDto<GetGiftCodeResponseDto> responseDto = new PaginationResponseDto<>();
+        responseDto.setItems(items);
         responseDto.setMeta(pagingMeta);
 
         return responseDto;

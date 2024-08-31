@@ -50,10 +50,12 @@ public class GiftCode extends UserDateAuditing {
 
     @Convert(converter = EquipmentChestConverter.class)
     @Column(name = "equips", nullable = false)
+    @JsonIgnore
     private List<EquipChest> equips = new ArrayList<>();
 
     @Convert(converter = ItemChestConverter.class)
     @Column(name = "items", nullable = false)
+    @JsonIgnore
     private List<SpecialItemChest> items = new ArrayList<>();
 
     @OneToMany(mappedBy = "giftCode", cascade = CascadeType.ALL, fetch = FetchType.LAZY)

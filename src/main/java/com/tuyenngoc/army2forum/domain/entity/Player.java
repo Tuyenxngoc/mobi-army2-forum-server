@@ -57,10 +57,12 @@ public class Player extends DateAuditing {
 
     @Column(name = "item_chest", columnDefinition = "varchar(5000) default '[]'")
     @Convert(converter = ItemChestConverter.class)
+    @JsonIgnore
     private List<SpecialItemChest> itemChest = new ArrayList<>();
 
     @Column(name = "equipment_chest", columnDefinition = "json")
     @Convert(converter = EquipmentChestConverter.class)
+    @JsonIgnore
     private List<EquipChest> equipmentChest = new ArrayList<>();
 
     @OneToOne(mappedBy = "master", cascade = CascadeType.ALL)

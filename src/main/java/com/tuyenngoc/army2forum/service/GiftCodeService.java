@@ -6,14 +6,14 @@ import com.tuyenngoc.army2forum.domain.dto.request.CreateGiftCodeRequestDto;
 import com.tuyenngoc.army2forum.domain.dto.request.UpdateGiftCodeRequestDto;
 import com.tuyenngoc.army2forum.domain.dto.response.CommonResponseDto;
 import com.tuyenngoc.army2forum.domain.dto.response.giftcode.GetGiftCodeDetailResponseDto;
+import com.tuyenngoc.army2forum.domain.dto.response.giftcode.GetGiftCodeResponseDto;
 import com.tuyenngoc.army2forum.domain.dto.response.giftcode.GetPlayerGiftCodeResponseDto;
-import com.tuyenngoc.army2forum.domain.entity.GiftCode;
 
 public interface GiftCodeService {
 
     GetGiftCodeDetailResponseDto getGiftCodeDetailById(Long id);
 
-    PaginationResponseDto<GiftCode> getGiftCodes(PaginationFullRequestDto requestDto);
+    PaginationResponseDto<GetGiftCodeResponseDto> getGiftCodes(PaginationFullRequestDto requestDto);
 
     CommonResponseDto createGiftCode(CreateGiftCodeRequestDto requestDto);
 

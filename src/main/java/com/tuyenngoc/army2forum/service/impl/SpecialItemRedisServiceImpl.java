@@ -79,7 +79,6 @@ public class SpecialItemRedisServiceImpl implements SpecialItemRedisService {
                 }
             }
 
-            log.info("Found {} special items", specialItems.size());
             return specialItems;
         } catch (Exception e) {
             log.error("Error retrieving special items from Redis: {}", e.getMessage(), e);

@@ -79,7 +79,6 @@ public class EquipRedisServiceImpl implements EquipRedisService {
                 }
             }
 
-            log.info("Found {} equipments for characterId: {} and equipType: {}", equips.size(), characterId, equipType);
             return equips;
         } catch (Exception e) {
             log.error("Error retrieving equipments from Redis: {}", e.getMessage(), e);

@@ -11,6 +11,7 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
+import java.util.stream.Collectors;
 
 @Slf4j
 @Service
@@ -38,7 +39,11 @@ public class EquipServiceImpl implements EquipService {
 
     @Override
     public List<Equip> getEquipsByCharacterIdAndType(byte characterId, byte type) {
-        return equipRedisService.getEquips(characterId, type);
+        List<Equip> equips = equipRedisService.getEquips(characterId, type);
+
+        return equips.stream()
+                .filter(equip -> equip.getOnSale() == 1)
+                .collect(Collectors.toList());
     }
 
 }

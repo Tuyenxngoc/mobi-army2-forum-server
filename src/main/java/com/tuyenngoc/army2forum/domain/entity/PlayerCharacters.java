@@ -38,7 +38,7 @@ public class PlayerCharacters {
     @Column(name = "data", nullable = false, columnDefinition = "varchar(100) default '[-1,-1,-1,-1,-1,-1]'")
     private int[] data = new int[]{-1, -1, -1, -1, -1, -1};
 
-    @OneToOne(mappedBy = "activeCharacter", fetch = FetchType.LAZY, cascade = CascadeType.ALL)
+    @OneToOne(mappedBy = "activeCharacter", cascade = CascadeType.ALL)
     @JsonIgnore
     private Player activePlayer;
 

@@ -58,7 +58,7 @@ public class User extends DateAuditing {
     @Column(name = "lock_reason")
     private String lockReason;
 
-    @OneToOne(mappedBy = "user", fetch = FetchType.LAZY, cascade = CascadeType.ALL)
+    @OneToOne(mappedBy = "user", cascade = CascadeType.ALL)
     @JsonIgnore
     private Player player;
 

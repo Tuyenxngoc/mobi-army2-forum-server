@@ -1,8 +1,8 @@
 package com.tuyenngoc.army2forum.domain.entity;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.tuyenngoc.army2forum.converter.EquipmentChestConverter;
 import com.tuyenngoc.army2forum.converter.ItemChestConverter;
-import com.tuyenngoc.army2forum.converter.ListIntegerJsonConverter;
 import com.tuyenngoc.army2forum.domain.entity.common.UserDateAuditing;
 import com.tuyenngoc.army2forum.domain.json.EquipChest;
 import com.tuyenngoc.army2forum.domain.json.SpecialItemChest;
@@ -36,18 +36,6 @@ public class GiftCode extends UserDateAuditing {
     @Column(name = "usage_limit", nullable = false)
     private Short usageLimit;
 
-    @Convert(converter = ListIntegerJsonConverter.class)
-    @Column(name = "used_player_ids", nullable = false)
-    private List<Integer> usedPlayerIds = new ArrayList<>();
-
-    @Convert(converter = EquipmentChestConverter.class)
-    @Column(name = "equips", nullable = false)
-    private List<EquipChest> equips = new ArrayList<>();
-
-    @Convert(converter = ItemChestConverter.class)
-    @Column(name = "items", nullable = false)
-    private List<SpecialItemChest> items = new ArrayList<>();
-
     @Column(name = "expiration_date")
     private LocalDateTime expirationDate;
 
@@ -59,5 +47,17 @@ public class GiftCode extends UserDateAuditing {
 
     @Column(name = "exp")
     private Integer exp;
+
+    @Convert(converter = EquipmentChestConverter.class)
+    @Column(name = "equips", nullable = false)
+    private List<EquipChest> equips = new ArrayList<>();
+
+    @Convert(converter = ItemChestConverter.class)
+    @Column(name = "items", nullable = false)
+    private List<SpecialItemChest> items = new ArrayList<>();
+
+    @OneToMany(mappedBy = "giftCode", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
+    @JsonIgnore
+    private List<PlayerGiftCode> playerGiftCodes = new ArrayList<>();
 
 }

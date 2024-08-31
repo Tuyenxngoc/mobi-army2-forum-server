@@ -32,11 +32,13 @@ public class GetEquipmentResponseDto {
         this.points = equipChest.getAddPoints();
         this.percents = equipChest.getAddPercents();
 
-        for (int slot : equipChest.getSlots()) {
-            if (slot < 0) {
-                slots.add(null);
-            } else {
-                slots.add(FilePaths.ICON_ITEM_PATH + slot + ".png");
+        if (equipChest.getSlots() != null) {
+            for (int slot : equipChest.getSlots()) {
+                if (slot < 0) {
+                    slots.add(null);
+                } else {
+                    slots.add(FilePaths.ICON_ITEM_PATH + slot + ".png");
+                }
             }
         }
     }

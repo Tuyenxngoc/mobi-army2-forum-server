@@ -63,11 +63,11 @@ public class Player extends DateAuditing {
     @Convert(converter = EquipmentChestConverter.class)
     private List<EquipChest> equipmentChest = new ArrayList<>();
 
-    @OneToOne(mappedBy = "master", fetch = FetchType.LAZY, cascade = CascadeType.ALL)
+    @OneToOne(mappedBy = "master", cascade = CascadeType.ALL)
     @JsonIgnore
     private Clan clan;
 
-    @OneToOne(mappedBy = "player", fetch = FetchType.LAZY, cascade = CascadeType.ALL)
+    @OneToOne(mappedBy = "player", cascade = CascadeType.ALL)
     @JsonIgnore
     private ClanMember clanMember;
 
@@ -116,6 +116,10 @@ public class Player extends DateAuditing {
     @OneToMany(mappedBy = "player", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
     @JsonIgnore
     private List<Transaction> transactions = new ArrayList<>();
+
+    @OneToMany(mappedBy = "player", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
+    @JsonIgnore
+    private List<PlayerGiftCode> playerGiftCodes = new ArrayList<>();
 
     public Player(Long id) {
         this.id = id;

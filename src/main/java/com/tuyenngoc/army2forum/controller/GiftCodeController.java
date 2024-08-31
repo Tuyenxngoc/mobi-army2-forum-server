@@ -30,7 +30,7 @@ public class GiftCodeController {
     @Operation(summary = "API Get GiftCode By Id")
     @GetMapping(UrlConstant.GiftCode.GET_BY_ID)
     public ResponseEntity<?> getGiftCodeById(@PathVariable Long id) {
-        return VsResponseUtil.success(giftCodeService.getGiftCodeById(id));
+        return VsResponseUtil.success(giftCodeService.getGiftCodeDetailById(id));
     }
 
     @PreAuthorize("hasRole('SUPER_ADMIN')")

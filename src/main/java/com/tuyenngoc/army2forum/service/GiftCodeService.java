@@ -5,11 +5,12 @@ import com.tuyenngoc.army2forum.domain.dto.pagination.PaginationResponseDto;
 import com.tuyenngoc.army2forum.domain.dto.request.CreateGiftCodeRequestDto;
 import com.tuyenngoc.army2forum.domain.dto.request.UpdateGiftCodeRequestDto;
 import com.tuyenngoc.army2forum.domain.dto.response.CommonResponseDto;
+import com.tuyenngoc.army2forum.domain.dto.response.GetGiftCodeDetailResponseDto;
 import com.tuyenngoc.army2forum.domain.entity.GiftCode;
 
 public interface GiftCodeService {
 
-    GiftCode getGiftCodeById(Long id);
+    GetGiftCodeDetailResponseDto getGiftCodeDetailById(Long id);
 
     PaginationResponseDto<GiftCode> getGiftCodes(PaginationFullRequestDto requestDto);
 
